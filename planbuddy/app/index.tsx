@@ -1,3 +1,5 @@
+import { Text } from "react-native";
+
 export default function Authentication() {
-    return null;
+  return <Text>Text</Text>;
 }
