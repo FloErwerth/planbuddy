@@ -1,0 +1,33 @@
+
+/* Primary: Bnei Brak Bay */
+--primary-100: #F2F2FF;
+--primary-200: #BFC4FE;
+--primary-300: #8A99FB;
+--primary-400: #5472F1;
+--primary-500: #2150DE;
+--primary-600: #0B3EB0;
+--primary-700: #023182;
+--primary-800: #002454;
+--primary-900: #001226;
+
+/* Accent: Fire Bolt */
+--accent-100: #FFF8F2;
+--accent-200: #FED7BA;
+--accent-300: #F9AD80;
+--accent-400: #EC7946;
+--accent-500: #D14111;
+--accent-600: #A62406;
+--accent-700: #7C1201;
+--accent-800: #510600;
+--accent-900: #260100;
+
+/* Neutral */
+--neutral-100: #FAFAFC;
+--neutral-200: #E8E8EE;
+--neutral-300: #D6D8E0;
+--neutral-400: #C5C8D2;
+--neutral-500: #B5B9C4;
+--neutral-600: #8F949D;
+--neutral-700: #6B6F75;
+--neutral-800: #464A4E;
+--neutral-900: #222426;

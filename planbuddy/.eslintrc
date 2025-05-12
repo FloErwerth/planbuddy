@@ -1,0 +1,10 @@
+{
+  "extends": ["expo", "prettier", "eslint:recommended", "plugin:react/recommended"],
+  "plugins": ["@typescript-eslint", "prettier"],
+  "rules": {
+    "no-console": "warn",
+    "@typescript-eslint/no-unused-vars": "warn",
+    "no-undef": "off",
+    "react/react-in-jsx-scope": "off"
+  }
+}
