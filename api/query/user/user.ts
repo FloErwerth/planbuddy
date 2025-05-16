@@ -6,12 +6,9 @@ import { UserData, userDataSchema } from "./types";
 import { queryKeys } from "../queryKeys";
 
 const createUser = async (userData: UserData) => {
-  const parsedUserData = userDataSchema.safeParse(userData);
-  if (parsedUserData.success) {
-    await setDoc(doc(getFirestore(), "users", parsedUserData.data.id), {
-      ...parsedUserData.data,
+    await setDoc(doc(getFirestore(), "users", userData.id), {
+      ...userData,
     });
-  }
 };
 
 export const useLoginUserMutation = () => {
@@ -25,6 +22,27 @@ export const useLoginUserMutation = () => {
       }
     },
     mutationKey: [queryKeys.USER.LOGIN_USER_MUTATION_KEY],
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.EVENTS.EVENT_QUERY_KEY });
+    },
+  });
+};
+
+export const useRegisterUserMutation = () => {
+  const queryClient = useQueryClient();
+  const { mutate: createUserInDB } = useCreateUserMutation();
+
+  return useMutation({
+    mutationFn: async (credentials: { email: string; password: string }) => {
+      const userCredentials = await getAuth().createUserWithEmailAndPassword(credentials.email, credentials.password);
+
+      if (!userCredentials || !userCredentials.user.email) {
+        throw new Error("Login not possible");
+      }
+
+      createUserInDB({ id: userCredentials.user.uid, email: userCredentials.user.email })
+    },
+    mutationKey: [queryKeys.USER.REGISTER_USER_MUTATION_KEY],
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.EVENTS.EVENT_QUERY_KEY });
     },

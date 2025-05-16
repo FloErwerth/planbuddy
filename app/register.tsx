@@ -1,5 +1,6 @@
 import { Text } from '@/components/tamagui';
+import {Register} from "@/screens/Register";
 
 export default function RegisterPage() {
-  return <Text>Register</Text>;
+  return <Register />;
 }

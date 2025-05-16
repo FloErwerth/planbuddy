@@ -3,11 +3,12 @@ import { Input as TamaguiInput, styled } from 'tamagui';
 export const Input = styled(TamaguiInput, {
   color: '$color',
   borderRadius: '$4',
-  fontWeight: 500,
+  fontWeight: 400,
   focusStyle: {
     borderColor: '$primary',
+  borderWidth: 2,
     backgroundColor: '$backgroundFocus',
     color: '$darkShade',
   },
-  placeholderTextColor: '$gray10Light',
+  placeholderTextColor: '$placeholderColor',
 });

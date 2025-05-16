@@ -65,7 +65,7 @@ export const tamaguiConfig = createTamagui({
     ...config.tokens,
     color: {
       ...config.tokens.color,
-      primary: '#587C99',
+      primary: '#3f4e93',
       secondary: '#a8aee1',
       accent: '#DD7568',
       lightShade: '#F4F3F7',
@@ -79,7 +79,7 @@ export const tamaguiConfig = createTamagui({
       color: color.gray12Light, // Ein typisches dunkles Grau von Airbnb für Text
       borderColor: '#656565',
       focusColor: '#354173',
-      placeholderColor: color.gray10Light,
+      placeholderColor: color.gray8Light,
     },
     error: {
       darkShade: color.red9Light,

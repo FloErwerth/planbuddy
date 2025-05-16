@@ -12,7 +12,7 @@ import { ActivityIndicator } from 'react-native';
 
 const loginSchema = z.object({
   email: z
-    .string({ message: 'Bitte gib eine gültige E-Mail-Addresse ein.' })
+    .string().min(1, { message: 'Bitte gib eine gültige E-Mail-Addresse ein.'})
     .email({ message: 'Bitte gib eine gültige E-Mail-Addresse ein.' }),
   password: z
     .string({ message: 'Ein Passwort ist für deinen Account notwendig.' })
@@ -22,7 +22,6 @@ type LoginSchema = z.infer<typeof loginSchema>;
 
 export default function LoginScreen() {
   const { control, handleSubmit } = useForm({
-    mode: 'onSubmit',
     resolver: zodResolver(loginSchema),
   });
   const { mutate, isLoading } = useLoginUserMutation();
@@ -40,7 +39,7 @@ export default function LoginScreen() {
         <Text size="$4" textAlign="center">
           Gib deine E-Mail und dein Passwort ein, um dich einzuloggen
         </Text>
-        <ValidatedInput control={control} name="email" placeholder="Deine E-Mail Addresse" />
+        <ValidatedInput control={control} name="email" placeholder="Deine E-Mail Addresse" showErrorMessage />
         <ValidatedInput
           secureTextEntry
           control={control}
