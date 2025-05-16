@@ -3,10 +3,17 @@ import { useFonts } from 'expo-font';
 import { useCallback, useEffect, useState } from 'react';
 import { Providers } from '@/providers';
 import { CallbackOrObserver, FirebaseAuthTypes, getAuth } from '@react-native-firebase/auth';
+import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
+import { GradientScreen } from '@/components/Screen';
 
 SplashScreen.preventAutoHideAsync();
 
-const defaultOptions = { headerShown: false };
+const defaultOptions: NativeStackNavigationOptions = {
+  headerShown: false,
+  contentStyle: { backgroundColor: 'transparent' },
+  animation: 'fade',
+  animationDuration: 0,
+};
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -40,15 +47,17 @@ export default function RootLayout() {
 
   return (
     <Providers>
-      <Stack>
-        <Stack.Protected guard={isLoggedIn}>
-          <Stack.Screen name="(tabs)" options={defaultOptions} />
-        </Stack.Protected>
-        <Stack.Protected guard={!isLoggedIn}>
-          <Stack.Screen name="login" options={defaultOptions} />
-          <Stack.Screen name="register" options={defaultOptions} />
-        </Stack.Protected>
-      </Stack>
+      <GradientScreen flex={1}>
+        <Stack>
+          <Stack.Protected guard={isLoggedIn}>
+            <Stack.Screen name="(tabs)" options={defaultOptions} />
+          </Stack.Protected>
+          <Stack.Protected guard={!isLoggedIn}>
+            <Stack.Screen name="login" options={defaultOptions} />
+            <Stack.Screen name="register" options={defaultOptions} />
+          </Stack.Protected>
+        </Stack>
+      </GradientScreen>
     </Providers>
   );
 }

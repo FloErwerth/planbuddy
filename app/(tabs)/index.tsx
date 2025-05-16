@@ -1,5 +1,10 @@
 import { Text } from '@/components/tamagui';
+import { Screen } from '@/components/Screen';
 
 export default function HomePage() {
-  return <Text>Tab 1</Text>;
+  return (
+    <Screen>
+      <Text>Tab 1</Text>
+    </Screen>
+  );
 }

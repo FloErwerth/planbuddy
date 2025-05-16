@@ -1,14 +1,13 @@
-import { JSX, useCallback, useMemo, useState } from 'react';
+import { JSX, useCallback, useState } from 'react';
 import { LayoutChangeEvent } from 'react-native';
-import { getTokenValue, InputProps, View } from 'tamagui';
+import { InputProps, View } from 'tamagui';
 import { Input } from '@/components/tamagui';
-import { IconProps } from '@tamagui/helpers-icon';
 
 export const InputWithIcon = ({
   Icon,
-  showIcon,
+  showIcon = true,
   ...props
-}: InputProps & { Icon?: (props: IconProps) => JSX.Element; showIcon?: boolean }) => {
+}: InputProps & { Icon?: JSX.Element; showIcon?: boolean }) => {
   const [inputHeight, setInputHeight] = useState<number>();
 
   const onLayout = useCallback((e: LayoutChangeEvent) => {
@@ -18,16 +17,19 @@ export const InputWithIcon = ({
     }
   }, []);
 
-  const iconTop = useMemo(
-    () => (inputHeight !== undefined ? inputHeight / 2 - getTokenValue('$1.5', 'size') / 2 : 0),
-    [inputHeight]
-  );
-
   return (
     <View>
       <Input onLayout={onLayout} {...props} />
       {inputHeight && showIcon && Icon && (
-        <Icon position="absolute" right="$3" size="$1.5" top={iconTop} />
+        <View
+          position="absolute"
+          alignItems="center"
+          justifyContent="center"
+          right="$3"
+          height={inputHeight}
+        >
+          {Icon}
+        </View>
       )}
     </View>
   );

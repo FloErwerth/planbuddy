@@ -1,8 +1,14 @@
 import { Tabs } from 'expo-router';
+import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
 
-const screenOptions = {
-  tabBarStyle: { borderTopLeftRadius: 6, borderTopRightRadius: 6 },
+const screenOptions: BottomTabNavigationOptions = {
+  tabBarStyle: {
+    borderTopLeftRadius: 6,
+    height: 60,
+    borderTopRightRadius: 6,
+  },
   headerShown: false,
+  sceneStyle: { backgroundColor: 'transparent' },
 } as const;
 export default function TabsLayout() {
   return (
@@ -18,6 +24,7 @@ export default function TabsLayout() {
         name="settings"
         options={{
           title: 'Profile',
+          ...screenOptions,
         }}
       />
     </Tabs>

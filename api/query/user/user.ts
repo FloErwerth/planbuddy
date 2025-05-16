@@ -1,25 +1,32 @@
-import { getAuth } from "@react-native-firebase/auth";
-import { doc, getFirestore, setDoc } from "@react-native-firebase/firestore";
-import { useMutation, useQueryClient } from "react-query";
+import { getAuth } from '@react-native-firebase/auth';
+import { doc, getFirestore, setDoc } from '@react-native-firebase/firestore';
+import { useMutation, useQueryClient } from 'react-query';
 
-import { UserData, userDataSchema } from "./types";
-import { queryKeys } from "../queryKeys";
+import { UserData } from './types';
+import { queryKeys } from '../queryKeys';
+import { FirebaseError } from '@firebase/util';
+import { AuthErrorCode } from '@firebase/auth/internal';
 
 const createUser = async (userData: UserData) => {
-    await setDoc(doc(getFirestore(), "users", userData.id), {
-      ...userData,
-    });
+  await setDoc(doc(getFirestore(), 'users', userData.id), {
+    ...userData,
+  });
 };
 
 export const useLoginUserMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
-      const userCredentials = await getAuth().signInWithEmailAndPassword(credentials.email, credentials.password);
-
-      if (!userCredentials) {
-        throw new Error("Login not possible");
-      }
+      return getAuth()
+        .signInWithEmailAndPassword(credentials.email, credentials.password)
+        .then((userCredentials) => {
+          if (!userCredentials) {
+            throw new Error('Login not possible');
+          }
+        })
+        .catch((e: FirebaseError) => {
+          return e.code as AuthErrorCode;
+        });
     },
     mutationKey: [queryKeys.USER.LOGIN_USER_MUTATION_KEY],
     onSuccess: async () => {
@@ -34,13 +41,18 @@ export const useRegisterUserMutation = () => {
 
   return useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
-      const userCredentials = await getAuth().createUserWithEmailAndPassword(credentials.email, credentials.password);
+      return getAuth()
+        .createUserWithEmailAndPassword(credentials.email, credentials.password)
+        .then((userCredentials) => {
+          if (!userCredentials || !userCredentials.user.email) {
+            throw new Error('Login not possible');
+          }
 
-      if (!userCredentials || !userCredentials.user.email) {
-        throw new Error("Login not possible");
-      }
-
-      createUserInDB({ id: userCredentials.user.uid, email: userCredentials.user.email })
+          createUserInDB({ id: userCredentials.user.uid, email: userCredentials.user.email });
+        })
+        .catch((e: FirebaseError) => {
+          return e.code as AuthErrorCode;
+        });
     },
     mutationKey: [queryKeys.USER.REGISTER_USER_MUTATION_KEY],
     onSuccess: async () => {

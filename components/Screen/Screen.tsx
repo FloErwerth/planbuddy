@@ -1,5 +1,5 @@
-import { PropsWithChildren } from "react";
-import { View, ViewProps } from "tamagui";
+import { PropsWithChildren } from 'react';
+import { View, ViewProps } from 'tamagui';
 
 export const Screen = ({ children, ...props }: PropsWithChildren & ViewProps) => {
   return (

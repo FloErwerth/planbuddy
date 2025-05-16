@@ -2,11 +2,10 @@ import { Input as TamaguiInput, styled } from 'tamagui';
 
 export const Input = styled(TamaguiInput, {
   color: '$color',
-  borderRadius: '$4',
   fontWeight: 400,
   focusStyle: {
     borderColor: '$primary',
-  borderWidth: 2,
+    borderWidth: 2,
     backgroundColor: '$backgroundFocus',
     color: '$darkShade',
   },
