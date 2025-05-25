@@ -1,14 +1,30 @@
-import { getAuth } from "@react-native-firebase/auth";
-import { addDoc, arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "@react-native-firebase/firestore";
-import { useCallback } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { getAuth } from '@react-native-firebase/auth';
+import {
+  addDoc,
+  arrayRemove,
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  query,
+  updateDoc,
+  where,
+} from '@react-native-firebase/firestore';
+import { useCallback } from 'react';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-import { EventData, eventDataSchema, EventStatus } from "./types";
-import { queryKeys } from "../queryKeys";
-import { userDataSchema } from "../user";
+import { EventData, eventDataSchema, EventStatus } from './types';
+import { queryKeys } from '../queryKeys';
+import { userDataSchema } from '../user';
+
+const isEventDefined = (event: EventData | undefined): event is EventData => {
+  return event !== undefined;
+};
 
 const getEventData = async (eventId: string) => {
-  const eventSnapshot = await getDoc(doc(getFirestore(), "events", eventId));
+  const eventSnapshot = await getDoc(doc(getFirestore(), 'events', eventId));
 
   if (eventSnapshot.exists) {
     return eventDataSchema.parse({ id: eventId, ...eventSnapshot.data() });
@@ -22,11 +38,11 @@ export const useEventsQuery = () => {
     queryFn: async () => {
       const userId = getAuth().currentUser?.uid;
       if (!userId) {
-        throw new Error("Not logged in");
+        throw new Error('Not logged in');
       }
 
-      const usersRef = collection(getFirestore(), "users");
-      const userData = await getDocs(query(usersRef, where("id", "==", userId)));
+      const usersRef = collection(getFirestore(), 'users');
+      const userData = await getDocs(query(usersRef, where('id', '==', userId)));
       const eventIds: string[] = [];
 
       userData.forEach((doc) => {
@@ -37,7 +53,9 @@ export const useEventsQuery = () => {
         }
       });
 
-      return await Promise.all(eventIds.map(getEventData));
+      const result = await Promise.all(eventIds.map(getEventData));
+
+      return result.filter(isEventDefined);
     },
     queryKey: [queryKeys.EVENTS.EVENT_QUERY_KEY],
   });
@@ -51,12 +69,12 @@ export const useJoinEventsMutation = () => {
     if (!userId) {
       return;
     }
-    const possibleEvent = await getDoc(collection(getFirestore(), "events").doc(eventId));
+    const possibleEvent = await getDoc(collection(getFirestore(), 'events').doc(eventId));
     if (!possibleEvent.exists) {
       return;
     }
 
-    await updateDoc(doc(getFirestore(), "users", userId), {
+    await updateDoc(doc(getFirestore(), 'users', userId), {
       eventIds: arrayUnion(eventId),
     }).catch((e) => console.log(e));
   };
@@ -78,7 +96,7 @@ export const useCreateEventMutation = () => {
     const userId = getAuth().currentUser?.uid;
 
     if (userId) {
-      const result = await addDoc(collection(getFirestore(), "events"), {
+      const result = await addDoc(collection(getFirestore(), 'events'), {
         ...data,
         users: arrayUnion({
           id: userId,
@@ -87,7 +105,7 @@ export const useCreateEventMutation = () => {
         }),
       });
 
-      await updateDoc(doc(getFirestore(), "users", userId), {
+      await updateDoc(doc(getFirestore(), 'users', userId), {
         eventIds: arrayUnion(result.id),
       });
 
@@ -112,11 +130,11 @@ export const useDeleteEventMutation = () => {
     const userId = getAuth().currentUser?.uid;
 
     if (userId) {
-      const result = await addDoc(collection(getFirestore(), "events"), {
+      const result = await addDoc(collection(getFirestore(), 'events'), {
         ...data,
       });
 
-      await updateDoc(doc(getFirestore(), "users", userId), {
+      await updateDoc(doc(getFirestore(), 'users', userId), {
         eventIds: arrayRemove(eventId),
       });
 

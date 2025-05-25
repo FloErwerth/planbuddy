@@ -5,9 +5,27 @@ export const Input = styled(TamaguiInput, {
   fontWeight: 400,
   focusStyle: {
     borderColor: '$primary',
-    borderWidth: 2,
+    borderWidth: '$1',
     backgroundColor: '$backgroundFocus',
     color: '$darkShade',
   },
   placeholderTextColor: '$placeholderColor',
+  variants: {
+    variant: {
+      small: {
+        fontSize: '$2',
+        padding: '$1.5',
+        height: '$2',
+      },
+      medium: {},
+      large: {
+        fontSize: '$6',
+        padding: '$3',
+        height: '$5',
+      },
+    },
+  },
+  defaultVariants: {
+    variant: 'medium',
+  },
 });

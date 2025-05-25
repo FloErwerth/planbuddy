@@ -3,11 +3,18 @@ import { LayoutChangeEvent } from 'react-native';
 import { InputProps, View } from 'tamagui';
 import { Input } from '@/components/tamagui';
 
+export type InputWithIconProps = InputProps & {
+  Icon?: JSX.Element;
+  showIcon?: boolean;
+  isStreched?: boolean;
+};
+
 export const InputWithIcon = ({
   Icon,
   showIcon = true,
+  isStreched = false,
   ...props
-}: InputProps & { Icon?: JSX.Element; showIcon?: boolean }) => {
+}: InputWithIconProps) => {
   const [inputHeight, setInputHeight] = useState<number>();
 
   const onLayout = useCallback((e: LayoutChangeEvent) => {
@@ -18,7 +25,7 @@ export const InputWithIcon = ({
   }, []);
 
   return (
-    <View>
+    <View flex={isStreched ? 1 : 0}>
       <Input onLayout={onLayout} {...props} />
       {inputHeight && showIcon && Icon && (
         <View
