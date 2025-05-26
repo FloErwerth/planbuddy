@@ -30,6 +30,7 @@ export const eventDataSchema = z.object({
     )
     .optional()
     .catch([]),
+  image: z.string().optional().catch(''),
 });
 
 export type EventData = z.infer<typeof eventDataSchema>;

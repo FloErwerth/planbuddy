@@ -1,9 +1,11 @@
 import { getTokenValue, View, XStack, YStack } from 'tamagui';
 import { Card, Text } from '@/components/tamagui';
 import { EventData } from '@/api/query/events';
+import { Pressable } from 'react-native';
+import { router } from 'expo-router';
 import { Image } from 'expo-image';
 
-type EventSmallProps = Pick<EventData, 'name' | 'address' | 'dateTimestamp'> & { imageUrl: string };
+type EventSmallProps = Pick<EventData, 'name' | 'address' | 'dateTimestamp' | 'image' | 'id'>;
 
 function getRelativeDate(timestamp: number): string {
   // Get the current date and time
@@ -108,31 +110,35 @@ function getRelativeDate(timestamp: number): string {
   return targetDate.toLocaleDateString();
 }
 
-export const EventSmall = ({ name, address, dateTimestamp, imageUrl }: EventSmallProps) => {
+export const EventSmall = ({ name, address, dateTimestamp, image, id }: EventSmallProps) => {
   return (
-    <View>
-      <Card>
-        <XStack justifyContent="space-between">
-          <YStack>
-            <Text size="$6">{name}</Text>
-            <XStack alignItems="center" gap="$1.5">
-              <Text size="$3">{getRelativeDate(dateTimestamp)}</Text>
-              <Text size="$3">·</Text>
-              <XStack>
-                <Text size="$3">{address.streetHouseNr.split(' ')[0]}</Text>
-                <Text size="$3">, </Text>
-                <Text size="$3">{address.zipCity.split(', ')[1]}</Text>
+    <Pressable
+      onPress={() => router.push({ pathname: '/eventDetails', params: { detailEventId: id } })}
+    >
+      <View>
+        <Card>
+          <XStack justifyContent="space-between">
+            <YStack>
+              <Text size="$6">{name}</Text>
+              <XStack alignItems="center" gap="$1.5">
+                <Text size="$3">{getRelativeDate(dateTimestamp)}</Text>
+                <Text size="$3">·</Text>
+                <XStack>
+                  <Text size="$3">{address.streetHouseNr.split(' ')[0]}</Text>
+                  <Text size="$3">, </Text>
+                  <Text size="$3">{address.zipCity.split(', ')[1]}</Text>
+                </XStack>
               </XStack>
-            </XStack>
-          </YStack>
-          {imageUrl && (
-            <Image
-              source={{ uri: imageUrl }}
-              style={{ width: 80, borderRadius: getTokenValue('$2', 'radius') }}
-            />
-          )}
-        </XStack>
-      </Card>
-    </View>
+            </YStack>
+            {image && (
+              <Image
+                source={{ uri: image }}
+                style={{ width: 80, borderRadius: getTokenValue('$2', 'radius') }}
+              />
+            )}
+          </XStack>
+        </Card>
+      </View>
+    </Pressable>
   );
 };

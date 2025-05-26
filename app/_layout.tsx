@@ -51,6 +51,8 @@ export default function RootLayout() {
         <Stack>
           <Stack.Protected guard={isLoggedIn}>
             <Stack.Screen name="(tabs)" options={defaultOptions} />
+            <Stack.Screen name="createEvent" options={defaultOptions} />
+            <Stack.Screen name="eventDetails" options={defaultOptions} />
           </Stack.Protected>
           <Stack.Protected guard={!isLoggedIn}>
             <Stack.Screen name="login" options={defaultOptions} />
