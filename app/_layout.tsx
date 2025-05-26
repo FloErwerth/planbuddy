@@ -4,13 +4,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { Providers } from '@/providers';
 import { CallbackOrObserver, FirebaseAuthTypes, getAuth } from '@react-native-firebase/auth';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
-import { GradientScreen } from '@/components/Screen';
 
 SplashScreen.preventAutoHideAsync();
 
 const defaultOptions: NativeStackNavigationOptions = {
   headerShown: false,
-  contentStyle: { backgroundColor: 'transparent' },
   animation: 'fade',
   animationDuration: 0,
 };
@@ -47,19 +45,20 @@ export default function RootLayout() {
 
   return (
     <Providers>
-      <GradientScreen flex={1}>
-        <Stack>
-          <Stack.Protected guard={isLoggedIn}>
-            <Stack.Screen name="(tabs)" options={defaultOptions} />
-            <Stack.Screen name="createEvent" options={defaultOptions} />
-            <Stack.Screen name="eventDetails" options={defaultOptions} />
-          </Stack.Protected>
-          <Stack.Protected guard={!isLoggedIn}>
-            <Stack.Screen name="login" options={defaultOptions} />
-            <Stack.Screen name="register" options={defaultOptions} />
-          </Stack.Protected>
-        </Stack>
-      </GradientScreen>
+      <Stack screenOptions={{ freezeOnBlur: true }}>
+        <Stack.Protected guard={isLoggedIn}>
+          <Stack.Screen name="(tabs)" options={defaultOptions} />
+          <Stack.Screen name="createEvent" options={defaultOptions} />
+          <Stack.Screen
+            name="eventDetails"
+            options={{ ...defaultOptions, presentation: 'modal', animation: 'fade' }}
+          />
+        </Stack.Protected>
+        <Stack.Protected guard={!isLoggedIn}>
+          <Stack.Screen name="login" options={defaultOptions} />
+          <Stack.Screen name="register" options={defaultOptions} />
+        </Stack.Protected>
+      </Stack>
     </Providers>
   );
 }

@@ -21,7 +21,7 @@ export const ScrollView = ({
           <LinearGradient
             style={{ flex: 1 }}
             start={[0, 0]}
-            end={[0, 1]}
+            end={[0, 0.6]}
             locations={[0, 1]}
             colors={['rgba(0,0,0,0.2)', 'rgba(0,0,0,0)']}
           />

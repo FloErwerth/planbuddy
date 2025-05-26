@@ -1,2 +1,1 @@
-export * from "./Screen";
-export * from "./GradientScreen";
+export * from './Screen';

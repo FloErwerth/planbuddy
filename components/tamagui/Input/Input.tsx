@@ -7,7 +7,8 @@ export const Input = styled(TamaguiInput, {
     borderColor: '$primary',
     borderWidth: '$1',
     backgroundColor: '$backgroundFocus',
-    color: '$darkShade',
+    color: '$primary',
+    fontWeight: 700,
   },
   placeholderTextColor: '$placeholderColor',
   variants: {

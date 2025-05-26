@@ -7,9 +7,10 @@ const screenOptions: BottomTabNavigationOptions = {
     height: 60,
     borderTopRightRadius: 6,
   },
+  freezeOnBlur: true,
   headerShown: false,
   sceneStyle: { backgroundColor: 'transparent' },
-} as const;
+};
 export default function TabsLayout() {
   return (
     <Tabs screenOptions={screenOptions} initialRouteName="index">
@@ -19,7 +20,6 @@ export default function TabsLayout() {
           title: 'Events',
         }}
       />
-
       <Tabs.Screen
         name="settings"
         options={{

@@ -1,9 +1,9 @@
 import { Card as TamaCard, CardProps, styled } from 'tamagui';
 
 const StyledCard = styled(TamaCard, {
-  elevation: '$4',
+  elevation: '$1',
   padding: '$2',
-  borderWidth: 0.5,
+  borderWidth: 0,
   borderColor: '$borderColor',
 });
 

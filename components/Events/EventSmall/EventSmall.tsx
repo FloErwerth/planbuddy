@@ -1,4 +1,4 @@
-import { getTokenValue, View, XStack, YStack } from 'tamagui';
+import { View, XStack, YStack } from 'tamagui';
 import { Card, Text } from '@/components/tamagui';
 import { EventData } from '@/api/query/events';
 import { Pressable } from 'react-native';
@@ -109,7 +109,7 @@ function getRelativeDate(timestamp: number): string {
   // This should ideally not be reached if all cases are covered, but provides a safe return.
   return targetDate.toLocaleDateString();
 }
-
+const imageStyle = { height: 50, aspectRatio: '4/3', borderRadius: 16 } as const;
 export const EventSmall = ({ name, address, dateTimestamp, image, id }: EventSmallProps) => {
   return (
     <Pressable
@@ -130,12 +130,7 @@ export const EventSmall = ({ name, address, dateTimestamp, image, id }: EventSma
                 </XStack>
               </XStack>
             </YStack>
-            {image && (
-              <Image
-                source={{ uri: image }}
-                style={{ width: 80, borderRadius: getTokenValue('$2', 'radius') }}
-              />
-            )}
+            {image && <Image source={{ uri: image }} style={imageStyle} />}
           </XStack>
         </Card>
       </View>
