@@ -1,10 +1,9 @@
-import { Text } from '@/components/tamagui';
 import { Screen } from '@/components/Screen';
 import { EventSmall } from '@/components/Events/EventSmall';
 import { useEventsQuery } from '@/api/query/events';
 import { useMemo, useState } from 'react';
-import { ScrollView } from 'tamagui';
 import { InputWithClear } from '@/components/Inputs/InputWithClear/InputWithClear';
+import { ScrollView } from '@/components/tamagui/ScrollView';
 
 const contentContainerStyle = { gap: '$3', paddingVertical: '$4' };
 
@@ -40,11 +39,10 @@ export default function HomePage() {
 
   return (
     <>
-      <Screen paddingBottom={0}>
-        <Text size="$8">Bevorstehende Events</Text>
+      <Screen>
         <InputWithClear placeholder="Nach Events suchen" value={search} onChangeText={setSearch} />
       </Screen>
-      <ScrollView paddingHorizontal="$4" contentContainerStyle={contentContainerStyle}>
+      <ScrollView withShadow paddingHorizontal="$4" contentContainerStyle={contentContainerStyle}>
         {mappedData}
       </ScrollView>
     </>
