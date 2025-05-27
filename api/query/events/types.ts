@@ -18,6 +18,7 @@ export const eventDataSchema = z.object({
     zipCity: z.string(),
     streetHouseNr: z.string(),
   }),
+
   dateTimestamp: z.number({ message: 'Bitte gib den Zeitpunkt deines Events an.' }),
   description: z.string().optional(),
   users: z

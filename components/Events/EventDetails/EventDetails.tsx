@@ -1,11 +1,11 @@
 import { getAuth } from '@react-native-firebase/auth';
-import { Redirect, useGlobalSearchParams } from 'expo-router';
+import { Redirect, router, useGlobalSearchParams } from 'expo-router';
 import { ActivityIndicator, Pressable } from 'react-native';
 import { Avatar, SizableText, View, XStack, ZStack } from 'tamagui';
 import { useEventsQuery } from '@/api/query/events';
 import { Image } from 'expo-image';
 import { BackButton } from '@/components/BackButton';
-import { MapPin, MessageSquareText, Users } from '@tamagui/lucide-icons';
+import { ChevronRight, MapPin, MessageSquareText, Users } from '@tamagui/lucide-icons';
 import { formatToTime } from '@/components/Calendar/utils';
 import { ShareButton } from '@/components/ShareButton/ShareButton';
 
@@ -20,9 +20,8 @@ export const EventDetails = () => {
   const { detailEventId } = useGlobalSearchParams<{
     detailEventId: string;
   }>();
-  const { data: events, isLoading } = useEventsQuery();
   const userId = getAuth().currentUser?.uid;
-
+  const { data: events, isLoading } = useEventsQuery(userId ?? '');
   if (isLoading) {
     return <ActivityIndicator />;
   }
@@ -67,30 +66,35 @@ export const EventDetails = () => {
               {event.name}
             </SizableText>
           </View>
-          <XStack gap="$3" alignItems="center">
-            <MessageSquareText />
-            <View>
-              <SizableText fontWeight="$6">
-                {hosts.length > 1 ? 'Deine Hosts' : 'Dein Host'}
-              </SizableText>
-              <ZStack height="$4" marginTop="$1">
-                {[...hosts, ...hosts, ...hosts].reverse().map(({ id }, index) => (
-                  <View key={id + index} left={(3 - index - 1) * 30}>
-                    <Avatar circular size="$4" elevationAndroid={4}>
-                      <Avatar.Image src="http://some" />
-                      <Avatar.Fallback
-                        backgroundColor="$background"
-                        alignItems="center"
-                        justifyContent="center"
-                      >
-                        <SizableText>F.E</SizableText>
-                      </Avatar.Fallback>
-                    </Avatar>
-                  </View>
-                ))}
-              </ZStack>
-            </View>
-          </XStack>
+          <Pressable onPress={() => router.push('/eventDetails/hosts')}>
+            <XStack justifyContent="space-between" alignItems="center">
+              <XStack gap="$3" alignItems="center">
+                <MessageSquareText />
+                <View>
+                  <SizableText fontWeight="$6">
+                    {hosts.length > 1 ? 'Deine Hosts' : 'Dein Host'}
+                  </SizableText>
+                  <ZStack height="$4" marginTop="$1">
+                    {[...hosts, ...hosts, ...hosts].reverse().map(({ id }, index) => (
+                      <View key={id + index} left={(3 - index - 1) * 30}>
+                        <Avatar circular size="$4" elevationAndroid={4}>
+                          <Avatar.Image src="http://some" />
+                          <Avatar.Fallback
+                            backgroundColor="$background"
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            <SizableText>F.E</SizableText>
+                          </Avatar.Fallback>
+                        </Avatar>
+                      </View>
+                    ))}
+                  </ZStack>
+                </View>
+              </XStack>
+              <ChevronRight />
+            </XStack>
+          </Pressable>
           <XStack gap="$3" alignItems="center">
             <MessageSquareText />
             <View>
@@ -108,18 +112,18 @@ export const EventDetails = () => {
               <SizableText>ab {formatToTime(event.dateTimestamp)} Uhr</SizableText>
             </View>
           </XStack>
-          <XStack gap="$3" alignItems="center">
-            <Users />
-            <View>
-              <XStack gap="$1">
-                <SizableText fontWeight="$6">32 Teilnehmer</SizableText>
+          <Pressable onPress={() => router.push('/eventDetails/participants')}>
+            <XStack alignItems="center" justifyContent="space-between">
+              <XStack gap="$3" alignItems="center">
+                <Users />
+                <View>
+                  <SizableText fontWeight="$6">12 Teilnehmer, die zugesagt haben</SizableText>
+                  <SizableText>58 eingeladene Teilnehmer</SizableText>
+                </View>
               </XStack>
-
-              <Pressable>
-                <SizableText>Füge hier weitere Teilnehmer hinzu</SizableText>
-              </Pressable>
-            </View>
-          </XStack>
+              <ChevronRight />
+            </XStack>
+          </Pressable>
         </View>
       </View>
     </View>
