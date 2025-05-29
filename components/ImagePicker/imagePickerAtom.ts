@@ -1,3 +1,3 @@
 import { atom } from 'jotai';
 
-export const imagePickerAtom = atom<{ uri: string; base64: string } | undefined>(undefined);
+export const imagePickerAtom = atom<string | undefined>(undefined);

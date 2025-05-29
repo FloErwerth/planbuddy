@@ -8,6 +8,15 @@ export const Button = styled(TamaguiButton, {
         color: 'white',
         elevation: 4,
       },
+      transparent: {
+        elevation: 0,
+        padding: 0,
+      },
+    },
+    disabled: {
+      true: {
+        backgroundColor: 'grey',
+      },
     },
   },
   defaultVariants: {

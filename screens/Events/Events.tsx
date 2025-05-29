@@ -6,13 +6,11 @@ import { InputWithClear } from '@/components/Inputs/InputWithClear/InputWithClea
 import { ScrollView } from '@/components/tamagui/ScrollView';
 import { Button } from '@/components/tamagui';
 import { router } from 'expo-router';
-import { getAuth } from '@react-native-firebase/auth';
 
 const contentContainerStyle = { gap: '$3', paddingVertical: '$4' };
 export const Events = () => {
   const [search, setSearch] = useState('');
-  const userId = getAuth().currentUser?.uid;
-  const { data = [] } = useEventsQuery(userId ?? '');
+  const { data = [] } = useEventsQuery();
 
   const mappedData = useMemo(
     () =>

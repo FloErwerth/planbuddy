@@ -14,13 +14,13 @@ export const ImagePicker = () => {
       quality: 0.1,
     });
     if (!result.canceled) {
-      setImage({ uri: result.assets[0].uri, base64: result.assets[0].base64 ?? '' });
+      setImage(result.assets[0].uri);
     }
   };
   return (
     <>
       <Button onPress={pickImage}>Image</Button>
-      <Image source={{ uri: image?.uri ?? '' }} style={{ width: 100, height: 100 }} />
+      <Image source={{ uri: image ?? '' }} style={{ width: 100, height: 100 }} />
     </>
   );
 };

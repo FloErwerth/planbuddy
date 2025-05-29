@@ -6,15 +6,18 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   getFirestore,
+  query,
   updateDoc,
+  where,
 } from '@react-native-firebase/firestore';
 import { useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import { EventData, eventDataSchema, EventStatus } from './types';
 import { queryKeys } from '../queryKeys';
-import { useUserQuery } from '../user';
+import { userDataSchema } from '../user';
 
 const isEventDefined = (event: EventData | undefined): event is EventData => {
   return event !== undefined;
@@ -30,27 +33,31 @@ const getEventData = async (eventId: string) => {
   return undefined;
 };
 
-export const useEventsQuery = (userId: string) => {
-  const { data: user, isLoading } = useUserQuery(userId);
-
+export const useEventsQuery = () => {
   return useQuery({
     queryFn: async () => {
-      if (isLoading) {
-        return [];
+      const userId = getAuth().currentUser?.uid;
+      if (!userId) {
+        throw new Error('Not logged in');
       }
 
-      if (!user) {
-        throw new Error('No user found');
-      }
+      const usersRef = collection(getFirestore(), 'users');
+      const userData = await getDocs(query(usersRef, where('id', '==', userId)));
+      const eventIds: string[] = [];
 
-      if (!user.eventIds || user.eventIds.length === 0) {
-        return [];
-      }
+      userData.forEach((doc) => {
+        const parsedUserData = userDataSchema.safeParse(doc.data());
 
-      const result = await Promise.all(user.eventIds?.map(getEventData));
+        if (parsedUserData.success) {
+          eventIds.push(...(parsedUserData.data.eventIds ?? []));
+        }
+      });
+
+      const result = await Promise.all(eventIds.map(getEventData));
+
       return result.filter(isEventDefined);
     },
-    queryKey: [queryKeys.EVENTS.EVENT_QUERY_KEY, queryKeys.USER.USER_QUERY_KEY],
+    queryKey: [queryKeys.EVENTS.EVENT_QUERY_KEY],
   });
 };
 

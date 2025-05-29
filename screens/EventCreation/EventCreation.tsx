@@ -24,11 +24,11 @@ export const EventCreation = () => {
 
   const handleImageUpload = async () => {
     const userId = getAuth().currentUser?.uid;
-    if (!image?.uri || !userId) {
+    if (!image || !userId) {
       return Promise.resolve('');
     }
     const reference = storage(getApp()).ref(`images/${userId}/${Date.now()}`);
-    const response = await fetch(image.uri);
+    const response = await fetch(image);
     const blob = await response.blob();
     const snapShot = await reference.put(blob);
     return await storage(getApp())

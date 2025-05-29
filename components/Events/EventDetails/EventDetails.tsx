@@ -1,17 +1,17 @@
-import { getAuth } from '@react-native-firebase/auth';
 import { Redirect, router, useGlobalSearchParams } from 'expo-router';
-import { ActivityIndicator, Pressable } from 'react-native';
+import { ActivityIndicator, Dimensions, Pressable } from 'react-native';
 import { Avatar, SizableText, View, XStack, ZStack } from 'tamagui';
 import { useEventsQuery } from '@/api/query/events';
 import { Image } from 'expo-image';
-import { BackButton } from '@/components/BackButton';
 import { ChevronRight, MapPin, MessageSquareText, Users } from '@tamagui/lucide-icons';
 import { formatToTime } from '@/components/Calendar/utils';
+import { getAuth } from '@react-native-firebase/auth';
+import { Screen } from '@/components/Screen';
 import { ShareButton } from '@/components/ShareButton/ShareButton';
 
 const imageStyle = {
   alignSelf: 'center',
-  width: '100%',
+  width: Dimensions.get('screen').width,
   aspectRatio: '4/3',
   position: 'absolute',
 } as const;
@@ -21,7 +21,7 @@ export const EventDetails = () => {
     detailEventId: string;
   }>();
   const userId = getAuth().currentUser?.uid;
-  const { data: events, isLoading } = useEventsQuery(userId ?? '');
+  const { data: events, isLoading } = useEventsQuery();
   if (isLoading) {
     return <ActivityIndicator />;
   }
@@ -46,14 +46,14 @@ export const EventDetails = () => {
   const isHost = hosts.some(({ id }) => id === userId);
 
   return (
-    <View>
-      <BackButton />
-      <ShareButton id={event.id ?? ''} />
+    <Screen gap={0} showBackButton action={<ShareButton id={event.id ?? ''} />}>
       <Image source={{ uri: event.image }} style={imageStyle}></Image>
       <View
         position="relative"
         gap="$4"
-        top="30%"
+        top="28%"
+        width={Dimensions.get('screen').width}
+        right="$4"
         overflow="hidden"
         height="100%"
         borderTopLeftRadius="$8"
@@ -126,6 +126,6 @@ export const EventDetails = () => {
           </Pressable>
         </View>
       </View>
-    </View>
+    </Screen>
   );
 };

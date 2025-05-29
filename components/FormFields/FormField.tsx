@@ -13,7 +13,7 @@ export const FormField = <T extends FieldValues>({
   } = useController({ name });
 
   return (
-    <View>
+    <View gap="$1.5">
       {label && <SizableText>{label}</SizableText>}
       {children}
       {!!error && <Text theme="error">{error.message}</Text>}

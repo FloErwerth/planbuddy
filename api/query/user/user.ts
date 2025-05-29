@@ -6,6 +6,7 @@ import {
   getFirestore,
   query,
   setDoc,
+  updateDoc,
   where,
 } from '@react-native-firebase/firestore';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -14,11 +15,30 @@ import { UserData, userDataSchema } from './types';
 import { queryKeys } from '../queryKeys';
 import { FirebaseError } from '@firebase/util';
 import { AuthErrorCode } from '@firebase/auth/internal';
+import { useCallback } from 'react';
 
 const createUser = async (userData: UserData) => {
   await setDoc(doc(getFirestore(), 'users', userData.id), {
     ...userData,
   });
+};
+
+export const useUpdateUser = () => {
+  const userId = getAuth().currentUser?.uid;
+  const queryClient = useQueryClient();
+
+  return useCallback(
+    async (newUserData: Partial<UserData>) => {
+      if (!userId) {
+        return Promise.reject('Not logged in');
+      }
+      await updateDoc(doc(getFirestore(), 'users', userId), {
+        ...newUserData,
+      });
+      await queryClient.invalidateQueries([queryKeys.USER.USER_QUERY_KEY]);
+    },
+    [queryClient, userId]
+  );
 };
 
 export const useLoginUserMutation = () => {
@@ -44,7 +64,9 @@ export const useLoginUserMutation = () => {
   });
 };
 
-export const useUserQuery = (userId: string) => {
+export const useUserQuery = () => {
+  const userId = getAuth().currentUser?.uid;
+
   return useQuery({
     queryFn: async () => {
       const usersRef = collection(getFirestore(), 'users');

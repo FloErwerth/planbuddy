@@ -7,11 +7,8 @@ type ShareButtonProps = {
 };
 const StyledButton = styled(Button, {
   zIndex: 1,
-  position: 'absolute',
-  top: '$4',
-  right: '$4',
-  width: '$3',
-  height: '$3',
+  width: '$2',
+  height: '$2',
   padding: 0,
   borderRadius: '$12',
 });

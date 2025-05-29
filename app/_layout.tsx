@@ -45,7 +45,7 @@ export default function RootLayout() {
 
   return (
     <Providers>
-      <Stack screenOptions={{ freezeOnBlur: true }}>
+      <Stack>
         <Stack.Protected guard={isLoggedIn}>
           <Stack.Screen name="(tabs)" options={defaultOptions} />
           <Stack.Screen name="createEvent" options={defaultOptions} />
