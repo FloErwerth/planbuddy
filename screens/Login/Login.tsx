@@ -1,39 +1,64 @@
 import { Button, Text } from '@/components/tamagui';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Card, Separator } from 'tamagui';
+import { Card } from 'tamagui';
 import { PartyPopper } from '@tamagui/lucide-icons';
-import { Link } from 'expo-router';
-import { useLoginUserMutation } from '@/api/query/user';
-import { ActivityIndicator } from 'react-native';
 import { loginSchema, LoginSchema } from '@/screens/Authentication/schemas';
 import { FormInput } from '@/components/FormFields/FormInput';
-import { useAuthenticationErrorText } from '@/screens/Authentication/useAuthenticationErrorText';
-import { useCallback } from 'react';
-import { PasswordInput } from '@/components/Inputs/PasswordInput';
+import { useEffect, useState } from 'react';
 import { Screen } from '@/components/Screen';
+import { supabase } from '@/api/supabase';
+import { makeRedirectUri } from 'expo-auth-session';
+import { EmailSentSheet } from '@/screens/Login/EmailSentSheet';
+import * as QueryParams from 'expo-auth-session/build/QueryParams';
+import { useURL } from 'expo-linking';
+import { useEmailSentAtom } from '@/store/login';
+
+const createSessionFromUrl = async (url: string | null) => {
+  if (url === null) {
+    return;
+  }
+  const { params, errorCode } = QueryParams.getQueryParams(url);
+
+  if (errorCode) throw new Error(errorCode);
+  const { access_token, refresh_token } = params;
+  if (!access_token) return;
+  const { error } = await supabase.auth.setSession({
+    access_token,
+    refresh_token,
+  });
+  if (error) throw error;
+};
+
+const useLoginSession = () => {
+  const url = useURL();
+
+  useEffect(() => {
+    void createSessionFromUrl(url);
+  }, [url]);
+};
+const redirectTo = makeRedirectUri();
 
 export default function LoginScreen() {
+  useLoginSession();
   const form = useForm({
     resolver: zodResolver(loginSchema),
   });
-  const { mutateAsync, isLoading } = useLoginUserMutation();
-  const handleInvalidAuth = useAuthenticationErrorText();
 
-  const login = useCallback(
-    async (data: LoginSchema) => {
-      const result = await mutateAsync({ ...data });
-      if (result) {
-        const text = handleInvalidAuth(result);
-        if (text) {
-          form.setError(text.field, { message: text.message });
-        }
-        return;
-      }
-      form.reset();
-    },
-    [form, handleInvalidAuth, mutateAsync]
-  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEmailSent, setIsEmailSent] = useEmailSentAtom();
+
+  async function signInWithEmail({ email }: LoginSchema) {
+    setIsLoading(true);
+    setIsEmailSent(true);
+    await supabase.auth.signInWithOtp({
+      email: email,
+      options: {
+        emailRedirectTo: redirectTo,
+      },
+    });
+    setIsLoading(false);
+  }
 
   return (
     <FormProvider {...form}>
@@ -44,22 +69,13 @@ export default function LoginScreen() {
             Willkommen zurück bei PlanBuddy
           </Text>
           <Text size="$4" textAlign="center">
-            Gib deine E-Mail und dein Passwort ein, um dich einzuloggen
+            Gib deine E-Mail, um Dir einen Login-Link zuzuschicken.
           </Text>
           <FormInput name="email" placeholder="Deine E-Mail Addresse" />
-          <PasswordInput name="password" placeholder="Dein Passwort" />
-          <Button onPress={form.handleSubmit(login)} iconAfter={isLoading && <ActivityIndicator />}>
-            Einloggen
-          </Button>
-          <Separator borderWidth={0} borderBottomWidth={1} borderColor="$color.gray8Light" />
-          <Text textAlign="center">
-            Du hast keinen Account?{' '}
-            <Link href="/register" replace>
-              <Text color="$primary">Hier kannst Du dich registrieren</Text>
-            </Link>
-          </Text>
+          <Button onPress={form.handleSubmit(signInWithEmail)}>Einloggen</Button>
         </Card>
       </Screen>
+      <EmailSentSheet isOpen={isEmailSent} onOpenChange={setIsEmailSent} />
     </FormProvider>
   );
 }

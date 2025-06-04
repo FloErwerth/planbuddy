@@ -7,19 +7,16 @@
     "icon": "./assets/images/icon.png",
     "scheme": "planbuddy",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": false,
     "splash": {
       "image": "./assets/images/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "googleServicesFile": "./google-services.ios.plist",
       "bundleIdentifier": "de.florian.erwerth.planbuddy",
-      "supportsTablet": true
+      "supportsTablet": false
     },
     "android": {
-      "googleServicesFile": "./google-services.android.json",
       "package": "de.florian.erwerth.planbuddy",
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
@@ -50,16 +47,7 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ],
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth",
-      [
-        "expo-build-properties",
-        {
-          "ios": {
-            "useFrameworks": "static"
-          }
-        }
-      ]
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true

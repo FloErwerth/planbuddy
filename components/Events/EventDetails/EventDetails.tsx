@@ -1,11 +1,9 @@
 import { Redirect, router, useGlobalSearchParams } from 'expo-router';
 import { ActivityIndicator, Dimensions, Pressable } from 'react-native';
 import { Avatar, SizableText, View, XStack, ZStack } from 'tamagui';
-import { useEventsQuery } from '@/api/query/events';
 import { Image } from 'expo-image';
 import { ChevronRight, MapPin, MessageSquareText, Users } from '@tamagui/lucide-icons';
 import { formatToTime } from '@/components/Calendar/utils';
-import { getAuth } from '@react-native-firebase/auth';
 import { Screen } from '@/components/Screen';
 import { ShareButton } from '@/components/ShareButton/ShareButton';
 
@@ -17,6 +15,10 @@ const imageStyle = {
 } as const;
 
 export const EventDetails = () => {
+  return <View></View>;
+};
+
+const _EventDetails = () => {
   const { detailEventId } = useGlobalSearchParams<{
     detailEventId: string;
   }>();

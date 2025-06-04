@@ -14,6 +14,13 @@ export const Input = styled(TamaguiInput, {
   },
   placeholderTextColor: '$placeholderColor',
   variants: {
+    disabled: {
+      true: {
+        borderColor: '$color.gray10Light',
+        borderWidth: 1,
+        color: '$color.gray10Light',
+      },
+    },
     variant: {
       small: {
         fontSize: '$2',

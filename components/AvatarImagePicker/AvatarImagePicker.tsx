@@ -1,48 +1,41 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useAtom } from 'jotai/index';
-import { imagePickerAtom } from '@/components/ImagePicker/imagePickerAtom';
-import { useUpdateProfilePicture } from '@/hooks/useUpdateProfilePicture';
+import { useCallback, useState } from 'react';
 import * as ExpoImagePicker from 'expo-image-picker';
+import { MediaTypeOptions } from 'expo-image-picker';
 import { Avatar, Spinner, View } from 'tamagui';
 import Animated, { BounceIn, FadeIn, ZoomOut } from 'react-native-reanimated';
-import { Check, Edit3 } from '@tamagui/lucide-icons';
+import { Check, Edit3, Trash2 } from '@tamagui/lucide-icons';
 import { color } from '@tamagui/themes';
 import { Button } from '@/components/tamagui';
-import { Image } from 'expo-image';
-import { getAuth } from '@react-native-firebase/auth';
+import { useProfileImageQuery } from '@/api/images';
+import { useDeleteProfilePictureMutation } from '@/api/images/mutations';
 
-type AvatarImagePickerProps = { editable?: boolean };
-export const AvatarImagePicker = ({ editable = false }: AvatarImagePickerProps) => {
-  const profileImage = getAuth().currentUser?.photoURL ?? '';
+type AvatarImagePickerProps = {
+  editable?: boolean;
+  image?: string;
+  onImageSelected?: (imageUri: string) => void;
+};
+export const AvatarImagePicker = ({
+  editable = false,
+  image,
+  onImageSelected,
+}: AvatarImagePickerProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [isInitialRender, setIsInitialRender] = useState(true);
 
-  useEffect(() => {
-    setIsInitialRender(false);
-  }, []);
-
-  const [image, setImage] = useAtom(imagePickerAtom);
-  const updateUserImage = useUpdateProfilePicture();
+  const { data: imageFromDb } = useProfileImageQuery();
+  const { mutate: deleteImage } = useDeleteProfilePictureMutation();
 
   const pickImage = useCallback(async () => {
     const result = await ExpoImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
+      mediaTypes: MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 0.1,
     });
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
-      setIsLoading(true);
-      const string = await updateUserImage(result.assets[0].uri);
-      setIsLoading(false);
-      setShowSuccess(!!string);
-      setTimeout(() => {
-        setShowSuccess(false);
-      }, 1000);
+      onImageSelected?.(result.assets[0].uri);
     }
-  }, [setImage, updateUserImage]);
+  }, [onImageSelected]);
 
   const RenderedButtonIcon = useCallback(() => {
     if (showSuccess) {
@@ -53,12 +46,16 @@ export const AvatarImagePicker = ({ editable = false }: AvatarImagePickerProps) 
     }
     return (
       <View position="absolute">
-        <Animated.View entering={FadeIn.duration(isInitialRender ? 0 : 200).delay(100)}>
-          <Edit3 zIndex={999} onPress={pickImage} scale={0.75} color="$background" />
+        <Animated.View entering={FadeIn.duration(200).delay(100)}>
+          {image ? (
+            <Trash2 zIndex={999} onPress={() => deleteImage()} scale={0.75} color="$background" />
+          ) : (
+            <Edit3 zIndex={999} onPress={pickImage} scale={0.75} color="$background" />
+          )}
         </Animated.View>
       </View>
     );
-  }, [isInitialRender, isLoading, pickImage, showSuccess]);
+  }, [deleteImage, image, isLoading, pickImage, showSuccess]);
 
   const SuccessAnimation = useCallback(() => {
     if (!showSuccess) {
@@ -77,7 +74,7 @@ export const AvatarImagePicker = ({ editable = false }: AvatarImagePickerProps) 
     <View>
       {editable && (
         <Button
-          onPress={pickImage}
+          onPress={image ? () => deleteImage() : pickImage}
           borderRadius="$12"
           width="$2"
           disabled={isLoading || showSuccess}
@@ -101,8 +98,7 @@ export const AvatarImagePicker = ({ editable = false }: AvatarImagePickerProps) 
         elevationAndroid="$4"
       >
         <Avatar size="$10" circular>
-          <Avatar.Image src={isLoading ? image : profileImage} />
-          <Image source={{ uri: image }} style={{ width: 104, height: 104 }} />
+          <Avatar.Image source={{ uri: imageFromDb || image }} />
         </Avatar>
       </View>
     </View>

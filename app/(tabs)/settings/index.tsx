@@ -1,18 +1,11 @@
-import { getAuth } from '@react-native-firebase/auth';
 import { Screen } from '@/components/Screen';
-import { useUserQuery } from '@/api/query/user';
 import { SizableText, View } from 'tamagui';
 import { Pressable } from 'react-native';
 import { router } from 'expo-router';
 import { AvatarImagePicker } from '@/components/AvatarImagePicker';
+import { supabase } from '@/api/supabase';
 
 export default function SettingsPage() {
-  const { data: user } = useUserQuery();
-
-  if (!user) {
-    return null;
-  }
-
   return (
     <Screen
       title="Profil"
@@ -24,11 +17,9 @@ export default function SettingsPage() {
     >
       <AvatarImagePicker />
       <View alignSelf="center">
-        <SizableText size="$6">
-          {user.firstName} {user.lastName}
-        </SizableText>
+        <SizableText size="$6">Florian Erwerth</SizableText>
       </View>
-      <Pressable onPress={() => getAuth().signOut()}>
+      <Pressable onPress={() => supabase.auth.signOut()}>
         <SizableText>Logout</SizableText>
       </Pressable>
     </Screen>

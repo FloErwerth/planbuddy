@@ -2,13 +2,13 @@ import { Screen } from '@/components/Screen';
 import { AvatarImagePicker } from '@/components/AvatarImagePicker';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FormInput } from '@/components/FormFields/FormInput';
-import { useUpdateUser, useUserQuery } from '@/api/query/user';
 import { useEffect, useState } from 'react';
-import { getAuth } from '@react-native-firebase/auth';
-import { Button } from '@/components/tamagui';
+import { Button, Input } from '@/components/tamagui';
 import { View } from 'tamagui';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useUpdateUserMutation, useUserQuery } from '@/api/user';
+import { useUploadProfilePictureMutation } from '@/api/images';
 
 const updateProfileSchema = z.object({
   firstName: z
@@ -19,7 +19,6 @@ const updateProfileSchema = z.object({
     .string()
     .min(1, { message: 'Wir brauchen deinen Nachnamen' })
     .max(20, { message: 'Bitte gib einen kürzeren Vornamen an' }),
-  email: z.string().email({ message: 'Bitte gib eine gültige E-Mail Addresse an.' }),
 });
 
 type UpdateProfileSchema = z.infer<typeof updateProfileSchema>;
@@ -27,35 +26,40 @@ type UpdateProfileSchema = z.infer<typeof updateProfileSchema>;
 export default function EditProfile() {
   const [isLoading, setIsLoading] = useState(false);
   const { data: user } = useUserQuery();
-  const updateUser = useUpdateUser();
+  const { mutate: updateUser } = useUpdateUserMutation();
+  const { mutate: updateImage } = useUploadProfilePictureMutation();
+  const [image, setImage] = useState<string>();
+
   const form = useForm<UpdateProfileSchema>({ resolver: zodResolver(updateProfileSchema) });
 
   useEffect(() => {
-    form.reset(user);
+    if (user) {
+      form.reset(user);
+    }
   }, [form, user]);
 
-  const handleSubmit = form.handleSubmit(async (data, event) => {
+  const handleSubmit = form.handleSubmit(async (data) => {
     setIsLoading(true);
-    if (data.email !== user?.email) {
-      await getAuth().currentUser?.updateEmail(data.email);
-    }
-    await updateUser({ ...data });
+
+    updateUser({ updatedUser: data, onSuccess: () => setIsLoading(false) });
     setIsLoading(false);
   });
 
   return (
-    <Screen flex={1} showBackButton title="Profil bearbeiten">
-      <AvatarImagePicker editable />
-      <View flex={1} gap="$5">
-        <FormProvider {...form}>
-          <FormInput label="Vorname" name="firstName" />
-          <FormInput label="Nachname" name="lastName" />
-          <FormInput label="E-Mail" name="email" />
-        </FormProvider>
-      </View>
-      <Button onPress={handleSubmit} disabled={!form.formState.isDirty || isLoading}>
-        Änderungen abschicken
-      </Button>
-    </Screen>
+    <>
+      <Screen flex={1} showBackButton title="Profil bearbeiten">
+        <AvatarImagePicker editable image={image} onImageSelected={updateImage} />
+        <Input editable={false} disabled value={user?.email} />
+        <View flex={1} gap="$5">
+          <FormProvider {...form}>
+            <FormInput label="Vorname" name="firstName" />
+            <FormInput label="Nachname" name="lastName" />
+          </FormProvider>
+        </View>
+        <Button onPress={handleSubmit} disabled={!form.formState.isDirty || isLoading}>
+          Änderungen abschicken
+        </Button>
+      </Screen>
+    </>
   );
 }

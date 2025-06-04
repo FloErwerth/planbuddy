@@ -9,8 +9,8 @@ const screenOptions: BottomTabNavigationOptions = {
   },
   freezeOnBlur: true,
   headerShown: false,
-  sceneStyle: { backgroundColor: 'transparent' },
 };
+
 export default function TabsLayout() {
   return (
     <Tabs screenOptions={screenOptions} initialRouteName="index">

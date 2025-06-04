@@ -1,5 +1,6 @@
-import { EventCreation } from '@/screens/EventCreation/EventCreation';
+import { View } from 'tamagui';
 
 export default function CreateEvent() {
-  return <EventCreation />;
+  return <View></View>;
+  //return <EventCreation />;
 }
