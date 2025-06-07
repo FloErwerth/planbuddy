@@ -6,31 +6,28 @@ import Animated, { BounceIn, FadeIn, ZoomOut } from 'react-native-reanimated';
 import { Check, Edit3, Trash2 } from '@tamagui/lucide-icons';
 import { color } from '@tamagui/themes';
 import { Button } from '@/components/tamagui';
-import { useProfileImageQuery } from '@/api/images';
-import { useDeleteProfilePictureMutation } from '@/api/images/mutations';
 
 type AvatarImagePickerProps = {
   editable?: boolean;
-  image?: string;
+  image: string | undefined;
   onImageSelected?: (imageUri: string) => void;
+  onImageDeleted?: () => void;
 };
 export const AvatarImagePicker = ({
   editable = false,
   image,
   onImageSelected,
+  onImageDeleted,
 }: AvatarImagePickerProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-
-  const { data: imageFromDb } = useProfileImageQuery();
-  const { mutate: deleteImage } = useDeleteProfilePictureMutation();
 
   const pickImage = useCallback(async () => {
     const result = await ExpoImagePicker.launchImageLibraryAsync({
       mediaTypes: MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.1,
+      quality: 0.25,
     });
     if (!result.canceled) {
       onImageSelected?.(result.assets[0].uri);
@@ -48,14 +45,14 @@ export const AvatarImagePicker = ({
       <View position="absolute">
         <Animated.View entering={FadeIn.duration(200).delay(100)}>
           {image ? (
-            <Trash2 zIndex={999} onPress={() => deleteImage()} scale={0.75} color="$background" />
+            <Trash2 zIndex={999} onPress={onImageDeleted} scale={0.75} color="$background" />
           ) : (
             <Edit3 zIndex={999} onPress={pickImage} scale={0.75} color="$background" />
           )}
         </Animated.View>
       </View>
     );
-  }, [deleteImage, image, isLoading, pickImage, showSuccess]);
+  }, [image, isLoading, onImageDeleted, pickImage, showSuccess]);
 
   const SuccessAnimation = useCallback(() => {
     if (!showSuccess) {
@@ -74,7 +71,7 @@ export const AvatarImagePicker = ({
     <View>
       {editable && (
         <Button
-          onPress={image ? () => deleteImage() : pickImage}
+          onPress={image ? onImageDeleted : pickImage}
           borderRadius="$12"
           width="$2"
           disabled={isLoading || showSuccess}
@@ -98,7 +95,7 @@ export const AvatarImagePicker = ({
         elevationAndroid="$4"
       >
         <Avatar size="$10" circular>
-          <Avatar.Image source={{ uri: imageFromDb || image }} />
+          <Avatar.Image source={{ uri: image }} />
         </Avatar>
       </View>
     </View>

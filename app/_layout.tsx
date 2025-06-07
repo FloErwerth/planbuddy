@@ -3,6 +3,23 @@ import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
 import { Providers } from '@/providers';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://468683226bfb2668906c6fee1941aa74@o4509455416229888.ingest.de.sentry.io/4509455421800528',
+
+  // Adds more context data to events (IP address, cookies, user, etc.)
+  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+  sendDefaultPii: true,
+
+  // Configure Session Replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+  integrations: [Sentry.mobileReplayIntegration(), Sentry.feedbackIntegration()],
+
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  // spotlight: __DEV__,
+});
 
 SplashScreen.preventAutoHideAsync();
 
@@ -12,7 +29,7 @@ const defaultOptions: NativeStackNavigationOptions = {
   animationDuration: 0,
 };
 
-export default function RootLayout() {
+export default Sentry.wrap(function RootLayout() {
   const [fontsLoaded] = useFonts({
     Normal: require('../assets/fonts/Roboto-Regular.ttf'),
     Italic: require('../assets/fonts/Roboto-MediumItalic.ttf'),
@@ -46,4 +63,4 @@ export default function RootLayout() {
       </Stack>
     </Providers>
   );
-}
+});

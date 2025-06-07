@@ -7,12 +7,14 @@ import { useSetIsEmailSent } from '@/store/login';
 export const useWatchLoginState = () => {
   const setUser = useSetUser();
   const setEmailSent = useSetIsEmailSent();
+
   useEffect(() => {
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange((_, session) => {
       if (session?.user) {
         setUser(session.user);
+
         supabase
           .from('users')
           .select()
@@ -33,5 +35,5 @@ export const useWatchLoginState = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [setEmailSent, setUser]);
 };

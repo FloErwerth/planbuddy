@@ -4,8 +4,11 @@ import { Pressable } from 'react-native';
 import { router } from 'expo-router';
 import { AvatarImagePicker } from '@/components/AvatarImagePicker';
 import { supabase } from '@/api/supabase';
+import { useProfileImageQuery } from '@/api/images';
 
 export default function SettingsPage() {
+  const { data: image } = useProfileImageQuery();
+
   return (
     <Screen
       title="Profil"
@@ -15,7 +18,7 @@ export default function SettingsPage() {
         </Pressable>
       }
     >
-      <AvatarImagePicker />
+      <AvatarImagePicker image={image} />
       <View alignSelf="center">
         <SizableText size="$6">Florian Erwerth</SizableText>
       </View>

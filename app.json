@@ -47,7 +47,15 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "planbuddy-app",
+          "organization": "florian-erwerth"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

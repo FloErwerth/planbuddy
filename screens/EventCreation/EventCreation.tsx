@@ -1,82 +1,67 @@
 import { useState } from 'react';
 import { Screen } from '@/components/Screen';
-import { View, XStack } from 'tamagui';
-import { useCreateEventMutation } from '@/api/query/events';
-import { Button, Card, Input } from '@/components/tamagui';
+import { View } from 'tamagui';
+import { Button } from '@/components/tamagui';
 import { Calendar } from '@/components/Calendar';
-import { ImagePicker } from '@/components/ImagePicker';
-import { getAuth } from '@react-native-firebase/auth';
-import { useAtomValue } from 'jotai';
-import { imagePickerAtom } from '@/components/ImagePicker/imagePickerAtom';
-import storage from '@react-native-firebase/storage';
-import { getApp } from '@react-native-firebase/app';
 import { router } from 'expo-router';
+import { useCreateEventMutation } from '@/api/events/createEvents/mutations';
+import * as ExpoImagePicker from 'expo-image-picker';
+import { MediaTypeOptions } from 'expo-image-picker';
+import { FormProvider, useForm } from 'react-hook-form';
+import { FormInput } from '@/components/FormFields/FormInput';
+import { Event, eventSchema } from '@/api/events/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useUploadEventImageMutation } from '@/api/images';
 
 export const EventCreation = () => {
-  const [name, setName] = useState('');
-  const [streetHouseNr, setStreetHouseNr] = useState('');
-  const [zipCity, setZipCity] = useState('');
-  const [date, setDate] = useState<Date>(new Date());
-  const [description, setDescription] = useState('');
-  const { mutateAsync: createEvent } = useCreateEventMutation();
-  const [isLoading, setIsLoading] = useState(false);
-  const image = useAtomValue(imagePickerAtom);
+  const form = useForm({ resolver: zodResolver(eventSchema) });
 
-  const handleImageUpload = async () => {
-    const userId = getAuth().currentUser?.uid;
-    if (!image || !userId) {
-      return Promise.resolve('');
+  const [date, setDate] = useState<Date>(new Date());
+  const { mutateAsync: createEvent } = useCreateEventMutation();
+  const { mutateAsync: uploadEventImage } = useUploadEventImageMutation();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [imageToUpload, setImageToUpload] = useState<string>();
+
+  const pickImage = async () => {
+    const result = await ExpoImagePicker.launchImageLibraryAsync({
+      mediaTypes: MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.25,
+    });
+    if (!result.canceled) {
+      setImageToUpload(result.assets[0].uri);
     }
-    const reference = storage(getApp()).ref(`images/${userId}/${Date.now()}`);
-    const response = await fetch(image);
-    const blob = await response.blob();
-    const snapShot = await reference.put(blob);
-    return await storage(getApp())
-      .ref(`images/${userId}/${snapShot.metadata.name}`)
-      .getDownloadURL();
   };
 
-  const handleCreateEvent = async () => {
+  const handleCreateEvent = async (data: Event) => {
     setIsLoading(true);
-    // save image for user
-    const imageUrl = await handleImageUpload();
 
-    const id = await createEvent({
-      name,
-      dateTimestamp: date.valueOf(),
-      description,
-      address: { streetHouseNr, zipCity },
-      image: imageUrl,
-    });
-
+    const id = await createEvent({ ...data, eventTime: date.valueOf().toString() });
+    if (imageToUpload && id) {
+      const result = await uploadEventImage({ eventId: id, image: imageToUpload });
+      if (result.error) {
+        // do something?
+      }
+    }
     setIsLoading(false);
     if (id) {
       router.replace({ pathname: './shareEvent', params: { eventId: id } });
     }
-    /*router.replace({ pathname: './shareEvent', params: { eventId: id } });*/
   };
 
   return (
-    <Screen>
-      <Card height="100%" gap="$4">
-        <Input onChangeText={setName} textAlign="center" placeholder="Eventname" />
-        <XStack gap="$2">
-          <Input flex={1} onChangeText={setStreetHouseNr} placeholder="Strasse, Nr." />
-          <Input flex={1} onChangeText={setZipCity} placeholder="Plz, Ort" />
-        </XStack>
+    <Screen flex={1}>
+      <FormProvider {...form}>
+        <FormInput name="name" placeholder="Name des Events" />
+        <FormInput name="location" placeholder="Ort des Events" />
         <Calendar date={date} onDateSelected={setDate} />
-        <Input
-          placeholder="Beschreibung"
-          variant="medium"
-          onChangeText={setDescription}
-          numberOfLines={8}
-          textAlignVertical="top"
-          multiline
-        />
-        <ImagePicker />
-        <View flex={1} />
-        <Button onPress={handleCreateEvent}>Erstellen</Button>
-      </Card>
+        <FormInput name="description" placeholder="Beschreibung" />
+      </FormProvider>
+      <Button onPress={pickImage}>Image</Button>
+      <View flex={1} />
+      <Button onPress={form.handleSubmit(handleCreateEvent)}>Erstellen</Button>
     </Screen>
   );
 };

@@ -32,3 +32,32 @@ export const useProfileImageQuery = () => {
     queryKey: ['profileImage'],
   });
 };
+
+export const useEventImageQuery = (eventId: string) => {
+  const user = useGetUser();
+
+  return useQuery({
+    queryFn: async () => {
+      if (!user) {
+        return;
+      }
+
+      const download = await supabase.storage.from('event-images').download(`${eventId}/image.png`);
+
+      if (download.error) {
+        throw new Error(download.error.message);
+      }
+
+      if (download.data.size < 100) {
+        return;
+      }
+
+      return new Promise((resolve, _) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(download.data);
+      });
+    },
+    queryKey: ['eventImage', eventId],
+  });
+};

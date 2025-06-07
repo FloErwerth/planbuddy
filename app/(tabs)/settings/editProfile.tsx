@@ -2,13 +2,17 @@ import { Screen } from '@/components/Screen';
 import { AvatarImagePicker } from '@/components/AvatarImagePicker';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FormInput } from '@/components/FormFields/FormInput';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button, Input } from '@/components/tamagui';
 import { View } from 'tamagui';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useUpdateUserMutation, useUserQuery } from '@/api/user';
-import { useUploadProfilePictureMutation } from '@/api/images';
+import {
+  useDeleteProfilePictureMutation,
+  useProfileImageQuery,
+  useUploadProfilePictureMutation,
+} from '@/api/images';
 
 const updateProfileSchema = z.object({
   firstName: z
@@ -28,7 +32,13 @@ export default function EditProfile() {
   const { data: user } = useUserQuery();
   const { mutate: updateUser } = useUpdateUserMutation();
   const { mutate: updateImage } = useUploadProfilePictureMutation();
+  const { mutateAsync: deleteImage } = useDeleteProfilePictureMutation();
+  const { data: imageFromDatabase } = useProfileImageQuery();
   const [image, setImage] = useState<string>();
+
+  useEffect(() => {
+    setImage(imageFromDatabase);
+  }, [imageFromDatabase]);
 
   const form = useForm<UpdateProfileSchema>({ resolver: zodResolver(updateProfileSchema) });
 
@@ -45,10 +55,20 @@ export default function EditProfile() {
     setIsLoading(false);
   });
 
+  const handleImageDeletion = useCallback(async () => {
+    await deleteImage();
+    setImage(undefined);
+  }, [deleteImage]);
+
   return (
     <>
       <Screen flex={1} showBackButton title="Profil bearbeiten">
-        <AvatarImagePicker editable image={image} onImageSelected={updateImage} />
+        <AvatarImagePicker
+          editable
+          image={image}
+          onImageDeleted={handleImageDeletion}
+          onImageSelected={updateImage}
+        />
         <Input editable={false} disabled value={user?.email} />
         <View flex={1} gap="$5">
           <FormProvider {...form}>

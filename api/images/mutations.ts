@@ -11,14 +11,35 @@ export const useUploadProfilePictureMutation = () => {
   return useMutation({
     mutationFn: async (file?: string) => {
       if (!user || !file) {
-        return;
+        return Promise.resolve(undefined);
       }
 
       const base64 = await FileSystem.readAsStringAsync(file, { encoding: 'base64' });
 
-      await supabase.storage
+      return await supabase.storage
         .from('profile-images')
         .upload(`${user.id}/profileImage.png`, decode(base64), {
+          upsert: true,
+          contentType: 'image/png',
+        });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['profileImage']);
+    },
+  });
+};
+
+type UploadedEventData = { eventId: string; image: string };
+export const useUploadEventImageMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ image, eventId }: UploadedEventData) => {
+      const base64 = await FileSystem.readAsStringAsync(image, { encoding: 'base64' });
+
+      return await supabase.storage
+        .from('event-images')
+        .upload(`${eventId}/image.png`, decode(base64), {
           upsert: true,
           contentType: 'image/png',
         });
