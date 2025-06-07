@@ -1,11 +1,12 @@
-import { View, XStack, YStack } from 'tamagui';
+import { XStack, YStack } from 'tamagui';
 import { Card, Text } from '@/components/tamagui';
-import { EventData } from '@/api/query/events';
 import { Pressable } from 'react-native';
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
+import { useEventImageQuery } from '@/api/images';
+import { Event } from '@/api/events/types';
 
-type EventSmallProps = Pick<EventData, 'name' | 'address' | 'dateTimestamp' | 'image' | 'id'>;
+type EventSmallProps = Pick<Event, 'name' | 'location' | 'eventTime' | 'id'>;
 
 function getRelativeDate(timestamp: number): string {
   // Get the current date and time
@@ -110,30 +111,25 @@ function getRelativeDate(timestamp: number): string {
   return targetDate.toLocaleDateString();
 }
 const imageStyle = { height: 50, aspectRatio: '4/3', borderRadius: 16 } as const;
-export const EventSmall = ({ name, address, dateTimestamp, image, id }: EventSmallProps) => {
+export const EventSmall = ({ name, location, eventTime, id }: EventSmallProps) => {
+  const { data: image } = useEventImageQuery(id);
   return (
     <Pressable
       onPress={() => router.push({ pathname: '/eventDetails', params: { detailEventId: id } })}
     >
-      <View>
-        <Card>
-          <XStack justifyContent="space-between">
-            <YStack>
-              <Text size="$6">{name}</Text>
-              <XStack alignItems="center" gap="$1.5">
-                <Text size="$3">{getRelativeDate(dateTimestamp)}</Text>
-                <Text size="$3">·</Text>
-                <XStack>
-                  <Text size="$3">{address.streetHouseNr.split(' ')[0]}</Text>
-                  <Text size="$3">, </Text>
-                  <Text size="$3">{address.zipCity.split(', ')[1]}</Text>
-                </XStack>
-              </XStack>
-            </YStack>
-            {image && <Image source={{ uri: image }} style={imageStyle} />}
-          </XStack>
-        </Card>
-      </View>
+      <Card marginHorizontal="$4">
+        <XStack justifyContent="space-between">
+          <YStack>
+            <Text size="$6">{name}</Text>
+            <XStack alignItems="center" gap="$1.5">
+              <Text size="$3">{getRelativeDate(parseInt(eventTime))}</Text>
+              <Text size="$3">·</Text>
+              <Text size="$3">{location}</Text>
+            </XStack>
+          </YStack>
+          {image && <Image source={image} style={imageStyle} />}
+        </XStack>
+      </Card>
     </Pressable>
   );
 };

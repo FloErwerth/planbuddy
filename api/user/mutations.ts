@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { supabase } from '@/api/supabase';
 import { User } from '@/api/types';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
+import { QUERY_KEYS } from '@/api/queryKeys';
 
 export const useUpdateUserMutation = () => {
   const user = useGetUser();
@@ -28,9 +29,9 @@ export const useUpdateUserMutation = () => {
 
       onSuccess(result.data[0]);
     },
-    mutationKey: ['mutateUser'],
+    mutationKey: [QUERY_KEYS.USERS.MUTATION],
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['user']);
+      await queryClient.invalidateQueries([QUERY_KEYS.USERS.QUERY]);
     },
   });
 };
@@ -55,9 +56,9 @@ export const useInsertUserMutation = () => {
 
       return result.data?.[0];
     },
-    mutationKey: ['mutateUser'],
+    mutationKey: [QUERY_KEYS.USERS.MUTATION],
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['user']);
+      await queryClient.invalidateQueries([QUERY_KEYS.USERS.QUERY]);
     },
   });
 };

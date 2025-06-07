@@ -3,6 +3,7 @@ import { supabase } from '@/api/supabase';
 import { decode } from 'base64-arraybuffer';
 import { useGetUser } from '@/store/user';
 import * as FileSystem from 'expo-file-system';
+import { QUERY_KEYS } from '@/api/queryKeys';
 
 export const useUploadProfilePictureMutation = () => {
   const user = useGetUser();
@@ -23,29 +24,9 @@ export const useUploadProfilePictureMutation = () => {
           contentType: 'image/png',
         });
     },
+    mutationKey: [QUERY_KEYS.IMAGES.PROFILES.MUTATION],
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['profileImage']);
-    },
-  });
-};
-
-type UploadedEventData = { eventId: string; image: string };
-export const useUploadEventImageMutation = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({ image, eventId }: UploadedEventData) => {
-      const base64 = await FileSystem.readAsStringAsync(image, { encoding: 'base64' });
-
-      return await supabase.storage
-        .from('event-images')
-        .upload(`${eventId}/image.png`, decode(base64), {
-          upsert: true,
-          contentType: 'image/png',
-        });
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['profileImage']);
+      await queryClient.invalidateQueries([QUERY_KEYS.IMAGES.PROFILES.QUERY]);
     },
   });
 };
@@ -68,8 +49,32 @@ export const useDeleteProfilePictureMutation = () => {
         throw new Error(result.error.message);
       }
     },
+    mutationKey: [QUERY_KEYS.IMAGES.PROFILES.MUTATION],
     onSuccess: async () => {
-      await queryClient.invalidateQueries(['profileImage']);
+      await queryClient.invalidateQueries([QUERY_KEYS.IMAGES.PROFILES.QUERY]);
+    },
+  });
+};
+
+/* --- EVENTS --- */
+type UploadedEventData = { eventId: string; image: string };
+export const useUploadEventImageMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ image, eventId }: UploadedEventData) => {
+      const base64 = await FileSystem.readAsStringAsync(image, { encoding: 'base64' });
+
+      return await supabase.storage
+        .from('event-images')
+        .upload(`${eventId}/image.png`, decode(base64), {
+          upsert: true,
+          contentType: 'image/png',
+        });
+    },
+    mutationKey: [QUERY_KEYS.IMAGES.EVENTS.MUTATION],
+    onSuccess: async () => {
+      await queryClient.invalidateQueries([QUERY_KEYS.IMAGES.EVENTS.QUERY]);
     },
   });
 };

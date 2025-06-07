@@ -4,19 +4,24 @@ import { InputWithClear } from '@/components/Inputs/InputWithClear/InputWithClea
 import { ScrollView } from '@/components/tamagui/ScrollView';
 import { Button } from '@/components/tamagui';
 import { router } from 'expo-router';
+import { useEventsQuery } from '@/api/events/queries';
+import { EventSmall } from '@/components/Events/EventSmall';
 
 const contentContainerStyle = { gap: '$3', paddingVertical: '$4' };
 export const Events = () => {
   const [search, setSearch] = useState('');
-
-  const mappedData = useMemo(() => [], [search]);
+  const events = useEventsQuery();
+  const mappedData = useMemo(
+    () => events.data?.map((event) => <EventSmall key={event.id} {...event} />),
+    [events]
+  );
 
   return (
     <>
       <Screen>
         <InputWithClear placeholder="Nach Events suchen" value={search} onChangeText={setSearch} />
       </Screen>
-      <ScrollView withShadow paddingHorizontal="$4" contentContainerStyle={contentContainerStyle}>
+      <ScrollView withShadow contentContainerStyle={contentContainerStyle}>
         {mappedData}
       </ScrollView>
       <Button onPress={() => router.push('/createEvent')}>Event erstellen</Button>

@@ -4,7 +4,7 @@ import { View } from 'tamagui';
 import { Button } from '@/components/tamagui';
 import { Calendar } from '@/components/Calendar';
 import { router } from 'expo-router';
-import { useCreateEventMutation } from '@/api/events/createEvents/mutations';
+import { useCreateEventMutation } from '@/api/events/mutations';
 import * as ExpoImagePicker from 'expo-image-picker';
 import { MediaTypeOptions } from 'expo-image-picker';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -38,16 +38,16 @@ export const EventCreation = () => {
   const handleCreateEvent = async (data: Event) => {
     setIsLoading(true);
 
-    const id = await createEvent({ ...data, eventTime: date.valueOf().toString() });
-    if (imageToUpload && id) {
-      const result = await uploadEventImage({ eventId: id, image: imageToUpload });
+    const event = await createEvent(data);
+    if (imageToUpload && event?.id) {
+      const result = await uploadEventImage({ eventId: event.id, image: imageToUpload });
       if (result.error) {
         // do something?
       }
     }
     setIsLoading(false);
-    if (id) {
-      router.replace({ pathname: './shareEvent', params: { eventId: id } });
+    if (event?.id) {
+      router.replace({ pathname: './shareEvent', params: { eventId: event.id } });
     }
   };
 
@@ -61,7 +61,13 @@ export const EventCreation = () => {
       </FormProvider>
       <Button onPress={pickImage}>Image</Button>
       <View flex={1} />
-      <Button onPress={form.handleSubmit(handleCreateEvent)}>Erstellen</Button>
+      <Button
+        onPress={form.handleSubmit((data) =>
+          handleCreateEvent({ ...data, eventTime: date.valueOf().toString() })
+        )}
+      >
+        Erstellen
+      </Button>
     </Screen>
   );
 };

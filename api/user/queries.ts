@@ -2,6 +2,7 @@ import { useQuery } from 'react-query';
 import { supabase } from '@/api/supabase';
 import { useGetUser } from '@/store/user';
 import { User } from '@/api/types';
+import { QUERY_KEYS } from '@/api/queryKeys';
 
 export const useUserQuery = () => {
   const user = useGetUser();
@@ -20,6 +21,6 @@ export const useUserQuery = () => {
 
       return result.data[0] as User;
     },
-    queryKey: ['user'],
+    queryKey: [QUERY_KEYS.USERS.QUERY],
   });
 };

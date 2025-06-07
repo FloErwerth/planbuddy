@@ -1,6 +1,7 @@
 import { useQuery } from 'react-query';
 import { supabase } from '@/api/supabase';
 import { useGetUser } from '@/store/user';
+import { QUERY_KEYS } from '@/api/queryKeys';
 
 export const useProfileImageQuery = () => {
   const user = useGetUser();
@@ -29,17 +30,15 @@ export const useProfileImageQuery = () => {
         reader.readAsDataURL(download.data);
       });
     },
-    queryKey: ['profileImage'],
+    queryKey: [QUERY_KEYS.IMAGES.PROFILES.QUERY],
   });
 };
 
-export const useEventImageQuery = (eventId: string) => {
-  const user = useGetUser();
-
+export const useEventImageQuery = (eventId?: string) => {
   return useQuery({
     queryFn: async () => {
-      if (!user) {
-        return;
+      if (!eventId) {
+        return undefined;
       }
 
       const download = await supabase.storage.from('event-images').download(`${eventId}/image.png`);
@@ -58,6 +57,6 @@ export const useEventImageQuery = (eventId: string) => {
         reader.readAsDataURL(download.data);
       });
     },
-    queryKey: ['eventImage', eventId],
+    queryKey: [QUERY_KEYS.IMAGES.EVENTS.QUERY, eventId],
   });
 };
