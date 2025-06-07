@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { ChevronLeft } from '@tamagui/lucide-icons';
-import { Button } from '@/components/tamagui';
+import { Button } from '@/components/tamagui/Button';
 import { styled } from 'tamagui';
 
 const StyledButton = styled(Button, {

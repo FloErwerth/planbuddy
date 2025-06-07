@@ -1,5 +1,5 @@
 import { SizableText, View } from 'tamagui';
-import { Text } from '@/components/tamagui';
+import { Text } from '@/components/tamagui/Text';
 import { FieldValues, useController } from 'react-hook-form';
 import { BaseFormFieldProps } from '@/components/FormFields/types';
 

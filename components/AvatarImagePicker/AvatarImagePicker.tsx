@@ -5,7 +5,7 @@ import { Avatar, Spinner, View } from 'tamagui';
 import Animated, { BounceIn, FadeIn, ZoomOut } from 'react-native-reanimated';
 import { Check, Edit3, Trash2 } from '@tamagui/lucide-icons';
 import { color } from '@tamagui/themes';
-import { Button } from '@/components/tamagui';
+import { Button } from '@/components/tamagui/Button';
 
 type AvatarImagePickerProps = {
   editable?: boolean;

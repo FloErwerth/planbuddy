@@ -1,5 +1,5 @@
 import { SizableText, View } from 'tamagui';
-import { Button } from '@/components/tamagui';
+import { Button } from '@/components/tamagui/Button';
 import { Screen } from '@/components/Screen';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FormInput } from '@/components/FormFields/FormInput';

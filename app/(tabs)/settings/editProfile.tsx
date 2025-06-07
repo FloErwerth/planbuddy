@@ -3,7 +3,7 @@ import { AvatarImagePicker } from '@/components/AvatarImagePicker';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FormInput } from '@/components/FormFields/FormInput';
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Input } from '@/components/tamagui';
+import { Button } from '@/components/tamagui/Button';
 import { View } from 'tamagui';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,6 +13,7 @@ import {
   useProfileImageQuery,
   useUploadProfilePictureMutation,
 } from '@/api/images';
+import { Input } from '@/components/tamagui/Input';
 
 const updateProfileSchema = z.object({
   firstName: z

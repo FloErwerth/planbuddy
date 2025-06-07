@@ -2,6 +2,11 @@ import { createFont, createTamagui } from 'tamagui';
 import { config } from '@tamagui/config';
 import { color } from '@tamagui/themes';
 
+export const colors = {
+  ...color,
+  inputBackground: 'rgb(220,220,220)',
+};
+
 const font = createFont({
   family: 'Normal',
   size: {
@@ -70,6 +75,7 @@ export const tamaguiConfig = createTamagui({
       accent: '#DD7568',
       lightShade: '#F4F3F7',
       darkShade: '#354173',
+      inputBackground: colors.inputBackground,
     },
   },
 

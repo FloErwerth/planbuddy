@@ -1,5 +1,5 @@
 import { styled } from 'tamagui';
-import { Button } from '@/components/tamagui';
+import { Button } from '@/components/tamagui/Button';
 import { Share } from '@tamagui/lucide-icons';
 
 type ShareButtonProps = {

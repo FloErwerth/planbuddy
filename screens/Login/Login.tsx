@@ -1,4 +1,3 @@
-import { Button, Text } from '@/components/tamagui';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Card } from 'tamagui';
@@ -13,6 +12,8 @@ import { EmailSentSheet } from '@/screens/Login/EmailSentSheet';
 import * as QueryParams from 'expo-auth-session/build/QueryParams';
 import { useURL } from 'expo-linking';
 import { useEmailSentAtom } from '@/store/login';
+import { Text } from '@/components/tamagui/Text';
+import { Button } from '@/components/tamagui/Button';
 
 const createSessionFromUrl = async (url: string | null) => {
   if (url === null) {

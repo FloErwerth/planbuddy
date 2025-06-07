@@ -1,7 +1,7 @@
 import { JSX, useCallback, useState } from 'react';
 import { LayoutChangeEvent } from 'react-native';
 import { InputProps, View } from 'tamagui';
-import { Input } from '@/components/tamagui';
+import { Input } from '@/components/tamagui/Input';
 
 export type InputWithIconProps = InputProps & {
   Icon?: JSX.Element;

@@ -1,10 +1,11 @@
 import { XStack, YStack } from 'tamagui';
-import { Card, Text } from '@/components/tamagui';
 import { Pressable } from 'react-native';
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
 import { useEventImageQuery } from '@/api/images';
 import { Event } from '@/api/events/types';
+import { Card } from '@/components/tamagui/Card';
+import { Text } from '@/components/tamagui/Text';
 
 type EventSmallProps = Pick<Event, 'name' | 'location' | 'eventTime' | 'id'>;
 

@@ -2,10 +2,10 @@ import { useMemo, useState } from 'react';
 import { Screen } from '@/components/Screen';
 import { InputWithClear } from '@/components/Inputs/InputWithClear/InputWithClear';
 import { ScrollView } from '@/components/tamagui/ScrollView';
-import { Button } from '@/components/tamagui';
 import { router } from 'expo-router';
 import { useEventsQuery } from '@/api/events/queries';
 import { EventSmall } from '@/components/Events/EventSmall';
+import { Button } from '@/components/tamagui/Button';
 
 const contentContainerStyle = { gap: '$3', paddingVertical: '$4' };
 export const Events = () => {
