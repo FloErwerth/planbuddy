@@ -11,6 +11,8 @@ import { useProfileImageQuery, useUploadProfilePictureMutation } from '@/api/ima
 import { useGetUser } from '@/store/user';
 import { useInsertUserMutation } from '@/api/user';
 import { router } from 'expo-router';
+import { readInviteId } from '@/utils/invite';
+import { useParticipateEventMutation } from '@/api/events/mutations';
 
 export const onboardingSchema = z.object({
   firstName: z.string({ message: 'Wir brauchen deinen Vornamen zur Anzeige in Events.' }),
@@ -24,6 +26,8 @@ export default function Onboarding() {
   const user = useGetUser();
   const { data: imageFromDatabase } = useProfileImageQuery();
   const { mutateAsync: insertUser } = useInsertUserMutation();
+  const { mutateAsync: joinEvent } = useParticipateEventMutation();
+
   const [file, setFile] = useState<string>();
   const { mutateAsync: uploadImage } = useUploadProfilePictureMutation();
 
@@ -31,7 +35,11 @@ export default function Onboarding() {
     setFile(imageFromDatabase);
   }, [imageFromDatabase]);
 
-  const navigateAwayFromOnboarding = () => {
+  const navigateAwayFromOnboarding = async () => {
+    const invitationId = await readInviteId();
+    if (invitationId) {
+      await joinEvent({ eventId: invitationId, userId: user?.id });
+    }
     router.replace('/(tabs)');
   };
 
@@ -50,14 +58,10 @@ export default function Onboarding() {
       });
 
       if (file !== imageFromDatabase) {
-        const image = await uploadImage(file);
-        if (res && image) {
-          navigateAwayFromOnboarding();
-        }
-        return;
+        await uploadImage(file);
       }
       if (res) {
-        navigateAwayFromOnboarding();
+        await navigateAwayFromOnboarding();
       }
     } catch (e) {
       console.log(e);

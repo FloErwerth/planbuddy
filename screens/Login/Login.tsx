@@ -14,6 +14,7 @@ import { useURL } from 'expo-linking';
 import { useEmailSentAtom } from '@/store/login';
 import { Text } from '@/components/tamagui/Text';
 import { Button } from '@/components/tamagui/Button';
+import { useGlobalSearchParams } from 'expo-router';
 
 const createSessionFromUrl = async (url: string | null) => {
   if (url === null) {
@@ -42,6 +43,11 @@ const redirectTo = makeRedirectUri();
 
 export default function LoginScreen() {
   useLoginSession();
+  const { eventId, inviterName, name } = useGlobalSearchParams<{
+    eventId: string;
+    name: string;
+    inviterName: string;
+  }>();
   const form = useForm({
     resolver: zodResolver(loginSchema),
   });
@@ -67,12 +73,17 @@ export default function LoginScreen() {
         <Card gap="$4" minWidth="90%" padding="$4" elevation="$2">
           <PartyPopper marginHorizontal="auto" size="$8" color="$primary" />
           <Text size="$8" textAlign="center">
-            Willkommen zurück bei PlanBuddy
+            Willkommen bei PlanBuddy
           </Text>
           <Text size="$4" textAlign="center">
             Gib deine E-Mail, um Dir einen Login-Link zuzuschicken.
           </Text>
-          <FormInput name="email" placeholder="Deine E-Mail Addresse" />
+          <FormInput
+            autoCapitalize="none"
+            autoComplete="email"
+            name="email"
+            placeholder="Deine E-Mail Addresse"
+          />
           <Button onPress={form.handleSubmit(signInWithEmail)}>Einloggen</Button>
         </Card>
       </Screen>

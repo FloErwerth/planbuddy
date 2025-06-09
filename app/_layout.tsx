@@ -8,6 +8,7 @@ import * as Sentry from '@sentry/react-native';
 Sentry.init({
   dsn: 'https://468683226bfb2668906c6fee1941aa74@o4509455416229888.ingest.de.sentry.io/4509455421800528',
 
+  enabled: false,
   // Adds more context data to events (IP address, cookies, user, etc.)
   // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
   sendDefaultPii: true,
@@ -55,6 +56,7 @@ export default Sentry.wrap(function RootLayout() {
         <Stack.Screen name="(tabs)" options={defaultOptions} />
         <Stack.Screen name="createEvent" options={defaultOptions} />
         <Stack.Screen name="onboarding" options={defaultOptions} />
+        <Stack.Screen name="joinEvent" options={defaultOptions} />
         <Stack.Screen
           name="eventDetails"
           options={{ ...defaultOptions, presentation: 'modal', animation: 'fade' }}

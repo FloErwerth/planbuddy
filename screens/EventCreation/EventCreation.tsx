@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { SizableText, View, YStack } from 'tamagui';
 import { Calendar } from '@/components/Calendar';
 import { router } from 'expo-router';
@@ -19,54 +19,51 @@ import { Button } from '@/components/tamagui/Button';
 import { FileUp, Trash2 } from '@tamagui/lucide-icons';
 
 const screenWidth = Dimensions.get('screen').width;
-const screenHeight = Dimensions.get('screen').height;
 
 export const EventCreation = () => {
   const form = useForm({ resolver: zodResolver(eventSchema) });
   const [imageToUpload, setImageToUpload] = useState<string>();
-  const [showImage, setShowImage] = useState<boolean>(false);
+  const [date, setDate] = useState<Date>(new Date());
+  const [isLoading, setIsLoading] = useState(false);
 
   const cardStyle = useAnimatedStyle(
-    () => ({
-      flex: withTiming(showImage ? 0.5 : 0.25),
-    }),
-    [showImage]
+    () =>
+      ({
+        flex: withTiming(imageToUpload ? 0.5 : 0.25),
+      }) as const
   );
 
   const buttonStyle = useAnimatedStyle(
-    () => ({
-      position: 'absolute',
-      opacity: withTiming(showImage ? 1 : 0),
-      zIndex: 15,
-      right: 16,
-      top: 16,
-    }),
-    [showImage]
+    () =>
+      ({
+        position: 'absolute',
+        opacity: withTiming(imageToUpload ? 1 : 0),
+        zIndex: 15,
+        right: 16,
+        top: 16,
+      }) as const
   );
 
   const imageStyle = useAnimatedStyle(
-    () => ({
-      opacity: withTiming(showImage ? 1 : 0),
-      height: showImage ? '100%' : '0%',
-      zIndex: 10,
-    }),
-    [showImage]
+    () =>
+      ({
+        opacity: withTiming(imageToUpload ? 1 : 0),
+        height: imageToUpload ? '100%' : '0%',
+        zIndex: 10,
+      }) as const
   );
 
   const imageSelectionStyle = useAnimatedStyle(
-    () => ({
-      opacity: withTiming(showImage ? 0 : 1, { duration: showImage ? 0 : 200 }),
-      zIndex: 5,
-      height: showImage ? '0%' : '100%',
-    }),
-    [showImage]
+    () =>
+      ({
+        opacity: withTiming(imageToUpload ? 0 : 1, { duration: imageToUpload ? 0 : 200 }),
+        zIndex: 5,
+        height: imageToUpload ? '0%' : '100%',
+      }) as const
   );
 
-  const [date, setDate] = useState<Date>(new Date());
   const { mutateAsync: createEvent } = useCreateEventMutation();
   const { mutateAsync: uploadEventImage } = useUploadEventImageMutation();
-
-  const [isLoading, setIsLoading] = useState(false);
 
   const pickImage = async () => {
     const result = await ExpoImagePicker.launchImageLibraryAsync({
@@ -77,31 +74,38 @@ export const EventCreation = () => {
     });
     if (!result.canceled) {
       setImageToUpload(result.assets[0].uri);
-      setShowImage(true);
     }
   };
 
-  const handleCreateEvent = async (data: Event) => {
-    setIsLoading(true);
+  const handleCreateEvent = useCallback(
+    async (data: Event) => {
+      setIsLoading(true);
 
-    const event = await createEvent(data);
-    if (imageToUpload && event?.id) {
-      const result = await uploadEventImage({ eventId: event.id, image: imageToUpload });
-      if (result.error) {
-        // do something?
+      const event = await createEvent({ ...data, eventTime: date.valueOf().toString() });
+      if (imageToUpload && event?.id) {
+        const result = await uploadEventImage({ eventId: event.id, image: imageToUpload });
+        if (result.error) {
+          // do something?
+        }
       }
-    }
-    setIsLoading(false);
-    if (event?.id) {
-      router.replace({ pathname: './shareEvent', params: { eventId: event.id } });
-    }
-  };
+      setIsLoading(false);
+      if (event?.id) {
+        router.replace(`/eventDetails/${event.id}`);
+      }
+    },
+    [createEvent, date, imageToUpload, uploadEventImage]
+  );
 
-  const UploadedImage = () => {
+  const UploadedImage = useCallback(() => {
     return (
       <Animated.View style={cardStyle}>
         <Animated.View style={buttonStyle}>
-          <Button onPress={() => setShowImage(false)} width="$4" height="$4" borderRadius="$8">
+          <Button
+            onPress={() => setImageToUpload(undefined)}
+            width="$4"
+            height="$4"
+            borderRadius="$8"
+          >
             <Trash2 size="$1" color="$background" />
           </Button>
         </Animated.View>
@@ -122,7 +126,7 @@ export const EventCreation = () => {
         </View>
       </Animated.View>
     );
-  };
+  }, [buttonStyle, cardStyle, imageSelectionStyle, imageStyle, imageToUpload]);
 
   return (
     <>
@@ -167,11 +171,26 @@ export const EventCreation = () => {
                   name="description"
                   placeholder="Weitere Details zum Go-Kart fahren"
                 />
+                <FormInput
+                  autoCapitalize="none"
+                  autoComplete="url"
+                  textContentType="URL"
+                  autoCorrect={false}
+                  name="link"
+                  label="Link zu einer Webseite"
+                />
               </FormProvider>
             </ScrollView>
           </View>
         </ScrollView>
-        <Button marginHorizontal="$4">Event erstellen</Button>
+        <Button
+          marginHorizontal="$4"
+          onPress={form.handleSubmit((data) => {
+            void handleCreateEvent({ ...data, eventTime: date.valueOf().toString() });
+          })}
+        >
+          Event erstellen
+        </Button>
       </View>
     </>
   );

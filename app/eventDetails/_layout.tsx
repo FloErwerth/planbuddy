@@ -10,6 +10,7 @@ export default function EventDetailsLayout() {
       <Stack.Screen name="index" options={defaultOptions} />
       <Stack.Screen name="hosts" options={defaultOptions} />
       <Stack.Screen name="participants" options={defaultOptions} />
+      <Stack.Screen name="[shareEvent]" options={defaultOptions} />
     </Stack>
   );
 }

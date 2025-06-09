@@ -111,7 +111,7 @@ function getRelativeDate(timestamp: number): string {
   // This should ideally not be reached if all cases are covered, but provides a safe return.
   return targetDate.toLocaleDateString();
 }
-const imageStyle = { height: 50, aspectRatio: '4/3', borderRadius: 16 } as const;
+const imageStyle = { aspectRatio: '4/3', borderRadius: 8 } as const;
 export const EventSmall = ({ name, location, eventTime, id }: EventSmallProps) => {
   const { data: image } = useEventImageQuery(id);
   return (
@@ -122,11 +122,8 @@ export const EventSmall = ({ name, location, eventTime, id }: EventSmallProps) =
         <XStack justifyContent="space-between">
           <YStack>
             <Text size="$6">{name}</Text>
-            <XStack alignItems="center" gap="$1.5">
-              <Text size="$3">{getRelativeDate(parseInt(eventTime))}</Text>
-              <Text size="$3">·</Text>
-              <Text size="$3">{location}</Text>
-            </XStack>
+            <Text size="$3">{getRelativeDate(parseInt(eventTime))}</Text>
+            <Text size="$3">{location}</Text>
           </YStack>
           {image && <Image source={image} style={imageStyle} />}
         </XStack>

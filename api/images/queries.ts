@@ -44,6 +44,10 @@ export const useEventImageQuery = (eventId?: string) => {
       const download = await supabase.storage.from('event-images').download(`${eventId}/image.png`);
 
       if (download.error) {
+        if (download.error.name === 'StorageUnknownError') {
+          // this is likely because of no image uploaded for the event
+          return undefined;
+        }
         throw new Error(download.error.message);
       }
 
