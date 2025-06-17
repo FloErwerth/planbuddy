@@ -12,7 +12,7 @@ import { useGetUser } from '@/store/user';
 import { useInsertUserMutation } from '@/api/user';
 import { router } from 'expo-router';
 import { readInviteId } from '@/utils/invite';
-import { useParticipateEventMutation } from '@/api/events/mutations';
+import { useCreateParticipationMutation } from '@/api/events/mutations';
 
 export const onboardingSchema = z.object({
   firstName: z.string({ message: 'Wir brauchen deinen Vornamen zur Anzeige in Events.' }),
@@ -26,7 +26,7 @@ export default function Onboarding() {
   const user = useGetUser();
   const { data: imageFromDatabase } = useProfileImageQuery();
   const { mutateAsync: insertUser } = useInsertUserMutation();
-  const { mutateAsync: joinEvent } = useParticipateEventMutation();
+  const { mutateAsync: joinEvent } = useCreateParticipationMutation();
 
   const [file, setFile] = useState<string>();
   const { mutateAsync: uploadImage } = useUploadProfilePictureMutation();

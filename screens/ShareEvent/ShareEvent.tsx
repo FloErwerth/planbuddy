@@ -7,6 +7,7 @@ import QRCode from 'react-native-qrcode-svg';
 import * as ExpoClipboard from 'expo-clipboard';
 import { Pressable, Share } from 'react-native';
 import { ClipboardCopy, Share2 } from '@tamagui/lucide-icons';
+import { BackButton } from '@/components/BackButton';
 
 const websiteURL = process.env.EXPO_PUBLIC_WEBPAGE_URL;
 export const ShareEvent = () => {
@@ -20,7 +21,7 @@ export const ShareEvent = () => {
   }
 
   return (
-    <Screen showBackButton title={`${event?.event.name} teilen`} gap="$8">
+    <Screen back={<BackButton href=".." />} title={`${event?.event.name} teilen`} gap="$8">
       <SizableText textAlign="center">Lasse deine Gäste diesen QR Code scannen</SizableText>
       <Card alignSelf="center">
         <QRCode size={width * 0.5} value={invitationLink} />

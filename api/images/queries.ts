@@ -30,7 +30,7 @@ export const useProfileImageQuery = () => {
         reader.readAsDataURL(download.data);
       });
     },
-    queryKey: [QUERY_KEYS.IMAGES.PROFILES.QUERY],
+    queryKey: [QUERY_KEYS.IMAGES.PROFILES.QUERY, user?.id],
   });
 };
 

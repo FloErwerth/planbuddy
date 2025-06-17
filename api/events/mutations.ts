@@ -49,12 +49,12 @@ export const useCreateEventMutation = () => {
   });
 };
 
-export const useParticipateEventMutation = () => {
+export const useCreateParticipationMutation = () => {
   const user = useGetUser();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (participant: Pick<Participant, 'userId' | 'eventId'>) => {
+    mutationFn: async (participant: Pick<Participant, 'userId' | 'eventId' | 'id'>) => {
       if (user === undefined) {
         return undefined;
       }
@@ -62,11 +62,9 @@ export const useParticipateEventMutation = () => {
       const participantExists = await supabase
         .from('participants')
         .select()
-        .eq('userId', participant.userId)
-        .eq('eventId', participant.eventId);
+        .eq('id', participant.id);
 
       if (participantExists.data?.length) {
-        console.warn('Already got this participant.');
         return;
       }
 
@@ -79,6 +77,35 @@ export const useParticipateEventMutation = () => {
       }
     },
     onSuccess: async () => {
+      await queryClient.invalidateQueries([QUERY_KEYS.EVENTS.QUERY]);
+    },
+    mutationKey: [QUERY_KEYS.EVENTS.MUTATION],
+  });
+};
+
+export const useUpdateParticipationMutation = () => {
+  const user = useGetUser();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (participant: Participant) => {
+      if (user === undefined) {
+        return undefined;
+      }
+
+      const result = await supabase
+        .from('participants')
+        .update(participant)
+        .eq('eventId', participant.eventId)
+        .eq('userId', participant.userId)
+        .select();
+
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries([QUERY_KEYS.PARTICIPANTS.QUERY]);
       await queryClient.invalidateQueries([QUERY_KEYS.EVENTS.QUERY]);
     },
     mutationKey: [QUERY_KEYS.EVENTS.MUTATION],

@@ -1,33 +1,25 @@
 import { PropsWithChildren, ReactNode } from 'react';
 import { SizableText, View, ViewProps, XStack } from 'tamagui';
-import { BackButton } from '@/components/BackButton';
-import { router } from 'expo-router';
 
 type ScreenProps = PropsWithChildren &
   ViewProps & {
-    showBackButton?: boolean;
+    back?: ReactNode;
     title?: string;
     action?: ReactNode;
   };
 
-export const Screen = ({
-  children,
-  showBackButton = false,
-  title,
-  action,
-  ...props
-}: ScreenProps) => {
+export const Screen = ({ children, back = false, title, action, ...props }: ScreenProps) => {
   return (
     <View padding="$4" gap="$4" backgroundColor="$background" {...props}>
-      {(showBackButton || title || action) && (
+      {(back || title || action) && (
         <XStack alignItems="center">
-          <View flex={0.5}>{showBackButton && router.canGoBack() ? <BackButton /> : <View />}</View>
+          <View flex={0.2}>{back}</View>
           <View flex={1}>
-            <SizableText size="$6" textAlign="center">
+            <SizableText size="$8" textAlign="center">
               {title}
             </SizableText>
           </View>
-          <View flex={0.5} alignItems="flex-end">
+          <View flex={0.2} alignItems="flex-end">
             {action}
           </View>
         </XStack>

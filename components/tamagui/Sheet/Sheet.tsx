@@ -5,8 +5,8 @@ export const Sheet = (props: SheetProps) => {
     <TamaSheet
       forceRemoveScrollEnabled
       modal
-      snapPoints={props.snapPoints ?? [95]}
-      snapPointsMode={props.snapPointsMode ?? 'percent'}
+      snapPoints={props.snapPoints}
+      snapPointsMode={props.snapPointsMode ?? 'fit'}
       dismissOnSnapToBottom
       zIndex={100_000}
       animation="medium"

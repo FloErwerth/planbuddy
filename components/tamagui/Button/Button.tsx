@@ -1,6 +1,9 @@
 import { Button as TamaguiButton, styled } from 'tamagui';
 
 export const Button = styled(TamaguiButton, {
+  pressStyle: {
+    opacity: 0.85,
+  },
   variants: {
     variant: {
       primary: {

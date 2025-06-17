@@ -1,7 +1,7 @@
 import { router, useGlobalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
 import { useGetUser } from '@/store/user';
-import { useParticipateEventMutation } from '@/api/events/mutations';
+import { useCreateParticipationMutation } from '@/api/events/mutations';
 import { writeInviteId } from '@/utils/invite';
 
 export const useJoinEvents = () => {
@@ -11,7 +11,7 @@ export const useJoinEvents = () => {
     inviterName: string;
   }>();
   const user = useGetUser();
-  const { mutateAsync: joinEvent } = useParticipateEventMutation();
+  const { mutateAsync: joinEvent } = useCreateParticipationMutation();
 
   useEffect(() => {
     if (eventId) {

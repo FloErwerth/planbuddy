@@ -1,9 +1,8 @@
-import { styled } from 'tamagui';
+import { ButtonProps, styled } from 'tamagui';
 import { Button } from '@/components/tamagui/Button';
 import { Share } from '@tamagui/lucide-icons';
-import { router } from 'expo-router';
 
-type ShareButtonProps = {
+type ShareButtonProps = ButtonProps & {
   id: string;
 };
 const StyledButton = styled(Button, {
@@ -14,9 +13,9 @@ const StyledButton = styled(Button, {
   borderRadius: '$12',
 });
 
-export const ShareButton = ({ id }: ShareButtonProps) => {
+export const ShareButton = ({ id, ...props }: ShareButtonProps) => {
   return (
-    <StyledButton onPress={() => router.push(`/eventDetails/${id}`)}>
+    <StyledButton {...props}>
       <Share scale={0.75} scaleY={0.9} top={-1} color="$background" />
     </StyledButton>
   );

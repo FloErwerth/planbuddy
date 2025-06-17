@@ -21,6 +21,6 @@ export const useUserQuery = () => {
 
       return result.data[0] as User;
     },
-    queryKey: [QUERY_KEYS.USERS.QUERY],
+    queryKey: [QUERY_KEYS.USERS.QUERY, user?.id],
   });
 };

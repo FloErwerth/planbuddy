@@ -2,11 +2,10 @@ import { useQuery } from 'react-query';
 import { supabase } from '@/api/supabase';
 import { useGetUser } from '@/store/user';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
-import { Event, Participant } from '@/api/events/types';
+import { Event, Participant, ParticipantQueryResponse } from '@/api/events/types';
 import { QUERY_KEYS } from '@/api/queryKeys';
 
 type Role = 'guest' | 'admin' | 'creator';
-type QueryResponse = { events: Event; role: Role }[];
 
 export const useEventsQuery = () => {
   const user = useGetUser();
@@ -17,25 +16,76 @@ export const useEventsQuery = () => {
         return;
       }
 
-      const result: PostgrestSingleResponse<QueryResponse> = await supabase
+      const result = await supabase
         .from('participants')
         .select(`role,events(*)`)
-        .eq('userId', user.id);
+        .eq('userId', user.id)
+        .throwOnError();
 
-      if (result.error) {
-        throw result.error;
-      }
-
-      return result.data.map((data) => ({
+      return result.data?.map((data) => ({
         ...data.events,
         role: data.role,
       }));
     },
-    queryKey: [QUERY_KEYS.EVENTS.QUERY],
+    queryKey: [QUERY_KEYS.EVENTS.QUERY, user?.id],
   });
 };
 
-type SingleQueryResponse = { events: Event; role: string; numberOfParticipants?: number };
+type SingleQueryResponse = {
+  events: Event;
+  role: Participant['role'];
+  status: Participant['status'];
+  numberOfParticipants?: number;
+};
+
+export const useParticipantsQuery = (eventId: string) => {
+  return useQuery({
+    queryFn: async (): Promise<ParticipantQueryResponse[]> => {
+      const participantsAndUsers = await supabase
+        .from('participants')
+        .select('*, users(*)')
+        .eq('eventId', eventId)
+        .throwOnError();
+
+      return participantsAndUsers.data.map((data) => ({
+        ...data,
+        ...data.users,
+      })) as ParticipantQueryResponse[];
+    },
+    queryKey: [QUERY_KEYS.PARTICIPANTS.QUERY, eventId],
+  });
+};
+
+export const useParticipantsImageQuery = (userId?: string) => {
+  return useQuery({
+    queryFn: async (): Promise<string | undefined> => {
+      // get image
+      const download = await supabase.storage
+        .from('profile-images')
+        .download(`${userId}/profileImage.png`);
+
+      if (download.error) {
+        if (download.error.name === 'StorageUnknownError') {
+          // this is likely because of no image uploaded for the event
+          return undefined;
+        }
+        throw new Error(download.error.message);
+      }
+
+      if (download.data.size < 100) {
+        return;
+      }
+
+      return new Promise((resolve, _) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(download.data);
+      });
+    },
+    queryKey: [QUERY_KEYS.PARTICIPANTS.IMAGE_QUERY, userId],
+  });
+};
+
 export const useSingleEventQuery = (eventId: string) => {
   const user = useGetUser();
 
@@ -47,7 +97,7 @@ export const useSingleEventQuery = (eventId: string) => {
 
       const result: PostgrestSingleResponse<SingleQueryResponse> = await supabase
         .from('participants')
-        .select(`role, events(*)`)
+        .select(`role, status, events(*)`)
         .eq('events.id', eventId)
         .eq('userId', user.id)
         .filter('events', 'not.is', 'null')
@@ -63,12 +113,13 @@ export const useSingleEventQuery = (eventId: string) => {
       }
 
       return {
-        event: result.data.events,
+        ...result.data.events,
         participants: {
           accepted: participants.data?.filter((participant) => participant.status === 'accepted')
             .length,
           total: participants.data?.length,
           role: result.data.role,
+          status: result.data.status,
         },
       };
     },

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { User } from '@/api/types';
 /*
  * street:houseNr:zip:city
  * */
@@ -19,6 +20,7 @@ export const eventSchema = z
 export type ParticipantRole = 'guest' | 'admin' | 'creator';
 export type ParticipantStatus = 'accepted' | 'undecided' | 'declined';
 export type Participant = {
+  id?: string;
   eventId?: string;
   userId?: string;
   role: ParticipantRole;
@@ -26,3 +28,5 @@ export type Participant = {
 };
 
 export type Event = z.infer<typeof eventSchema> & { eventTime: string };
+
+export type ParticipantQueryResponse = Participant & User;

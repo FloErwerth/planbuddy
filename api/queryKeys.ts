@@ -3,6 +3,11 @@ export const QUERY_KEYS = {
     QUERY: 'eventsquerykey',
     MUTATION: 'eventsmutation',
   },
+  PARTICIPANTS: {
+    IMAGE_QUERY: 'participantimage',
+    QUERY: 'participants',
+    MUTATION: 'participantsMutatation',
+  },
   USERS: {
     QUERY: 'usersquerykey',
     MUTATION: 'usersmutation',
