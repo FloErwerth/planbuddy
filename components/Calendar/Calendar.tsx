@@ -2,15 +2,17 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import { useState } from 'react';
 
 import { Button } from '@/components/tamagui/Button';
-import { View, XStack } from 'tamagui';
+import { SizableText, View, XStack } from 'tamagui';
 import { formatToDate, formatToTime } from '@/components/Calendar/utils';
 
 type CalendarProps = {
   onDateSelected: (date: Date) => void;
   date: Date;
+  minimumDate?: Date;
+  maximumDate?: Date;
 };
 
-export const Calendar = ({ date, onDateSelected }: CalendarProps) => {
+export const Calendar = ({ date, onDateSelected, minimumDate, maximumDate }: CalendarProps) => {
   const [calendarMode, setCalendarMode] = useState<'date' | 'time'>('date');
   const [showCalendar, setShowCalendar] = useState(false);
 
@@ -32,22 +34,24 @@ export const Calendar = ({ date, onDateSelected }: CalendarProps) => {
   };
 
   return (
-    <View>
+    <View flex={1}>
       <XStack gap="$2">
-        <Button flex={1} borderColor="transparent" onPress={handleShowCalendar}>
-          {formatToDate(date) ?? 'Zeitpunkt auswählen'}
+        <Button flex={1} size="$2" variant="transparent" onPress={handleShowCalendar}>
+          <SizableText>{formatToDate(date) ?? 'Zeitpunkt auswählen'}</SizableText>
         </Button>
-        <Button flex={1} borderColor="transparent" onPress={handleShowTime}>
-          {formatToTime(date)}
+        <Button flex={1} size="$2" variant="transparent" onPress={handleShowTime}>
+          <SizableText>{formatToTime(date)}</SizableText>
         </Button>
       </XStack>
       {showCalendar && (
         <DateTimePicker
           locale="de-DE"
-          is24Hour
           onChange={handleSelectDate}
+          is24Hour
           mode={calendarMode}
           value={date}
+          minimumDate={minimumDate}
+          maximumDate={maximumDate}
         />
       )}
     </View>

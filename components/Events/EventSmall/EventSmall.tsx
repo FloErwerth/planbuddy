@@ -7,7 +7,7 @@ import { Event } from '@/api/events/types';
 import { Card } from '@/components/tamagui/Card';
 import { Text } from '@/components/tamagui/Text';
 
-type EventSmallProps = Pick<Event, 'name' | 'location' | 'eventTime' | 'id'>;
+type EventSmallProps = Pick<Event, 'name' | 'location' | 'startTime' | 'id'>;
 
 function getRelativeDate(timestamp: number): string {
   // Get the current date and time
@@ -112,7 +112,7 @@ function getRelativeDate(timestamp: number): string {
   return targetDate.toLocaleDateString();
 }
 const imageStyle = { aspectRatio: '4/3', borderRadius: 8 } as const;
-export const EventSmall = ({ name, location, eventTime, id }: EventSmallProps) => {
+export const EventSmall = ({ name, location, startTime, id }: EventSmallProps) => {
   const { data: image } = useEventImageQuery(id);
   return (
     <Pressable
@@ -122,7 +122,7 @@ export const EventSmall = ({ name, location, eventTime, id }: EventSmallProps) =
         <XStack justifyContent="space-between">
           <YStack>
             <Text size="$6">{name}</Text>
-            <Text size="$3">{getRelativeDate(parseInt(eventTime))}</Text>
+            <Text size="$3">{getRelativeDate(parseInt(startTime))}</Text>
             <Text size="$3">{location}</Text>
           </YStack>
           {image && <Image source={image} style={imageStyle} />}

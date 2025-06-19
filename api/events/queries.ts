@@ -2,7 +2,12 @@ import { useQuery } from 'react-query';
 import { supabase } from '@/api/supabase';
 import { useGetUser } from '@/store/user';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
-import { Event, Participant, ParticipantQueryResponse } from '@/api/events/types';
+import {
+  backendEventSchema,
+  Event,
+  Participant,
+  ParticipantQueryResponse,
+} from '@/api/events/types';
 import { QUERY_KEYS } from '@/api/queryKeys';
 
 type Role = 'guest' | 'admin' | 'creator';
@@ -23,7 +28,7 @@ export const useEventsQuery = () => {
         .throwOnError();
 
       return result.data?.map((data) => ({
-        ...data.events,
+        ...backendEventSchema.parse(data.events),
         role: data.role,
       }));
     },

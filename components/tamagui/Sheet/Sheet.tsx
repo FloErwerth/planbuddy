@@ -1,6 +1,10 @@
-import { Sheet as TamaSheet, SheetProps } from 'tamagui';
+import { Sheet as TamaSheet, SheetProps as TamaSheetProps } from 'tamagui';
 
-export const Sheet = (props: SheetProps) => {
+type SheetProps = {
+  hideHandle?: boolean;
+} & TamaSheetProps;
+
+export const Sheet = ({ hideHandle = false, ...props }: SheetProps) => {
   return (
     <TamaSheet
       forceRemoveScrollEnabled
@@ -19,7 +23,7 @@ export const Sheet = (props: SheetProps) => {
         exitStyle={{ opacity: 0 }}
       />
 
-      <TamaSheet.Handle />
+      {!hideHandle && <TamaSheet.Handle />}
       <TamaSheet.Frame>{props.children}</TamaSheet.Frame>
     </TamaSheet>
   );

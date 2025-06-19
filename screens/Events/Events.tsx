@@ -2,10 +2,8 @@ import { useMemo, useState } from 'react';
 import { Screen } from '@/components/Screen';
 import { InputWithClear } from '@/components/Inputs/InputWithClear/InputWithClear';
 import { ScrollView } from '@/components/tamagui/ScrollView';
-import { router } from 'expo-router';
 import { useEventsQuery } from '@/api/events/queries';
 import { EventSmall } from '@/components/Events/EventSmall';
-import { Button } from '@/components/tamagui/Button';
 import { useGetUser } from '@/store/user';
 import { useCreateParticipationMutation } from '@/api/events/mutations';
 
@@ -30,7 +28,6 @@ export const Events = () => {
       <ScrollView withShadow contentContainerStyle={contentContainerStyle}>
         {mappedData}
       </ScrollView>
-      <Button onPress={() => router.push('/createEvent')}>Event erstellen</Button>
     </>
   );
 };

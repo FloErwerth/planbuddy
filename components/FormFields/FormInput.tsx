@@ -10,7 +10,7 @@ export const FormInput = <T extends FieldValues>({
   ...inputProps
 }: BaseFormFieldProps<T> & InputProps) => {
   return (
-    <FormField name={name} label={label}>
+    <FormField {...inputProps} name={name} label={label}>
       <Controller
         render={({ field: { value, onChange }, fieldState: { error } }) => {
           const theme = error ? 'error' : 'default';

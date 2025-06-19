@@ -3,7 +3,8 @@ import { styled, TextArea as TamaguiTextArea } from 'tamagui';
 export const TextArea = styled(TamaguiTextArea, {
   color: '$color',
   fontWeight: 400,
-  borderWidth: 0,
+  borderWidth: '$1',
+  borderColor: 'transparent',
   backgroundColor: '$inputBackground',
   focusStyle: {
     borderColor: '$primary',

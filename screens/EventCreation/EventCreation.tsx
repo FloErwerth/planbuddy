@@ -1,197 +1,144 @@
-import { useCallback, useState } from 'react';
-import { SizableText, View, YStack } from 'tamagui';
+import { ReactNode, useCallback, useState } from 'react';
+import { Separator, SizableText, View, XStack } from 'tamagui';
 import { Calendar } from '@/components/Calendar';
-import { router } from 'expo-router';
 import { useCreateEventMutation } from '@/api/events/mutations';
-import * as ExpoImagePicker from 'expo-image-picker';
-import { MediaTypeOptions } from 'expo-image-picker';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FormInput } from '@/components/FormFields/FormInput';
-import { Event, eventSchema } from '@/api/events/types';
+import { appEventSchema, Event } from '@/api/events/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useUploadEventImageMutation } from '@/api/images';
-import { Dimensions, Pressable } from 'react-native';
 import { FormTextArea } from '@/components/FormFields';
-import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { Image } from 'expo-image';
-import { ScrollView } from '@/components/tamagui/ScrollView';
 import { Button } from '@/components/tamagui/Button';
-import { FileUp, Trash2 } from '@tamagui/lucide-icons';
-
-const screenWidth = Dimensions.get('screen').width;
+import { ScrollableScreen } from '@/components/Screen';
+import { EventCreationImage } from '@/screens/EventCreation/EventCreationImage';
+import { BlocksSheet } from '@/sheets/BlocksSheet';
 
 export const EventCreation = () => {
-  const form = useForm({ resolver: zodResolver(eventSchema) });
+  const now = new Date();
+  const [start, setStart] = useState<Date>(now);
+  const [end, setEnd] = useState<Date>(
+    (() => {
+      const newEnd = new Date(now);
+      newEnd.setHours(now.getHours() + 3);
+      return newEnd;
+    })()
+  );
+
+  const form = useForm({
+    resolver: zodResolver(appEventSchema),
+    defaultValues: { startTime: now.valueOf().toString(), endTime: now.valueOf().toString() },
+  });
+
+  const endTimeError = form.formState.errors.endTime;
+
   const [imageToUpload, setImageToUpload] = useState<string>();
-  const [date, setDate] = useState<Date>(new Date());
   const [isLoading, setIsLoading] = useState(false);
+  const [blocksOpen, setBlocksOpen] = useState(false);
+  const [additionalBlocks, setAdditionalBlocks] = useState<ReactNode>([]);
 
-  const cardStyle = useAnimatedStyle(
-    () =>
-      ({
-        flex: withTiming(imageToUpload ? 0.5 : 0.25),
-      }) as const
-  );
+  const handleSetStart = (date: Date) => {
+    setStart(date);
+    form.setValue('startTime', date.valueOf().toString());
+  };
 
-  const buttonStyle = useAnimatedStyle(
-    () =>
-      ({
-        position: 'absolute',
-        opacity: withTiming(imageToUpload ? 1 : 0),
-        zIndex: 15,
-        right: 16,
-        top: 16,
-      }) as const
-  );
-
-  const imageStyle = useAnimatedStyle(
-    () =>
-      ({
-        opacity: withTiming(imageToUpload ? 1 : 0),
-        height: imageToUpload ? '100%' : '0%',
-        zIndex: 10,
-      }) as const
-  );
-
-  const imageSelectionStyle = useAnimatedStyle(
-    () =>
-      ({
-        opacity: withTiming(imageToUpload ? 0 : 1, { duration: imageToUpload ? 0 : 200 }),
-        zIndex: 5,
-        height: imageToUpload ? '0%' : '100%',
-      }) as const
-  );
+  const handleSetEnd = (date: Date) => {
+    setEnd(date);
+    form.clearErrors('endTime');
+    form.setValue('endTime', date.valueOf().toString());
+  };
 
   const { mutateAsync: createEvent } = useCreateEventMutation();
   const { mutateAsync: uploadEventImage } = useUploadEventImageMutation();
 
-  const pickImage = async () => {
-    const result = await ExpoImagePicker.launchImageLibraryAsync({
-      mediaTypes: MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 0.25,
-    });
-    if (!result.canceled) {
-      setImageToUpload(result.assets[0].uri);
-    }
-  };
-
   const handleCreateEvent = useCallback(
     async (data: Event) => {
       setIsLoading(true);
-
-      const event = await createEvent({ ...data, eventTime: date.valueOf().toString() });
-      if (imageToUpload && event?.id) {
-        const result = await uploadEventImage({ eventId: event.id, image: imageToUpload });
-        if (result.error) {
-          // do something?
-        }
-      }
-      setIsLoading(false);
-      if (event?.id) {
-        router.replace(`/eventDetails/${event.id}`);
-      }
     },
-    [createEvent, date, imageToUpload, uploadEventImage]
+    [createEvent, start, end, imageToUpload, uploadEventImage]
   );
 
-  const UploadedImage = useCallback(() => {
-    return (
-      <Animated.View style={cardStyle}>
-        <Animated.View style={buttonStyle}>
-          <Button
-            onPress={() => setImageToUpload(undefined)}
-            width="$4"
-            height="$4"
-            borderRadius="$8"
-          >
-            <Trash2 size="$1" color="$background" />
-          </Button>
-        </Animated.View>
-        <Animated.View style={imageSelectionStyle}>
-          <Pressable onPress={pickImage} style={{ height: '100%', justifyContent: 'center' }}>
-            <View alignSelf="center" justifyContent="center" borderRadius="$8" alignItems="center">
-              <YStack padding="$4" alignItems="center">
-                <FileUp />
-                <SizableText>Bild auswählen oder hochladen</SizableText>
-              </YStack>
-            </View>
-          </Pressable>
-        </Animated.View>
-        <View backgroundColor="$inputBackground">
-          <Animated.View style={imageStyle}>
-            <Image source={imageToUpload} style={{ aspectRatio: '4/3', width: screenWidth }} />
-          </Animated.View>
-        </View>
-      </Animated.View>
-    );
-  }, [buttonStyle, cardStyle, imageSelectionStyle, imageStyle, imageToUpload]);
+  const handleOpenBlocks = () => {
+    setBlocksOpen(true);
+  };
 
+  const hasErrors = Object.values(form.formState.errors).length > 0;
   return (
     <>
-      <UploadedImage />
       <View
-        elevationAndroid="$4"
-        borderTopLeftRadius="$8"
-        borderTopRightRadius="$8"
-        flex={1}
-        backgroundColor="$background"
-        top="$-4"
-        overflow="hidden"
+        alignSelf="center"
+        marginTop="$4"
+        width="50%"
+        height="$0.5"
+        borderRadius="$4"
+        backgroundColor="$inputBackground"
+      />
+      <ScrollableScreen>
+        <View
+          backgroundColor="$background"
+          overflow="hidden"
+          elevationAndroid="$2"
+          width="100%"
+          borderRadius="$8"
+        >
+          <EventCreationImage setImage={setImageToUpload} image={imageToUpload} />
+        </View>
+        <View gap="$4" height="100%">
+          <FormProvider {...form}>
+            <FormInput label="Eventname" name="name" />
+            <View gap="$1.5">
+              <SizableText>Start und Ende</SizableText>
+              <View gap="$2" borderRadius="$4" padding="$2" backgroundColor="$inputBackground">
+                <XStack gap="$4" alignItems="center">
+                  <SizableText>Start</SizableText>
+                  <Calendar
+                    date={start}
+                    onDateSelected={(date) => {
+                      const newEnd = new Date(
+                        end.toISOString().split('T')[0] + 'T' + date.toISOString().split('T')[1]
+                      );
+                      newEnd.setHours(newEnd.getHours() + 3);
+                      handleSetEnd(newEnd);
+                      handleSetStart(date);
+                    }}
+                  />
+                </XStack>
+                <Separator borderColor="$background" />
+                <XStack gap="$4" alignItems="center">
+                  <SizableText>Ende</SizableText>
+                  <Calendar minimumDate={start} date={end} onDateSelected={handleSetEnd} />
+                </XStack>
+              </View>
+              {endTimeError && <SizableText theme="error">{endTimeError.message}</SizableText>}
+            </View>
+
+            <FormInput label="Ort" name="location" />
+            <FormTextArea multiline verticalAlign="top" label="Details" name="description" />
+            {additionalBlocks}
+            <Button variant="secondary" onPress={handleOpenBlocks}>
+              Weitere Blöcke hinzufügen
+            </Button>
+          </FormProvider>
+        </View>
+      </ScrollableScreen>
+      <Button
+        marginHorizontal="$4"
+        marginBottom="$4"
+        disabled={hasErrors}
+        onPress={form.handleSubmit((data) =>
+          handleCreateEvent({
+            ...data,
+            startTime: start.valueOf().toString(),
+            endTime: end.valueOf().toString(),
+          })
+        )}
       >
-        <ScrollView
-          contentContainerStyle={{
-            padding: '$4',
-            paddingTop: 0,
-          }}
-        >
-          <View
-            position="relative"
-            gap="$4"
-            width={Dimensions.get('screen').width}
-            right="$4"
-            overflow="hidden"
-            height="100%"
-            borderTopLeftRadius="$8"
-            borderTopRightRadius="$8"
-          >
-            <ScrollView contentContainerStyle={{ padding: '$4', gap: '$4' }}>
-              <FormProvider {...form}>
-                <FormInput label="Name des Events" name="name" placeholder="Go-Kart fahren" />
-                <FormInput label="Ort" name="location" placeholder="Am Eck" />
-                <View gap="$1.5">
-                  <SizableText>Zeitpunkt</SizableText>
-                  <Calendar date={date} onDateSelected={setDate} />
-                </View>
-                <FormTextArea
-                  multiline
-                  verticalAlign="top"
-                  label="Details"
-                  name="description"
-                  placeholder="Weitere Details zum Go-Kart fahren"
-                />
-                <FormInput
-                  autoCapitalize="none"
-                  autoComplete="url"
-                  textContentType="URL"
-                  autoCorrect={false}
-                  name="link"
-                  label="Link zu einer Webseite"
-                />
-              </FormProvider>
-            </ScrollView>
-          </View>
-        </ScrollView>
-        <Button
-          marginHorizontal="$4"
-          onPress={form.handleSubmit((data) => {
-            void handleCreateEvent({ ...data, eventTime: date.valueOf().toString() });
-          })}
-        >
-          Event erstellen
-        </Button>
-      </View>
+        Event erstellen
+      </Button>
+      <BlocksSheet
+        open={blocksOpen}
+        onOpenChange={setBlocksOpen}
+        onBlocksSelected={setAdditionalBlocks}
+      />
     </>
   );
 };

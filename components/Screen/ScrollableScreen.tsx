@@ -1,12 +1,11 @@
 import { PropsWithChildren, ReactNode } from 'react';
 import { SizableText, View, XStack } from 'tamagui';
-import { BackButton } from '@/components/BackButton';
-import { router } from 'expo-router';
 import { ScrollView } from '@/components/tamagui/ScrollView';
 
 type ScreenProps = PropsWithChildren & {
   showBackButton?: boolean;
   title?: string;
+  back?: ReactNode;
   action?: ReactNode;
   submit?: ReactNode;
 };
@@ -14,6 +13,7 @@ type ScreenProps = PropsWithChildren & {
 export const ScrollableScreen = ({
   children,
   showBackButton = false,
+  back,
   title,
   action,
 }: ScreenProps) => {
@@ -25,17 +25,19 @@ export const ScrollableScreen = ({
         backgroundColor: '$background',
       }}
     >
-      <XStack alignItems="center">
-        <View flex={0.5}>{showBackButton && router.canGoBack() ? <BackButton /> : <View />}</View>
-        <View flex={1}>
-          <SizableText size="$6" textAlign="center">
-            {title}
-          </SizableText>
-        </View>
-        <View flex={0.5} alignItems="flex-end">
-          {action}
-        </View>
-      </XStack>
+      {(back || title || action) && (
+        <XStack alignItems="center">
+          <View flex={0.2}>{back}</View>
+          <View flex={1}>
+            <SizableText size="$8" textAlign="center">
+              {title}
+            </SizableText>
+          </View>
+          <View flex={0.2} alignItems="flex-end">
+            {action}
+          </View>
+        </XStack>
+      )}
       {children}
     </ScrollView>
   );

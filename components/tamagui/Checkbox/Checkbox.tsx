@@ -18,7 +18,7 @@ export const Checkbox = ({ checked, children, ...props }: CheckboxProps) => {
   };
 
   return (
-    <XStack alignItems="center" gap="$4">
+    <XStack alignItems="center" gap={props.gap ?? '$4'}>
       <TamaguiCheckbox {...props}>
         <TamaguiCheckbox.Indicator>
           <CheckIcon />
