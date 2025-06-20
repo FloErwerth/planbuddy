@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Separator, SizableText, View, XStack } from 'tamagui';
 import { Calendar } from '@/components/Calendar';
 import { useCreateEventMutation } from '@/api/events/mutations';
@@ -11,9 +11,10 @@ import { FormTextArea } from '@/components/FormFields';
 import { Button } from '@/components/tamagui/Button';
 import { ScrollableScreen } from '@/components/Screen';
 import { EventCreationImage } from '@/screens/EventCreation/EventCreationImage';
-import { BlocksSheet } from '@/sheets/BlocksSheet';
+import { router } from 'expo-router';
 
-export const EventCreation = () => {
+type EventCreationProps = { onEventCreated: () => void };
+export const EventCreation = ({ onEventCreated }: EventCreationProps) => {
   const now = new Date();
   const [start, setStart] = useState<Date>(now);
   const [end, setEnd] = useState<Date>(
@@ -33,8 +34,6 @@ export const EventCreation = () => {
 
   const [imageToUpload, setImageToUpload] = useState<string>();
   const [isLoading, setIsLoading] = useState(false);
-  const [blocksOpen, setBlocksOpen] = useState(false);
-  const [additionalBlocks, setAdditionalBlocks] = useState<ReactNode>([]);
 
   const handleSetStart = (date: Date) => {
     setStart(date);
@@ -52,14 +51,24 @@ export const EventCreation = () => {
 
   const handleCreateEvent = useCallback(
     async (data: Event) => {
-      setIsLoading(true);
+      try {
+        setIsLoading(true);
+        const createdEvent = await createEvent(data);
+        if (!createdEvent) {
+          throw new Error('Event creation failed');
+        }
+        if (imageToUpload && createdEvent) {
+          await uploadEventImage({ eventId: createdEvent.id, image: imageToUpload });
+        }
+        setIsLoading(false);
+        onEventCreated();
+        router.replace({ pathname: '/eventDetails', params: { eventId: createdEvent.id } });
+      } catch (e) {
+        console.error(e);
+      }
     },
-    [createEvent, start, end, imageToUpload, uploadEventImage]
+    [createEvent, imageToUpload, onEventCreated, uploadEventImage]
   );
-
-  const handleOpenBlocks = () => {
-    setBlocksOpen(true);
-  };
 
   const hasErrors = Object.values(form.formState.errors).length > 0;
   return (
@@ -113,10 +122,6 @@ export const EventCreation = () => {
 
             <FormInput label="Ort" name="location" />
             <FormTextArea multiline verticalAlign="top" label="Details" name="description" />
-            {additionalBlocks}
-            <Button variant="secondary" onPress={handleOpenBlocks}>
-              Weitere Blöcke hinzufügen
-            </Button>
           </FormProvider>
         </View>
       </ScrollableScreen>
@@ -134,11 +139,6 @@ export const EventCreation = () => {
       >
         Event erstellen
       </Button>
-      <BlocksSheet
-        open={blocksOpen}
-        onOpenChange={setBlocksOpen}
-        onBlocksSelected={setAdditionalBlocks}
-      />
     </>
   );
 };

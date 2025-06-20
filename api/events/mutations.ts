@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { useGetUser } from '@/store/user';
 import { supabase } from '@/api/supabase';
-import { Event, Participant } from './types';
+import { BackendEvent, backendEventSchema, Event, Participant } from './types';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { useUploadEventImageMutation } from '@/api/images';
 import { QUERY_KEYS } from '@/api/queryKeys';
@@ -11,7 +11,7 @@ export const useCreateEventMutation = () => {
   const { mutateAsync: uploadEventImage } = useUploadEventImageMutation();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (event: Event) => {
+    mutationFn: async (event: Event): Promise<BackendEvent | undefined> => {
       if (user === undefined) {
         return undefined;
       }
@@ -19,19 +19,18 @@ export const useCreateEventMutation = () => {
       const result: PostgrestSingleResponse<Event[]> = await supabase
         .from('events')
         .insert({ creatorId: user.id, ...event } satisfies Event)
-        .select();
-
-      if (result.error) {
-        throw new Error(result.error.message);
-      }
+        .select()
+        .throwOnError();
 
       if (result.data.length > 1) {
         throw new Error('Something went wrong with the event creation in the database');
       }
 
+      const insertedEvent = backendEventSchema.parse(result.data[0]);
+
       const participantResult = await supabase.from('participants').insert({
         userId: user.id,
-        eventId: result.data[0].id,
+        eventId: insertedEvent.id,
         role: 'creator',
         status: 'accepted',
       });
@@ -40,7 +39,7 @@ export const useCreateEventMutation = () => {
         throw new Error(participantResult.error.message);
       }
 
-      return result.data[0];
+      return insertedEvent;
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries([QUERY_KEYS.EVENTS.QUERY]);

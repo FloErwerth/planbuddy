@@ -1,15 +1,15 @@
-import { Avatar, Separator, SizableText, View, XStack } from 'tamagui';
+import { Avatar, SizableText, View, XStack } from 'tamagui';
 import { Screen } from '@/components/Screen';
 import { BackButton } from '@/components/BackButton';
-import { Check, Minus, X } from '@tamagui/lucide-icons';
 import { useParticipantsImageQuery, useParticipantsQuery } from '@/api/events/queries';
 import { Redirect, useGlobalSearchParams } from 'expo-router';
 import { ActivityIndicator } from 'react-native';
-import { ParticipantQueryResponse, ParticipantStatus } from '@/api/events/types';
-import { useGetUser } from '@/store/user';
-import { Card } from '@/components/tamagui/Card';
+import { ParticipantQueryResponse } from '@/api/events/types';
 import { Button } from '@/components/tamagui/Button';
-import { useUpdateParticipationMutation } from '@/api/events/mutations';
+import { useState } from 'react';
+import { z } from 'zod';
+import { Eye } from '@tamagui/lucide-icons';
+import { ScrollView } from '@/components/tamagui/ScrollView';
 
 const ParticipantAvatar = ({
   participant: { firstName, lastName, userId },
@@ -31,11 +31,13 @@ const ParticipantAvatar = ({
   );
 };
 
+const filter = z.enum(['accepted', 'declined', 'pending']);
+type Filter = z.infer<typeof filter>;
+
 export default function Participants() {
   const { eventId = '' } = useGlobalSearchParams<{ eventId: string }>();
   const { data: participants, isLoading } = useParticipantsQuery(eventId);
-  const user = useGetUser();
-  const { mutate } = useUpdateParticipationMutation();
+  const [activeFilters, setActiveFilters] = useState<Filter[]>([]);
 
   if (isLoading) {
     return <ActivityIndicator />;
@@ -45,92 +47,78 @@ export default function Participants() {
     return <Redirect href=".." />;
   }
 
-  const sortedParticipants = participants.sort((a, b) => {
-    if (b.role === 'creator' && a.role !== 'creator') {
-      return 1;
-    }
-    if (b.role === 'admin' && a.role !== 'admin') {
-      return 1;
-    }
-    if (b.role === 'guest' && a.role !== 'guest') {
-      return -1;
-    }
-    return 0;
-  });
-
-  const total = participants.length;
-  const accepted = participants.filter((part) => part.status === 'accepted').length;
-
-  const StatusIcon = ({ status }: { status: ParticipantStatus }) => {
-    switch (status) {
-      case 'accepted':
-        return <Check color="green" size="$1.5" />;
-      case 'declined':
-        return <X color="red" size="$1.5" />;
-      default:
-        return <Minus color="$color.yellow8Light" size="$1.5" />;
+  const toggleFilter = (toggledFilter: Filter) => {
+    if (activeFilters.includes(toggledFilter)) {
+      setActiveFilters((filters) => filters.filter((filter) => filter !== toggledFilter));
+    } else {
+      setActiveFilters((filters) => [...filters, toggledFilter]);
     }
   };
 
-  const me = sortedParticipants.find((participant) => participant.id === user?.id);
+  const acceptedFilterActive = activeFilters.includes('accepted');
+  const declinedFilterActive = activeFilters.includes('declined');
+  const pendingFilterActived = activeFilters.includes('pending');
 
-  if (!me) {
-    return;
-  }
-
-  const decline = () => {
-    mutate({
-      id: me?.id,
-      userId: me.userId,
-      eventId: me.eventId,
-      role: me.role,
-      status: 'declined',
-    });
-  };
-
-  const accept = () => {
-    mutate({
-      id: me?.id,
-      userId: me.userId,
-      eventId: me.eventId,
-      role: me.role,
-      status: 'accepted',
-    });
-  };
-
+  const noFilterActive = !pendingFilterActived && !declinedFilterActive && !acceptedFilterActive;
   return (
-    <Screen back={<BackButton href=".." />} title="Teilnehmer">
-      <SizableText>
-        {total} eingeladen Teilnehmer, {accepted} haben zugesagt
-      </SizableText>
-      <Card gap="$2" justifyContent="center" alignItems="center">
-        <SizableText size="$5">Bitte sage zu oder ab</SizableText>
-        <XStack gap="$4">
-          <Button onPress={accept} flex={1} backgroundColor="$color.green11Light">
-            Zusagen
+    <>
+      <Screen back={<BackButton href=".." />} title="Teilnehmer">
+        <XStack gap="$3">
+          <Button
+            size="$2"
+            variant={noFilterActive ? 'primary' : 'secondary'}
+            borderRadius="$12"
+            onPress={() => setActiveFilters([])}
+          >
+            Alle
+            {noFilterActive && <Eye color="$background" size="$1" />}
           </Button>
-          <Button flex={1} onPress={decline} backgroundColor="$color.red11Light">
-            Absagen
+          <Button
+            size="$2"
+            variant={acceptedFilterActive ? 'primary' : 'secondary'}
+            borderRadius="$12"
+            onPress={() => toggleFilter('accepted')}
+          >
+            Zugesagt
+            {acceptedFilterActive && <Eye color="$background" size="$1" />}
+          </Button>
+          <Button
+            onPress={() => toggleFilter('declined')}
+            size="$2"
+            variant={declinedFilterActive ? 'primary' : 'secondary'}
+            borderRadius="$12"
+          >
+            Abgesagt
+            {declinedFilterActive && <Eye color="$background" size="$1" />}
+          </Button>
+          <Button
+            size="$2"
+            onPress={() => toggleFilter('pending')}
+            variant={pendingFilterActived ? 'primary' : 'secondary'}
+            borderRadius="$12"
+          >
+            Ausstehend
+            {pendingFilterActived && <Eye color="$background" size="$1" />}
           </Button>
         </XStack>
-      </Card>
-      {sortedParticipants.map((participant) => (
-        <>
-          <Separator borderColor="lightgrey" />
-          <XStack justifyContent="space-between" alignItems="center">
-            <XStack gap="$4" alignItems="center">
-              <ParticipantAvatar participant={participant} />
-              <View>
-                <SizableText size="$5">
-                  {participant.firstName} {participant.lastName}
-                </SizableText>
-                <SizableText size="$2">{participant.role}</SizableText>
-              </View>
+      </Screen>
+      <ScrollView withShadow contentContainerStyle={{ padding: '$4' }}>
+        {participants.map((participant) => (
+          <>
+            <XStack justifyContent="space-between" alignItems="center">
+              <XStack gap="$4" alignItems="center">
+                <ParticipantAvatar participant={participant} />
+                <View>
+                  <SizableText size="$5">
+                    {participant.firstName} {participant.lastName}
+                  </SizableText>
+                  <SizableText size="$2">{participant.role}</SizableText>
+                </View>
+              </XStack>
             </XStack>
-            <StatusIcon status={participant.status} />
-          </XStack>
-        </>
-      ))}
-    </Screen>
+          </>
+        ))}
+      </ScrollView>
+    </>
   );
 }

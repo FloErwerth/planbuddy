@@ -3,8 +3,7 @@ import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
 import { TabBarButton } from '@/components/TabBarIcon';
 import { Home, Plus, User2 } from '@tamagui/lucide-icons';
 import { useState } from 'react';
-import { Sheet } from '@/components/tamagui/Sheet';
-import { EventCreation } from '@/screens/EventCreation';
+import { EventCreationSheet } from '@/sheets/EventCreationSheet';
 
 const screenOptions: BottomTabNavigationOptions = {
   tabBarStyle: {
@@ -16,23 +15,11 @@ const screenOptions: BottomTabNavigationOptions = {
 };
 
 export default function TabsLayout() {
-  const [isVisible, setIsVisible] = useState<boolean>(false);
-
-  const handleClose = () => {
-    setIsVisible(false);
-  };
+  const [isEventCreationOpen, setIsEventCreationOpen] = useState<boolean>(false);
 
   return (
     <>
-      <Sheet
-        snapPoints={[97]}
-        hideHandle
-        snapPointsMode="percent"
-        open={isVisible}
-        onOpenChange={handleClose}
-      >
-        <EventCreation />
-      </Sheet>
+      <EventCreationSheet open={isEventCreationOpen} onOpenChange={setIsEventCreationOpen} />
       <Tabs screenOptions={screenOptions} initialRouteName="index">
         <Tabs.Screen
           name="index"
@@ -47,7 +34,7 @@ export default function TabsLayout() {
           listeners={{
             tabPress: (e) => {
               e.preventDefault();
-              setIsVisible(true);
+              setIsEventCreationOpen(true);
             },
           }}
           options={{

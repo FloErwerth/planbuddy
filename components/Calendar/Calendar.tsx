@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { Button } from '@/components/tamagui/Button';
 import { SizableText, View, XStack } from 'tamagui';
-import { formatToDate, formatToTime } from '@/components/Calendar/utils';
+import { formatToDate, formatToTime } from '@/utils/date';
 
 type CalendarProps = {
   onDateSelected: (date: Date) => void;

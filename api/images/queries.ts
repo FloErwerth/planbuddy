@@ -36,7 +36,7 @@ export const useProfileImageQuery = () => {
 
 export const useEventImageQuery = (eventId?: string) => {
   return useQuery({
-    queryFn: async () => {
+    queryFn: async (): Promise<string | undefined> => {
       if (!eventId) {
         return undefined;
       }

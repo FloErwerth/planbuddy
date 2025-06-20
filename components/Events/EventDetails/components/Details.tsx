@@ -1,9 +1,15 @@
-import { ScrollView } from '@/components/tamagui/ScrollView';
-import { SizableText, useWindowDimensions, View, XStack } from 'tamagui';
-import { ChevronRight, MessageSquareText, Users } from '@tamagui/lucide-icons';
+import { SizableText, useWindowDimensions, View, XStack, YStack } from 'tamagui';
+import {
+  CalendarDays,
+  ChevronRight,
+  MapPin,
+  MessageSquareText,
+  Users,
+} from '@tamagui/lucide-icons';
 import { Pressable } from 'react-native';
 import { router } from 'expo-router';
 import { useSingleEventQuery } from '@/api/events/queries';
+import { formatToDate, formatToTime } from '@/utils/date';
 
 type DetailsProps = {
   eventId: string;
@@ -20,59 +26,75 @@ export const Details = ({ eventId }: DetailsProps) => {
 
   return (
     <>
-      <ScrollView
-        contentContainerStyle={{
-          padding: '$4',
-          paddingTop: 0,
-        }}
-      >
-        <View
-          position="relative"
-          gap="$4"
-          width={width}
-          right="$4"
-          overflow="hidden"
-          height="100%"
-          borderTopLeftRadius="$8"
-          borderTopRightRadius="$8"
+      <SizableText color="$primary" size="$8">
+        {event.name}
+      </SizableText>
+      <XStack alignItems="center" gap="$3">
+        <CalendarDays />
+        <XStack
+          flex={1}
+          justifyContent="space-evenly"
+          alignItems="center"
+          backgroundColor="$inputBackground"
+          padding="$3"
+          borderRadius="$4"
         >
-          <View padding="$4" gap="$4">
-            <View>
-              <SizableText color="$primary" size="$8">
-                {event.name}
-              </SizableText>
-            </View>
-            <SizableText>{event.location}</SizableText>
-            {event.description && (
-              <XStack gap="$3" alignItems="center">
-                <MessageSquareText />
-                <View>
-                  <SizableText fontWeight="$6">Beschreibung</SizableText>
-                  <SizableText>{event.description}</SizableText>
-                </View>
-              </XStack>
-            )}
-            <Pressable
-              onPress={() =>
-                router.push({ pathname: `/eventDetails/participants`, params: { eventId } })
-              }
-            >
-              <XStack alignItems="center" justifyContent="space-between">
-                <XStack gap="$3" alignItems="center">
-                  <Users />
-                  <View>
-                    <SizableText fontWeight="$6">
-                      {participants.accepted} Teilnehmer, die zugesagt haben
-                    </SizableText>
-                    <SizableText>{participants.total} eingeladene Teilnehmer</SizableText>
-                  </View>
-                </XStack>
-                <ChevronRight />
-              </XStack>
-            </Pressable>
-          </View>
+          <YStack>
+            <SizableText size="$5">{formatToDate(parseInt(event.startTime))}</SizableText>
+            <SizableText>{formatToTime(parseInt(event.startTime))} Uhr</SizableText>
+          </YStack>
+          <SizableText>bis</SizableText>
+          <YStack>
+            <SizableText size="$5">{formatToDate(parseInt(event.endTime))}</SizableText>
+            <SizableText>{formatToTime(parseInt(event.endTime))} Uhr</SizableText>
+          </YStack>
+        </XStack>
+      </XStack>
+      <XStack alignItems="center" gap="$3">
+        <MapPin />
+        <View
+          flex={1}
+          justifyContent="space-between"
+          backgroundColor="$inputBackground"
+          padding="$3"
+          borderRadius="$4"
+        >
+          <SizableText>{event.location}</SizableText>
         </View>
-      </ScrollView>
+      </XStack>
+      {event.description && (
+        <XStack gap="$3" alignItems="center">
+          <MessageSquareText />
+          <View
+            flex={1}
+            justifyContent="space-evenly"
+            backgroundColor="$inputBackground"
+            padding="$3"
+            borderRadius="$4"
+          >
+            <SizableText>{event.description}</SizableText>
+          </View>
+        </XStack>
+      )}
+      <Pressable
+        onPress={() => router.push({ pathname: `/eventDetails/participants`, params: { eventId } })}
+      >
+        <XStack gap="$3" alignItems="center">
+          <Users />
+          <View
+            flex={1}
+            justifyContent="space-between"
+            alignItems="center"
+            backgroundColor="$inputBackground"
+            padding="$3"
+            borderRadius="$4"
+            flexDirection="row"
+          >
+            <SizableText>Teilnehmer</SizableText>
+            <ChevronRight />
+          </View>
+        </XStack>
+      </Pressable>
     </>
   );
 };
