@@ -5,7 +5,6 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { FormInput } from '@/components/FormFields/FormInput';
 import { AvatarImagePicker } from '@/components/AvatarImagePicker';
 import { useEffect, useState } from 'react';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useProfileImageQuery, useUploadProfilePictureMutation } from '@/api/images';
 import { useGetUser } from '@/store/user';
@@ -13,18 +12,13 @@ import { useInsertUserMutation } from '@/api/user';
 import { router } from 'expo-router';
 import { readInviteId } from '@/utils/invite';
 import { useCreateParticipationMutation } from '@/api/events/mutations';
-
-export const onboardingSchema = z.object({
-  firstName: z.string({ message: 'Wir brauchen deinen Vornamen zur Anzeige in Events.' }),
-  lastName: z.string({ message: 'Wir brauchen deinen Nachnamen zur Anzeige in Events.' }),
-});
-
-type OnboardingSchema = z.infer<typeof onboardingSchema>;
+import { FormFieldPhoneInput } from '@/components/FormFields/FormFieldPhoneInput';
+import { OnboardingSchema, onboardingSchema } from '@/api/types';
 
 export default function Onboarding() {
   const form = useForm<OnboardingSchema>({ resolver: zodResolver(onboardingSchema) });
   const user = useGetUser();
-  const { data: imageFromDatabase } = useProfileImageQuery();
+  const { data: imageFromDatabase } = useProfileImageQuery(user?.id);
   const { mutateAsync: insertUser } = useInsertUserMutation();
   const { mutateAsync: joinEvent } = useCreateParticipationMutation();
 
@@ -43,7 +37,7 @@ export default function Onboarding() {
     router.replace('/(tabs)');
   };
 
-  const completeOnboarding = async ({ firstName, lastName }: OnboardingSchema) => {
+  const completeOnboarding = async ({ firstName, lastName, phone }: OnboardingSchema) => {
     if (!user || !user.email) {
       return;
     }
@@ -52,9 +46,8 @@ export default function Onboarding() {
       const res = await insertUser({
         firstName,
         lastName,
-        wasOnboarded: true,
+        phone: `+49${phone}`,
         email: user.email,
-        eventIds: [],
       });
 
       if (file !== imageFromDatabase) {
@@ -70,11 +63,11 @@ export default function Onboarding() {
 
   return (
     <Screen flex={1}>
-      <SizableText size="$6" textAlign="center">
+      <SizableText size="$8" textAlign="center">
         Herzlich Willkommen bei PlanBuddy!
       </SizableText>
-      <SizableText textAlign="center">
-        Bevor Du loslegen kannst benötigen wir noch ein paar wenige Informationen von Dir.
+      <SizableText>
+        Wenn Du willst such Dir ein schickes Profilbild aus und lade es hoch
       </SizableText>
       <AvatarImagePicker
         editable
@@ -82,12 +75,17 @@ export default function Onboarding() {
         onImageDeleted={() => setFile(undefined)}
         onImageSelected={setFile}
       />
+      <SizableText>
+        Damit deine Freunde dich ohne Probleme finden können gib uns bitte folgende Informationen.
+        Diese Angaben sind alle optional.
+      </SizableText>
       <FormProvider {...form}>
         <FormInput label="Vorname" name="firstName" />
         <FormInput label="Nachname" name="lastName" />
+        <FormFieldPhoneInput label="Telefonnummer" name="phone" />
       </FormProvider>
       <View flex={1} />
-      <Button onPress={form.handleSubmit(completeOnboarding)}>Complete</Button>
+      <Button onPress={form.handleSubmit(completeOnboarding)}>Abschließen</Button>
     </Screen>
   );
 }

@@ -4,8 +4,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { FormInput } from '@/components/FormFields/FormInput';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/tamagui/Button';
-import { View } from 'tamagui';
-import { z } from 'zod';
+import { SheetProps, View } from 'tamagui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useUpdateUserMutation, useUserQuery } from '@/api/user';
 import {
@@ -14,21 +13,11 @@ import {
   useUploadProfilePictureMutation,
 } from '@/api/images';
 import { Input } from '@/components/tamagui/Input';
+import { FormFieldPhoneInput } from '@/components/FormFields/FormFieldPhoneInput';
+import { OnboardingSchema, onboardingSchema } from '@/api/types';
+import { Sheet } from '@/components/tamagui/Sheet';
 
-const updateProfileSchema = z.object({
-  firstName: z
-    .string()
-    .min(1, { message: 'Wir brauchen deinen Vornamen' })
-    .max(20, { message: 'Bitte gib einen kürzeren Vornamen an' }),
-  lastName: z
-    .string()
-    .min(1, { message: 'Wir brauchen deinen Nachnamen' })
-    .max(20, { message: 'Bitte gib einen kürzeren Vornamen an' }),
-});
-
-type UpdateProfileSchema = z.infer<typeof updateProfileSchema>;
-
-export default function EditProfile() {
+export const EditProfileSheet = ({ open, onOpenChange }: SheetProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { data: user } = useUserQuery();
   const { mutate: updateUser } = useUpdateUserMutation();
@@ -41,7 +30,7 @@ export default function EditProfile() {
     setImage(imageFromDatabase);
   }, [imageFromDatabase]);
 
-  const form = useForm<UpdateProfileSchema>({ resolver: zodResolver(updateProfileSchema) });
+  const form = useForm<OnboardingSchema>({ resolver: zodResolver(onboardingSchema) });
 
   useEffect(() => {
     if (user) {
@@ -62,8 +51,13 @@ export default function EditProfile() {
   }, [deleteImage]);
 
   return (
-    <>
-      <Screen flex={1} showBackButton title="Profil bearbeiten">
+    <Sheet
+      snapPointsMode="percent"
+      open={open}
+      onOpenChange={onOpenChange}
+      unmountChildrenWhenHidden
+    >
+      <Screen flex={1} title="Profil bearbeiten">
         <AvatarImagePicker
           editable
           image={image}
@@ -75,12 +69,13 @@ export default function EditProfile() {
           <FormProvider {...form}>
             <FormInput label="Vorname" name="firstName" />
             <FormInput label="Nachname" name="lastName" />
+            <FormFieldPhoneInput label="Telefonnummer" name="phone" />
           </FormProvider>
         </View>
         <Button onPress={handleSubmit} disabled={!form.formState.isDirty || isLoading}>
           Änderungen abschicken
         </Button>
       </Screen>
-    </>
+    </Sheet>
   );
-}
+};

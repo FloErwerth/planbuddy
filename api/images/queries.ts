@@ -1,38 +1,6 @@
 import { useQuery } from 'react-query';
 import { supabase } from '@/api/supabase';
-import { useGetUser } from '@/store/user';
 import { QUERY_KEYS } from '@/api/queryKeys';
-
-export const useProfileImageQuery = () => {
-  const user = useGetUser();
-
-  return useQuery({
-    queryFn: async (): Promise<string | undefined> => {
-      if (!user) {
-        return;
-      }
-
-      const download = await supabase.storage
-        .from('profile-images')
-        .download(`${user.id}/profileImage.png`);
-
-      if (download.error) {
-        throw new Error(download.error.message);
-      }
-
-      if (download.data.size < 100) {
-        return undefined;
-      }
-
-      return new Promise((resolve, _) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.readAsDataURL(download.data);
-      });
-    },
-    queryKey: [QUERY_KEYS.IMAGES.PROFILES.QUERY, user?.id],
-  });
-};
 
 export const useEventImageQuery = (eventId?: string) => {
   return useQuery({
@@ -62,5 +30,35 @@ export const useEventImageQuery = (eventId?: string) => {
       });
     },
     queryKey: [QUERY_KEYS.IMAGES.EVENTS.QUERY, eventId],
+  });
+};
+
+export const useProfileImageQuery = (userId?: string) => {
+  return useQuery({
+    queryFn: async (): Promise<string | undefined> => {
+      // get image
+      const download = await supabase.storage
+        .from('profile-images')
+        .download(`${userId}/profileImage.png`);
+
+      if (download.error) {
+        if (download.error.name === 'StorageUnknownError') {
+          // this is likely because of no image uploaded for the event
+          return undefined;
+        }
+        throw new Error(download.error.message);
+      }
+
+      if (download.data.size < 100) {
+        return;
+      }
+
+      return new Promise((resolve, _) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(download.data);
+      });
+    },
+    queryKey: [QUERY_KEYS.PARTICIPANTS.IMAGE_QUERY, userId],
   });
 };

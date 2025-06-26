@@ -58,6 +58,13 @@ export default {
           organization: 'florian-erwerth',
         },
       ],
+      [
+        'expo-contacts',
+        {
+          contactsPermission:
+            'Erlaube PlanBuddy deine Kontakte zu benutzen, um Freunde hinzuzufügen.',
+        },
+      ],
     ],
     experiments: {
       typedRoutes: true,

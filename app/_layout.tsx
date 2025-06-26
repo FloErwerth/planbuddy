@@ -1,6 +1,5 @@
 import { SplashScreen, Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
-import { useEffect } from 'react';
 import { Providers } from '@/providers';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import * as Sentry from '@sentry/react-native';
@@ -33,12 +32,6 @@ export default Sentry.wrap(function RootLayout() {
     BoldItalic: require('../assets/fonts/Roboto-BoldItalic.ttf'),
   });
 
-  useEffect(() => {
-    if (fontsLoaded) {
-      setTimeout(SplashScreen.hideAsync, 1000);
-    }
-  }, [fontsLoaded]);
-
   if (!fontsLoaded) {
     return null;
   }
@@ -46,6 +39,7 @@ export default Sentry.wrap(function RootLayout() {
   return (
     <Providers>
       <Stack>
+        <Stack.Screen name="index" options={defaultOptions} />
         <Stack.Screen name="(tabs)" options={defaultOptions} />
         <Stack.Screen name="onboarding" options={defaultOptions} />
         <Stack.Screen name="joinEvent" options={defaultOptions} />

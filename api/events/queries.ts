@@ -9,8 +9,7 @@ import {
   ParticipantQueryResponse,
 } from '@/api/events/types';
 import { QUERY_KEYS } from '@/api/queryKeys';
-
-type Role = 'guest' | 'admin' | 'creator';
+import { z } from 'zod';
 
 export const useEventsQuery = () => {
   const user = useGetUser();
@@ -43,51 +42,31 @@ type SingleQueryResponse = {
   numberOfParticipants?: number;
 };
 
-export const useParticipantsQuery = (eventId: string) => {
+const participantFilter = z.enum(['accepted', 'declined', 'undecided']);
+export const ParticipanFilter = participantFilter.enum;
+export type ParticipantFilter = z.infer<typeof participantFilter>;
+
+export const useParticipantsQuery = (eventId: string, filters: ParticipantFilter[] = []) => {
   return useQuery({
     queryFn: async (): Promise<ParticipantQueryResponse[]> => {
-      const participantsAndUsers = await supabase
+      const participantsAndUsersQuery = supabase
         .from('participants')
         .select('*, users(*)')
-        .eq('eventId', eventId)
-        .throwOnError();
+        .eq('eventId', eventId);
 
-      return participantsAndUsers.data.map((data) => ({
+      for (let i = 0; i < filters.length; ++i) {
+        participantsAndUsersQuery.eq('status', filters[i]);
+      }
+
+      participantsAndUsersQuery.throwOnError();
+      const result = await participantsAndUsersQuery;
+
+      return result.data?.map((data) => ({
         ...data,
         ...data.users,
       })) as ParticipantQueryResponse[];
     },
-    queryKey: [QUERY_KEYS.PARTICIPANTS.QUERY, eventId],
-  });
-};
-
-export const useParticipantsImageQuery = (userId?: string) => {
-  return useQuery({
-    queryFn: async (): Promise<string | undefined> => {
-      // get image
-      const download = await supabase.storage
-        .from('profile-images')
-        .download(`${userId}/profileImage.png`);
-
-      if (download.error) {
-        if (download.error.name === 'StorageUnknownError') {
-          // this is likely because of no image uploaded for the event
-          return undefined;
-        }
-        throw new Error(download.error.message);
-      }
-
-      if (download.data.size < 100) {
-        return;
-      }
-
-      return new Promise((resolve, _) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.readAsDataURL(download.data);
-      });
-    },
-    queryKey: [QUERY_KEYS.PARTICIPANTS.IMAGE_QUERY, userId],
+    queryKey: [QUERY_KEYS.PARTICIPANTS.QUERY, eventId, ...(filters ?? [])],
   });
 };
 

@@ -5,12 +5,13 @@ import { InputWithIcon } from '@/components/Inputs/InputWithIcon';
 import { useState } from 'react';
 import { Eye, EyeClosed } from '@tamagui/lucide-icons';
 import { Pressable } from 'react-native';
+import { InputProps } from 'tamagui';
 
-export const PasswordInput = <T extends FieldValues>({
+export const FormPasswordInput = <T extends FieldValues>({
   name,
   label,
   ...inputProps
-}: BaseFormFieldProps<T>) => {
+}: BaseFormFieldProps<T> & InputProps) => {
   const [showText, setShowText] = useState(false);
 
   const Icon = showText ? <Eye size="$1" /> : <EyeClosed size="$1" />;

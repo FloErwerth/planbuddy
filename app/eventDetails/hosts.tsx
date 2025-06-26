@@ -5,7 +5,7 @@ import { BackButton } from '@/components/BackButton';
 export default function Hosts() {
   return (
     <Screen>
-      <BackButton />
+      <BackButton href=".." />
       <SizableText textAlign="center" size="$8">
         Dein Host
       </SizableText>

@@ -8,7 +8,8 @@ export default function SettingsLayout() {
   return (
     <Stack>
       <Stack.Screen name="index" options={defaultOptions} />
-      <Stack.Screen name="editProfile" options={defaultOptions} />
+      <Stack.Screen name="friends" options={defaultOptions} />
+      <Stack.Screen name="addFriends" options={defaultOptions} />
     </Stack>
   );
 }

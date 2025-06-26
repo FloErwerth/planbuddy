@@ -40,7 +40,7 @@ export const useInsertUserMutation = () => {
   const queryClient = useQueryClient();
   const user = useGetUser();
   return useMutation({
-    mutationFn: async (insertedUser: Omit<Required<User>, 'id'>) => {
+    mutationFn: async (insertedUser: Omit<User, 'id'>) => {
       if (!user) {
         return;
       }

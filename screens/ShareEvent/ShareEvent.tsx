@@ -21,7 +21,7 @@ export const ShareEvent = () => {
   }
 
   return (
-    <Screen back={<BackButton href=".." />} title={`${event?.event.name} teilen`} gap="$8">
+    <Screen back={<BackButton href=".." />} title={`${event?.name} teilen`} gap="$8">
       <SizableText textAlign="center">Lasse deine Gäste diesen QR Code scannen</SizableText>
       <Card alignSelf="center">
         <QRCode size={width * 0.5} value={invitationLink} />

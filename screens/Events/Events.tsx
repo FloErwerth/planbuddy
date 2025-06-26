@@ -1,33 +1,48 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Screen } from '@/components/Screen';
-import { InputWithClear } from '@/components/Inputs/InputWithClear/InputWithClear';
 import { ScrollView } from '@/components/tamagui/ScrollView';
 import { useEventsQuery } from '@/api/events/queries';
 import { EventSmall } from '@/components/Events/EventSmall';
-import { useGetUser } from '@/store/user';
-import { useCreateParticipationMutation } from '@/api/events/mutations';
+import { SizableText } from 'tamagui';
+import { Button } from '@/components/tamagui/Button';
+import { CalendarX } from '@tamagui/lucide-icons';
+import { EventCreationSheet } from '@/sheets/EventCreationSheet';
 
 const contentContainerStyle = { gap: '$3', paddingVertical: '$4' };
 export const Events = () => {
-  const [search, setSearch] = useState('');
-  const { mutateAsync: joinEvent } = useCreateParticipationMutation();
+  const [isEventCreationOpen, setIsEventCreationOpen] = useState<boolean>(false);
 
-  const user = useGetUser();
-  const events = useEventsQuery();
+  const { data: events, isLoading } = useEventsQuery();
 
   const mappedData = useMemo(
-    () => (events.data ?? []).map((event) => <EventSmall key={event.id} {...event} />),
+    () => (events ?? []).map((event) => <EventSmall key={event.id} {...event} />),
     [events]
   );
 
+  const openEventCreationSheet = useCallback(() => {
+    setIsEventCreationOpen(true);
+  }, []);
+
   return (
     <>
-      <Screen>
-        <InputWithClear placeholder="Nach Events suchen" value={search} onChangeText={setSearch} />
-      </Screen>
-      <ScrollView withShadow contentContainerStyle={contentContainerStyle}>
-        {mappedData}
-      </ScrollView>
+      <Screen>{/* Bevorstehend und Vergangnen Option */}</Screen>
+      {mappedData.length === 0 ? (
+        <Screen justifyContent="center" alignItems="center" flex={1}>
+          <CalendarX size="$4" />
+          <SizableText textAlign="center">Leider keine bevorstehenden Events vorhanden</SizableText>
+          <SizableText textAlign="center">
+            Dies kannst Du leicht ändern, indem Du ein Event erstellst und Freunde dazu einlädst
+          </SizableText>
+          <Button borderRadius="$12" onPress={openEventCreationSheet}>
+            Event erstellen
+          </Button>
+        </Screen>
+      ) : (
+        <ScrollView withShadow contentContainerStyle={contentContainerStyle}>
+          {mappedData}
+        </ScrollView>
+      )}
+      <EventCreationSheet open={isEventCreationOpen} onOpenChange={setIsEventCreationOpen} />
     </>
   );
 };

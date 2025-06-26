@@ -5,7 +5,7 @@ import { useSingleEventQuery } from '@/api/events/queries';
 import { useGetUser } from '@/store/user';
 import { useEventImageQuery } from '@/api/images';
 import { useState } from 'react';
-import { Details } from '@/components/Events/EventDetails/components/Details';
+import { Details } from '@/screens/EventDetails/components/Details';
 import { ShareSheet } from '@/sheets/ShareSheet';
 import { ScrollableScreen } from '@/components/Screen';
 import { View } from 'tamagui';

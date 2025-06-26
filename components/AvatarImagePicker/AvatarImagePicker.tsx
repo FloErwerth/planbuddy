@@ -13,6 +13,7 @@ type AvatarImagePickerProps = {
   onImageSelected?: (imageUri: string) => void;
   onImageDeleted?: () => void;
 };
+
 export const AvatarImagePicker = ({
   editable = false,
   image,
