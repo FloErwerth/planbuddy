@@ -1,9 +1,10 @@
 import { Tabs } from 'expo-router';
 import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
-import { TabBarButton } from '@/components/TabBarIcon';
-import { Home, Plus, User2 } from '@tamagui/lucide-icons';
+import { TabBarIcon } from '@/components/TabBarIcon';
+import { Home, Plus } from '@tamagui/lucide-icons';
 import { useState } from 'react';
 import { EventCreationSheet } from '@/sheets/EventCreationSheet';
+import { ProfileTabBarIcon } from '@/components/ProfileTabBarIcon/ProfileTabBarIcon';
 
 const screenOptions: BottomTabNavigationOptions = {
   tabBarStyle: {
@@ -25,7 +26,7 @@ export default function TabsLayout() {
           name="index"
           options={{
             title: '',
-            tabBarButton: (props) => <TabBarButton Icon={Home} title="Home" {...props} />,
+            tabBarButton: (props) => <TabBarIcon Icon={Home} title="Home" {...props} />,
             ...screenOptions,
           }}
         />
@@ -40,7 +41,7 @@ export default function TabsLayout() {
           options={{
             title: '',
             tabBarButton: (props) => (
-              <TabBarButton
+              <TabBarIcon
                 scale={1.6}
                 Icon={(props) => <Plus {...props} />}
                 title="Add"
@@ -54,7 +55,7 @@ export default function TabsLayout() {
           name="settings"
           options={{
             title: '',
-            tabBarButton: (props) => <TabBarButton Icon={User2} title="Profile" {...props} />,
+            tabBarButton: (props) => <ProfileTabBarIcon {...props} />,
             ...screenOptions,
           }}
         />

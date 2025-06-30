@@ -36,10 +36,18 @@ export const useEventImageQuery = (eventId?: string) => {
 export const useProfileImageQuery = (userId?: string) => {
   return useQuery({
     queryFn: async (): Promise<string | undefined> => {
+      if (!userId) {
+        return undefined;
+      }
+
       // get image
       const download = await supabase.storage
         .from('profile-images')
         .download(`${userId}/profileImage.png`);
+
+      if (userId.includes('c2a') || userId.includes('68c9535f-9a3d-4af5-ab3a-e2d42e3c91d2')) {
+        console.log(download);
+      }
 
       if (download.error) {
         if (download.error.name === 'StorageUnknownError') {
@@ -47,10 +55,6 @@ export const useProfileImageQuery = (userId?: string) => {
           return undefined;
         }
         throw new Error(download.error.message);
-      }
-
-      if (download.data.size < 100) {
-        return;
       }
 
       return new Promise((resolve, _) => {

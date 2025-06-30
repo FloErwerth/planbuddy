@@ -30,6 +30,7 @@ export const Dialog = ({ title, children, ...props }: DialogProps) => {
           animation={contentAnimation}
           enterStyle={overlayAnimationStyles}
           exitStyle={overlayAnimationStyles}
+          onPress={() => props.onOpenChange?.(false)}
         />
 
         <TamaguiDialog.Content

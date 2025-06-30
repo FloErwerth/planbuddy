@@ -44,13 +44,20 @@ export const Details = ({ eventId }: DetailsProps) => {
           </YStack>
         </XStack>
       </XStack>
-      <PressableRow title={event.location} icon={<MapPin />} />
-      {event.description && <PressableRow title={event.description} icon={<MessageSquareText />} />}
+      <PressableRow icon={<MapPin />}>
+        <SizableText>{event.location}</SizableText>
+      </PressableRow>
+      {event.description && (
+        <PressableRow icon={<MessageSquareText />}>
+          <SizableText>{event.description}</SizableText>
+        </PressableRow>
+      )}
       <PressableRow
-        title="Teilnehmer"
         icon={<Users />}
         onPress={() => router.push({ pathname: `/eventDetails/participants`, params: { eventId } })}
-      />
+      >
+        <SizableText>Teilnehmer</SizableText>
+      </PressableRow>
     </>
   );
 };

@@ -58,11 +58,15 @@ export const useLoginSession = () => {
       data: { user },
     } = await supabase.auth.getUser();
 
-    const userFromDb = await getUserFromDB(user);
-
     setTimeout(() => {
       void SplashScreen.hideAsync();
     }, 500);
+    if (user === null) {
+      router.replace('/');
+      return;
+    }
+
+    const userFromDb = await getUserFromDB(user);
 
     if (user) {
       setUser(user!);
@@ -88,7 +92,7 @@ export const useLoginSession = () => {
     }
     createSessionFromUrl(url).then(async (user) => {
       const userInDB = await getUserFromDB(user?.data.user);
-
+      setUser(user?.data.user!);
       if (userInDB) {
         router.replace('/(tabs)');
         return;
@@ -96,5 +100,5 @@ export const useLoginSession = () => {
 
       router.replace('/onboarding');
     });
-  }, [url]);
+  }, [getUserFromDB, setUser, url]);
 };

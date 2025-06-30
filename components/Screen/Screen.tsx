@@ -13,13 +13,13 @@ export const Screen = ({ children, back = false, title, action, ...props }: Scre
     <View padding="$4" gap="$4" backgroundColor="$background" {...props}>
       {(back || title || action) && (
         <XStack alignItems="center">
-          <View flex={0.2}>{back}</View>
+          <View flex={0.3}>{back}</View>
           <View flex={1}>
             <SizableText size="$8" textAlign="center">
               {title}
             </SizableText>
           </View>
-          <View flex={0.2} alignItems="flex-end">
+          <View flex={0.3} alignItems="flex-end">
             {action}
           </View>
         </XStack>

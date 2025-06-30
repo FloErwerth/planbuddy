@@ -5,9 +5,11 @@ export const userSchema = z.object({
   email: z.string().optional(),
   firstName: z.string().optional(),
   lastName: z.string().optional(),
-  phone: z.string().optional(),
-  eventIds: z.array(z.string()).optional().catch([]),
 });
+
+export const statusSchema = z.enum(['ACCEPTED', 'PENDING', 'DECLINED']);
+export const StatusEnum = statusSchema.enum;
+export type Status = z.infer<typeof statusSchema>;
 
 export type User = z.infer<typeof userSchema>;
 
@@ -17,10 +19,6 @@ export const onboardingSchema = z.object({
     .optional(),
   lastName: z
     .string({ message: 'Wir brauchen deinen Nachnamen zur Anzeige in Events.' })
-    .optional(),
-  phone: z
-    .string()
-    .regex(/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/)
     .optional(),
 });
 

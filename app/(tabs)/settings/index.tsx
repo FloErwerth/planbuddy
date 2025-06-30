@@ -1,8 +1,7 @@
 import { Screen } from '@/components/Screen';
-import { Separator, SizableText, Spinner, View } from 'tamagui';
+import { Separator, SizableText, Spinner, View, XStack } from 'tamagui';
 import { Pressable } from 'react-native';
 import { router } from 'expo-router';
-import { AvatarImagePicker } from '@/components/AvatarImagePicker';
 import { supabase } from '@/api/supabase';
 import { useProfileImageQuery } from '@/api/images';
 import { useUserQuery } from '@/api/user';
@@ -10,12 +9,17 @@ import { PressableRow } from '@/components/PressableRow/PressableRow';
 import { Users } from '@tamagui/lucide-icons';
 import { useState } from 'react';
 import { EditProfileSheet } from '@/sheets/EditProfileSheet';
+import { useSetUser } from '@/store/user';
+import { useQueryClient } from 'react-query';
+import { PendingFriendRequestsDot } from '@/components/PendingFriendRequestsDot/PendingFriendRequestsDot';
+import { UserAvatar } from '@/components/UserAvatar';
 
 export default function SettingsPage() {
   const { data: user, isLoading: isLoadingProfile } = useUserQuery();
   const { data: image, isLoading: isLoadingImage } = useProfileImageQuery(user?.id);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
-  const [friendsOpen, setFriendsOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const setUser = useSetUser();
 
   if (isLoadingProfile || isLoadingImage) {
     return (
@@ -35,19 +39,24 @@ export default function SettingsPage() {
           </Pressable>
         }
       >
-        <AvatarImagePicker image={image} />
-        <View alignSelf="center">
-          <SizableText size="$6">
+        <UserAvatar size="$10" alignSelf="center" {...user} />
+        <View alignSelf="center" justifyContent="center">
+          <SizableText size="$6" textAlign="center">
             {user?.firstName} {user?.lastName}
           </SizableText>
+          <SizableText>{user?.email}</SizableText>
         </View>
         <Separator />
         <PressableRow
           onPress={() => router.push('/(tabs)/settings/friends')}
-          title="Freunde"
           backgroundColor="transparent"
           icon={<Users />}
-        />
+        >
+          <XStack>
+            <SizableText>Freunde</SizableText>
+            <PendingFriendRequestsDot position="relative" />
+          </XStack>
+        </PressableRow>
         <Pressable
           onPress={async () => {
             const result = await supabase.auth.signOut();
@@ -57,7 +66,9 @@ export default function SettingsPage() {
               return;
             }
 
-            router.replace('../..');
+            router.replace('/login');
+            setUser(undefined);
+            await queryClient.invalidateQueries();
           }}
         >
           <SizableText>Logout</SizableText>

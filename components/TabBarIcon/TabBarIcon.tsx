@@ -4,13 +4,14 @@ import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { Button } from '@/components/tamagui/Button';
 import { BottomTabBarButtonProps } from '@react-navigation/bottom-tabs';
 
-type TabBarIconProps = {
+export type TabBarIconProps = {
   Icon: (props: IconProps) => ReactNode;
+  Notification?: ReactNode;
   scale?: number;
   title?: string;
 } & BottomTabBarButtonProps;
 
-export const TabBarButton = ({ Icon, title, scale = 1, ...props }: TabBarIconProps) => {
+export const TabBarIcon = ({ Icon, title, scale = 1, Notification, ...props }: TabBarIconProps) => {
   const focused = props.accessibilityState?.selected ?? false;
 
   const iconStyle = useAnimatedStyle(() => ({
@@ -29,6 +30,7 @@ export const TabBarButton = ({ Icon, title, scale = 1, ...props }: TabBarIconPro
       <Animated.View style={iconStyle}>
         <Icon color={focused ? '$primary' : '$color'} />
       </Animated.View>
+      {Notification}
     </Button>
   );
 };

@@ -1,15 +1,15 @@
 import { ChevronRight } from '@tamagui/lucide-icons';
-import { SizableText, View, XStack, XStackProps } from 'tamagui';
+import { View, XStack, XStackProps } from 'tamagui';
 import { Pressable } from 'react-native';
-import { ReactNode } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 
 type PressableRowProps = {
-  title: string;
   onPress?: () => void;
   icon?: ReactNode;
-} & XStackProps;
+} & XStackProps &
+  PropsWithChildren;
 
-export const PressableRow = ({ onPress, title, icon, ...wrapperProps }: PressableRowProps) => {
+export const PressableRow = ({ onPress, icon, children, ...wrapperProps }: PressableRowProps) => {
   return (
     <Pressable onPress={onPress}>
       <XStack gap="$3" alignItems="center">
@@ -24,7 +24,7 @@ export const PressableRow = ({ onPress, title, icon, ...wrapperProps }: Pressabl
           flexDirection="row"
           {...wrapperProps}
         >
-          <SizableText>{title}</SizableText>
+          {children}
           <ChevronRight />
         </View>
       </XStack>

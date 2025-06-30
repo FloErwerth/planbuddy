@@ -42,7 +42,12 @@ export default {
       ],
     },
     plugins: [
-      'expo-router',
+      [
+        'expo-router',
+        {
+          asyncRoutes: false,
+        },
+      ],
       [
         'expo-image-picker',
         {
@@ -56,13 +61,6 @@ export default {
           url: 'https://sentry.io/',
           project: 'planbuddy-app',
           organization: 'florian-erwerth',
-        },
-      ],
-      [
-        'expo-contacts',
-        {
-          contactsPermission:
-            'Erlaube PlanBuddy deine Kontakte zu benutzen, um Freunde hinzuzufügen.',
         },
       ],
     ],

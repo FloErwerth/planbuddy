@@ -12,7 +12,6 @@ import { useInsertUserMutation } from '@/api/user';
 import { router } from 'expo-router';
 import { readInviteId } from '@/utils/invite';
 import { useCreateParticipationMutation } from '@/api/events/mutations';
-import { FormFieldPhoneInput } from '@/components/FormFields/FormFieldPhoneInput';
 import { OnboardingSchema, onboardingSchema } from '@/api/types';
 
 export default function Onboarding() {
@@ -37,7 +36,7 @@ export default function Onboarding() {
     router.replace('/(tabs)');
   };
 
-  const completeOnboarding = async ({ firstName, lastName, phone }: OnboardingSchema) => {
+  const completeOnboarding = async ({ firstName, lastName }: OnboardingSchema) => {
     if (!user || !user.email) {
       return;
     }
@@ -46,7 +45,6 @@ export default function Onboarding() {
       const res = await insertUser({
         firstName,
         lastName,
-        phone: `+49${phone}`,
         email: user.email,
       });
 
@@ -80,9 +78,18 @@ export default function Onboarding() {
         Diese Angaben sind alle optional.
       </SizableText>
       <FormProvider {...form}>
-        <FormInput label="Vorname" name="firstName" />
-        <FormInput label="Nachname" name="lastName" />
-        <FormFieldPhoneInput label="Telefonnummer" name="phone" />
+        <FormInput
+          autoComplete="given-name"
+          textContentType="givenName"
+          label="Vorname"
+          name="firstName"
+        />
+        <FormInput
+          autoComplete="family-name"
+          textContentType="familyName"
+          label="Nachname"
+          name="lastName"
+        />
       </FormProvider>
       <View flex={1} />
       <Button onPress={form.handleSubmit(completeOnboarding)}>Abschließen</Button>

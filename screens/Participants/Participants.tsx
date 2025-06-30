@@ -6,12 +6,12 @@ import { useGetUser } from '@/store/user';
 import { Participant } from '@/api/events/types';
 import { Pressable, RefreshControl } from 'react-native';
 import { SizableText, View, XStack } from 'tamagui';
-import { UserAvatar } from './ParticipantsAvatar';
+import { UserAvatar } from '@/components/UserAvatar';
 import { Button } from '@/components/tamagui/Button';
 import { Eye } from '@tamagui/lucide-icons';
 import { ScrollView } from '@/components/tamagui/ScrollView';
 import { Screen } from '@/components/Screen';
-import { ParticipantSceleton } from '@/screens/Participants/ParticipantSceleton';
+import { ParticipantSkeleton } from '@/screens/Participants/ParticipantSkeleton';
 
 export const Participants = () => {
   const { eventId = '' } = useGlobalSearchParams<{ eventId: string }>();
@@ -51,11 +51,7 @@ export const Participants = () => {
             alignItems="center"
           >
             <XStack gap="$4" alignItems="center">
-              <UserAvatar
-                id={participant.userId}
-                firstName={participant.firstName}
-                lastName={participant.lastName}
-              />
+              <UserAvatar id={participant.userId} />
               <View>
                 <SizableText size="$5">
                   {participant.firstName} {participant.lastName}
@@ -71,7 +67,7 @@ export const Participants = () => {
   }, [handlePressParticipant, sortedParticipants, user?.id]);
 
   const sceletons = useMemo(() => {
-    return participants?.map(({ id }) => <ParticipantSceleton key={id} />);
+    return participants?.map(({ id }) => <ParticipantSkeleton key={id} />);
   }, [participants]);
 
   if (!participants && !isLoading) {
