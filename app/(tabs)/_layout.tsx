@@ -2,8 +2,6 @@ import { Tabs } from 'expo-router';
 import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
 import { TabBarIcon } from '@/components/TabBarIcon';
 import { Home, Plus } from '@tamagui/lucide-icons';
-import { useState } from 'react';
-import { EventCreationSheet } from '@/sheets/EventCreationSheet';
 import { ProfileTabBarIcon } from '@/components/ProfileTabBarIcon/ProfileTabBarIcon';
 
 const screenOptions: BottomTabNavigationOptions = {
@@ -16,12 +14,9 @@ const screenOptions: BottomTabNavigationOptions = {
 };
 
 export default function TabsLayout() {
-  const [isEventCreationOpen, setIsEventCreationOpen] = useState<boolean>(false);
-
   return (
     <>
-      <EventCreationSheet open={isEventCreationOpen} onOpenChange={setIsEventCreationOpen} />
-      <Tabs screenOptions={screenOptions} initialRouteName="index">
+      <Tabs screenOptions={screenOptions}>
         <Tabs.Screen
           name="index"
           options={{
@@ -32,12 +27,6 @@ export default function TabsLayout() {
         />
         <Tabs.Screen
           name="add"
-          listeners={{
-            tabPress: (e) => {
-              e.preventDefault();
-              setIsEventCreationOpen(true);
-            },
-          }}
           options={{
             title: '',
             tabBarButton: (props) => (

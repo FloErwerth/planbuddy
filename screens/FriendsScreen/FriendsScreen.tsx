@@ -1,7 +1,6 @@
 import { Screen } from '@/components/Screen';
 import { BackButton } from '@/components/BackButton';
 import { SizableText, Spinner, XStack } from 'tamagui';
-import { UserAvatar } from '@/components/UserAvatar';
 import { Fragment, useCallback, useMemo, useState } from 'react';
 import { Plus } from '@tamagui/lucide-icons';
 import { Pressable, RefreshControl } from 'react-native';
@@ -16,6 +15,7 @@ import { useGetUser } from '@/store/user';
 import { FriendOptionsSheet } from '@/screens/FriendsScreen/FriendOptionsSheet';
 import { FriendsQueryResponse } from '@/api/friends/schema';
 import { extractOtherUser } from '@/utils/extractOtherUser';
+import { FriendDisplay } from '@/components/FriendDisplay';
 
 export const FriendsScreen = () => {
   const { data: friends, pendingToAccept, refetch, isLoading } = useFriendOverview();
@@ -44,23 +44,12 @@ export const FriendsScreen = () => {
         const { firstName, lastName } = extractOtherUser(user!.id, friend);
 
         return (
-          <XStack
-            key={friend.id}
-            alignItems="center"
-            paddingRight="$2"
-            justifyContent="space-between"
-          >
-            <XStack gap="$3" alignItems="center">
-              <UserAvatar {...friend} />
-              <SizableText>
-                {firstName} {lastName}
-              </SizableText>
-            </XStack>
+          <FriendDisplay key={friend.id} firstName={firstName} lastName={lastName} {...friend}>
             <AcceptanceStatus
               openOptions={() => handleOpenOptions(friend)}
               status={friend.status}
             />
-          </XStack>
+          </FriendDisplay>
         );
       }),
     [friends, handleOpenOptions, user]

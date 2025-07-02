@@ -12,9 +12,15 @@ import { Button } from '@/components/tamagui/Button';
 import { ScrollableScreen } from '@/components/Screen';
 import { EventCreationImage } from '@/screens/EventCreation/EventCreationImage';
 import { router } from 'expo-router';
+import { PressableRow } from '@/components/PressableRow';
+import { Sheet } from '@/components/tamagui/Sheet';
+import { EventCreationAddFriends } from '@/screens/EventCreation/EventCreationAddFriends';
+import { useEventCreationContext } from '@/screens/EventCreation/EventCreationContext';
 
-type EventCreationProps = { onEventCreated: () => void };
-export const EventCreation = ({ onEventCreated }: EventCreationProps) => {
+export const EventCreation = () => {
+  const [addFriendsSheetOpen, setAddFriendsSheetOpen] = useState(false);
+  const { guests } = useEventCreationContext();
+
   const now = new Date();
   const [start, setStart] = useState<Date>(now);
   const [end, setEnd] = useState<Date>(
@@ -61,26 +67,17 @@ export const EventCreation = ({ onEventCreated }: EventCreationProps) => {
           await uploadEventImage({ eventId: createdEvent.id, image: imageToUpload });
         }
         setIsLoading(false);
-        onEventCreated();
         router.replace({ pathname: '/eventDetails', params: { eventId: createdEvent.id } });
       } catch (e) {
         console.error(e);
       }
     },
-    [createEvent, imageToUpload, onEventCreated, uploadEventImage]
+    [createEvent, imageToUpload, uploadEventImage]
   );
 
   const hasErrors = Object.values(form.formState.errors).length > 0;
   return (
     <>
-      <View
-        alignSelf="center"
-        marginTop="$4"
-        width="50%"
-        height="$0.5"
-        borderRadius="$4"
-        backgroundColor="$inputBackground"
-      />
       <ScrollableScreen>
         <View
           backgroundColor="$background"
@@ -122,6 +119,16 @@ export const EventCreation = ({ onEventCreated }: EventCreationProps) => {
 
             <FormInput label="Ort" name="location" />
             <FormTextArea multiline verticalAlign="top" label="Details" name="description" />
+            <PressableRow onPress={() => setAddFriendsSheetOpen(true)}>
+              <XStack justifyContent="space-between" flex={1}>
+                {guests.length > 0 && (
+                  <SizableText>
+                    {guests.length} {guests.length === 1 ? 'Gast' : 'Gäste'} hinzugefügt
+                  </SizableText>
+                )}
+                <SizableText>{guests.length > 0 ? 'Verwalten' : 'Gäste hinzufügen'}</SizableText>
+              </XStack>
+            </PressableRow>
           </FormProvider>
         </View>
       </ScrollableScreen>
@@ -139,6 +146,16 @@ export const EventCreation = ({ onEventCreated }: EventCreationProps) => {
       >
         Event erstellen
       </Button>
+      <Sheet
+        modal={false}
+        hideHandle
+        animation="quick"
+        unmountChildrenWhenHidden
+        open={addFriendsSheetOpen}
+        onOpenChange={setAddFriendsSheetOpen}
+      >
+        <EventCreationAddFriends onClose={() => setAddFriendsSheetOpen(false)} />
+      </Sheet>
     </>
   );
 };

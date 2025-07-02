@@ -7,27 +7,20 @@ import { Check } from '@tamagui/lucide-icons';
 
 type CheckboxProps = TamaguiCheckboxProps & {
   checked: boolean;
-  onChecked?: (checked: boolean) => void;
 };
 
 export const Checkbox = ({ checked, children, ...props }: CheckboxProps) => {
-  const handlePress = () => {
-    if (props.onChecked) {
-      props.onChecked(checked);
-    }
-  };
-
   const CheckIcon = () => {
     if (checked) {
-      return <Check onPress={handlePress} scale={0.6} />;
+      return <Check scale={0.6} />;
     }
-    return undefined;
+    return null;
   };
 
   return (
-    <XStack alignItems="center" gap={props.gap ?? '$4'}>
-      <TamaguiCheckbox {...props} onPress={handlePress}>
-        <TamaguiCheckbox.Indicator>
+    <XStack pointerEvents="none" alignItems="center" gap={props.gap ?? '$4'}>
+      <TamaguiCheckbox {...props}>
+        <TamaguiCheckbox.Indicator forceMount={checked}>
           <CheckIcon />
         </TamaguiCheckbox.Indicator>
       </TamaguiCheckbox>

@@ -1,6 +1,5 @@
 import { SizableText, View } from 'tamagui';
 import { Screen } from '@/components/Screen';
-import { BackButton } from '@/components/BackButton';
 import { FriendEntry } from '@/screens/AddFriendsScreen/FriendEntry';
 import { SearchWithText } from '@/screens/AddFriendsScreen/SearchWithText';
 import {
@@ -33,7 +32,7 @@ const FoundUsers = () => {
 export const AddFriendsScreen = () => {
   return (
     <SearchContextProvider>
-      <Screen back={<BackButton href=".." />} title="Freunde hinzufügen">
+      <Screen title="Freunde hinzufügen">
         <SearchWithText />
       </Screen>
       <FoundUsers />

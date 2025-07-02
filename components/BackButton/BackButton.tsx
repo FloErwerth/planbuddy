@@ -14,7 +14,7 @@ const Wrapper = styled(View, {
   borderRadius: '$12',
 });
 
-type BackButtonProps = Pick<ComponentProps<typeof Link>, 'href'> & ViewProps;
+type BackButtonProps = Partial<Pick<ComponentProps<typeof Link>, 'href'>> & ViewProps;
 export const BackButton = ({ href = '..', ...viewProps }: BackButtonProps) => {
   return (
     <Wrapper {...viewProps}>
