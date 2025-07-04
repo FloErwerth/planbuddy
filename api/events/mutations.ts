@@ -3,15 +3,19 @@ import { useGetUser } from '@/store/user';
 import { supabase } from '@/api/supabase';
 import { BackendEvent, backendEventSchema, Event, Participant } from './types';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
-import { useUploadEventImageMutation } from '@/api/images';
 import { QUERY_KEYS } from '@/api/queryKeys';
 
 export const useCreateEventMutation = () => {
   const user = useGetUser();
-  const { mutateAsync: uploadEventImage } = useUploadEventImageMutation();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (event: Event): Promise<BackendEvent | undefined> => {
+    mutationFn: async ({
+      event,
+      guests,
+    }: {
+      event: Event;
+      guests: string[];
+    }): Promise<BackendEvent | undefined> => {
       if (user === undefined) {
         return undefined;
       }
@@ -28,12 +32,22 @@ export const useCreateEventMutation = () => {
 
       const insertedEvent = backendEventSchema.parse(result.data[0]);
 
-      const participantResult = await supabase.from('participants').insert({
-        userId: user.id,
-        eventId: insertedEvent.id,
-        role: 'creator',
-        status: 'accepted',
-      });
+      const insertedUsers = [
+        {
+          userId: user.id,
+          eventId: insertedEvent.id,
+          role: 'CREATOR',
+          status: 'ACCEPTED',
+        },
+        ...guests.map((guestId) => ({
+          userId: guestId,
+          eventId: insertedEvent.id,
+          role: 'GUEST',
+          status: 'PENDING',
+        })),
+      ];
+
+      const participantResult = await supabase.from('participants').insert(insertedUsers);
 
       if (participantResult.error) {
         throw new Error(participantResult.error.message);

@@ -26,11 +26,7 @@ export const EventCreationContextProvider = ({ children }: PropsWithChildren) =>
   const [mounted, setMounted] = useState<boolean>(true);
 
   const addGuests = useCallback((incommingGuests: string[]) => {
-    setGuests((current) => {
-      const incommingGuestsSet = new Set([...current, ...incommingGuests]);
-
-      return Array.from(incommingGuestsSet);
-    });
+    setGuests((current) => Array.from(new Set([...incommingGuests, ...current]).values()));
   }, []);
 
   const removeGuests = useCallback((removedGuests: string[]) => {

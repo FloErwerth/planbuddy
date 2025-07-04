@@ -59,7 +59,7 @@ export const EventCreation = () => {
     async (data: Event) => {
       try {
         setIsLoading(true);
-        const createdEvent = await createEvent(data);
+        const createdEvent = await createEvent({ event: data, guests });
         if (!createdEvent) {
           throw new Error('Event creation failed');
         }
@@ -72,7 +72,7 @@ export const EventCreation = () => {
         console.error(e);
       }
     },
-    [createEvent, imageToUpload, uploadEventImage]
+    [createEvent, guests, imageToUpload, uploadEventImage]
   );
 
   const hasErrors = Object.values(form.formState.errors).length > 0;
@@ -99,9 +99,9 @@ export const EventCreation = () => {
                   <Calendar
                     date={start}
                     onDateSelected={(date) => {
-                      const newEnd = new Date(
-                        end.toISOString().split('T')[0] + 'T' + date.toISOString().split('T')[1]
-                      );
+                      const splitt = end.toISOString().split('T');
+                      const dateSplitt = date.toISOString().split('T');
+                      const newEnd = new Date(dateSplitt[0] + 'T' + splitt[1]);
                       newEnd.setHours(newEnd.getHours() + 3);
                       handleSetEnd(newEnd);
                       handleSetStart(date);

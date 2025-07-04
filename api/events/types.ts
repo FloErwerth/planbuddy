@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { User } from '@/api/types';
+import { Status, User } from '@/api/types';
 /*
  * street:houseNr:zip:city
  * */
@@ -41,14 +41,15 @@ export const appEventSchema = z
     }
   );
 
-export type ParticipantRole = 'guest' | 'admin' | 'creator';
-export type ParticipantStatus = 'accepted' | 'undecided' | 'declined';
+export const Role = z.enum(['GUEST', 'ADMIN', 'CREATOR']);
+export type RoleType = z.infer<typeof Role>;
+
 export type Participant = {
   id?: string;
   eventId?: string;
   userId?: string;
-  role: ParticipantRole;
-  status: ParticipantStatus;
+  role: RoleType;
+  status: Status;
 };
 
 export type Event = z.infer<typeof appEventSchema>;

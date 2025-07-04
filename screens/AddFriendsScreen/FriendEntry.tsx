@@ -7,8 +7,8 @@ import { UserPlus } from '@tamagui/lucide-icons';
 import { Card } from '@/components/tamagui/Card';
 import { UserAvatar } from '@/components/UserAvatar';
 import Animated, { FadeOut } from 'react-native-reanimated';
-import { UserWithStatus } from '@/screens/AddFriendsScreen/SearchContextProvider';
 import { useGetUser } from '@/store/user';
+import { UserWithStatus } from '@/components/FriendSearch';
 
 type SearchAcceptanceStatusProps = { friend: UserWithStatus };
 const SearchAcceptanceStatus = ({ friend: { status, requester } }: SearchAcceptanceStatusProps) => {

@@ -9,7 +9,7 @@ import {
   ParticipantQueryResponse,
 } from '@/api/events/types';
 import { QUERY_KEYS } from '@/api/queryKeys';
-import { z } from 'zod';
+import { Status } from '@/api/types';
 
 export const useEventsQuery = () => {
   const user = useGetUser();
@@ -42,31 +42,35 @@ type SingleQueryResponse = {
   numberOfParticipants?: number;
 };
 
-const participantFilter = z.enum(['accepted', 'declined', 'undecided']);
-export const ParticipanFilter = participantFilter.enum;
-export type ParticipantFilter = z.infer<typeof participantFilter>;
-
-export const useParticipantsQuery = (eventId: string, filters: ParticipantFilter[] = []) => {
+export const useParticipantsQuery = (eventId: string, filters: Status[] = [], search = '') => {
   return useQuery({
     queryFn: async (): Promise<ParticipantQueryResponse[]> => {
-      const participantsAndUsersQuery = supabase
-        .from('participants')
-        .select('*, users(*)')
-        .eq('eventId', eventId);
+      const participantsAndUsersQuery = supabase.from('participants').select('*, users(*)');
+
+      if (search) {
+        participantsAndUsersQuery.or(
+          `email.ilike.%${search}%, "firstName".ilike.%${search}%, "lastName".ilike.%${search}%`,
+          { foreignTable: 'users' }
+        );
+      }
 
       for (let i = 0; i < filters.length; ++i) {
         participantsAndUsersQuery.eq('status', filters[i]);
       }
 
+      participantsAndUsersQuery.eq('eventId', eventId);
+
       participantsAndUsersQuery.throwOnError();
       const result = await participantsAndUsersQuery;
 
-      return result.data?.map((data) => ({
-        ...data,
-        ...data.users,
-      })) as ParticipantQueryResponse[];
+      return result.data
+        ?.filter((data) => data.users !== null)
+        .map((data) => ({
+          ...data,
+          ...data.users,
+        })) as ParticipantQueryResponse[];
     },
-    queryKey: [QUERY_KEYS.PARTICIPANTS.QUERY, eventId, ...(filters ?? [])],
+    queryKey: [QUERY_KEYS.PARTICIPANTS.QUERY, eventId, filters, search],
   });
 };
 

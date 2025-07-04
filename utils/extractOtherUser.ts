@@ -1,7 +1,10 @@
 import { FriendsQueryResponse } from '@/api/friends/schema';
 
-export const extractOtherUser = (userId: string, friend?: FriendsQueryResponse[number]) => {
-  const otherUser = friend?.requester.id !== userId ? friend?.requester : friend?.receiver;
+export const extractOtherUser = (
+  userId: string,
+  friend?: Partial<FriendsQueryResponse[number]>
+) => {
+  const otherUser = friend?.requester?.id !== userId ? friend?.requester : friend?.receiver;
 
   return {
     ...friend,

@@ -12,15 +12,18 @@ type CheckboxProps = TamaguiCheckboxProps & {
 export const Checkbox = ({ checked, children, ...props }: CheckboxProps) => {
   const CheckIcon = () => {
     if (checked) {
-      return <Check scale={0.6} />;
+      return <Check scale={0.6} color="$background" />;
     }
     return null;
   };
 
   return (
     <XStack pointerEvents="none" alignItems="center" gap={props.gap ?? '$4'}>
-      <TamaguiCheckbox {...props}>
-        <TamaguiCheckbox.Indicator forceMount={checked}>
+      <TamaguiCheckbox {...props} overflow="hidden">
+        <TamaguiCheckbox.Indicator
+          forceMount={checked}
+          backgroundColor={checked ? '$primary' : '$background'}
+        >
           <CheckIcon />
         </TamaguiCheckbox.Indicator>
       </TamaguiCheckbox>

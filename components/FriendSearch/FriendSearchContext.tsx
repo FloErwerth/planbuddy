@@ -25,7 +25,11 @@ type SearchContextType = {
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
-export const useSearchContext = () => {
+type FriendSearchOptions = {
+  showFriendsWhenEmpty?: boolean;
+};
+
+export const useFriendSearchContext = () => {
   const context = useContext(SearchContext);
 
   if (!context) {
@@ -42,7 +46,11 @@ function getRange(page: number, limit: number) {
 
   return [from, to];
 }
-const useInfiniteSearch = (search: string) => {
+
+const useInfiniteSearch = (
+  search: string,
+  { showFriendsWhenEmpty = false }: FriendSearchOptions
+) => {
   const user = useGetUser();
 
   return useInfiniteQuery({
@@ -52,7 +60,7 @@ const useInfiniteSearch = (search: string) => {
     queryFn: async ({ pageParam = 0 }) => {
       const range = getRange(pageParam, 5);
 
-      if (!search) {
+      if (!showFriendsWhenEmpty && !search) {
         return [];
       }
 
@@ -81,7 +89,7 @@ const useInfiniteSearch = (search: string) => {
         return {
           status: foundFriend?.status ?? undefined,
           requester: foundFriend?.requester,
-          receiver: foundFriend?.requester,
+          receiver: foundFriend?.receiver,
           ...user,
         };
       }) as UserWithStatus[];
@@ -89,9 +97,13 @@ const useInfiniteSearch = (search: string) => {
     queryKey: [FRIENDS_QUERY_KEY, QUERY_KEYS.USERS.QUERY, user?.id, search.toLowerCase()],
   });
 };
-export const SearchContextProvider = ({ children }: PropsWithChildren) => {
+
+export const FriendSearchProvider = ({
+  children,
+  ...options
+}: PropsWithChildren & FriendSearchOptions) => {
   const [search, setSearch] = useState('');
-  const { data: users, fetchNextPage, isFetching } = useInfiniteSearch(search);
+  const { data: users, fetchNextPage, isFetching } = useInfiniteSearch(search, options);
   const [renderedItems, setRenderedItems] = useState(defaultSearch);
 
   const onLoadMore = useCallback(async () => {
