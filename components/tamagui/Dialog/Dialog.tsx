@@ -3,6 +3,7 @@ import { ComponentProps, ReactElement } from 'react';
 
 type DialogProps = TamaguiDialogProps & {
   title?: ReactElement;
+  fullscreen?: boolean;
 };
 
 const overlayAnimationStyles = { opacity: 0 };
@@ -19,21 +20,25 @@ const contentAnimation: ComponentProps<typeof TamaguiDialog.Content>['animation'
   },
 ];
 
-export const Dialog = ({ title, children, ...props }: DialogProps) => {
+export const Dialog = ({ title, fullscreen, children, ...props }: DialogProps) => {
   return (
-    <TamaguiDialog modal {...props}>
+    <TamaguiDialog modal={props.modal || true} {...props}>
       <TamaguiDialog.Portal>
-        <TamaguiDialog.Overlay
-          key="overlay"
-          backgroundColor="rgba(0,0,0,0.5)"
-          animateOnly={['transform', 'opacity']}
-          animation={contentAnimation}
-          enterStyle={overlayAnimationStyles}
-          exitStyle={overlayAnimationStyles}
-          onPress={() => props.onOpenChange?.(false)}
-        />
+        {!fullscreen && (
+          <TamaguiDialog.Overlay
+            key="overlay"
+            backgroundColor="rgba(0,0,0,0.5)"
+            animateOnly={['transform', 'opacity']}
+            animation={contentAnimation}
+            forceMount
+            enterStyle={overlayAnimationStyles}
+            exitStyle={overlayAnimationStyles}
+            onPress={() => props.onOpenChange?.(false)}
+          />
+        )}
 
         <TamaguiDialog.Content
+          fullscreen={fullscreen}
           elevate
           borderRadius="$6"
           width="90%"

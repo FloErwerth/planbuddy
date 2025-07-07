@@ -16,12 +16,7 @@ export const Sheet = ({ hideHandle = false, ...props }: SheetProps) => {
       animation="medium"
       {...props}
     >
-      <TamaSheet.Overlay
-        animation="lazy"
-        backgroundColor="rgba(0,0,0,0.5)"
-        enterStyle={{ opacity: 0 }}
-        exitStyle={{ opacity: 0 }}
-      />
+      <TamaSheet.Overlay animation="lazy" backgroundColor="rgba(0,0,0,0.5)" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
 
       {!hideHandle && <TamaSheet.Handle />}
       <TamaSheet.Frame>{props.children}</TamaSheet.Frame>

@@ -1,11 +1,4 @@
-import {
-  createContext,
-  PropsWithChildren,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import { Status, User, userSchema } from '@/api/types';
 import { supabase } from '@/api/supabase';
 import { useGetUser } from '@/store/user';
@@ -16,10 +9,14 @@ import { array } from 'zod';
 import { debounce } from 'tamagui';
 import { friendsQuerySchema } from '@/api/friends/schema';
 
+const NUMBER_OF_SEARCHED_USERS = 15;
+
 export type UserWithStatus = User & { status?: Status; receiver?: User; requester?: User };
 type SearchContextType = {
   users: UserWithStatus[] | undefined;
   search: (search: string) => void;
+  setSearchDisplay: (search: string) => void;
+  searchDisplay: string;
   onLoadMore: () => void;
 };
 
@@ -29,7 +26,7 @@ type FriendSearchOptions = {
   showFriendsWhenEmpty?: boolean;
 };
 
-export const useFriendSearchContext = () => {
+export const useUserSearchContext = () => {
   const context = useContext(SearchContext);
 
   if (!context) {
@@ -39,7 +36,6 @@ export const useFriendSearchContext = () => {
   return context as SearchContextType;
 };
 
-const defaultSearch = 15;
 function getRange(page: number, limit: number) {
   const from = page * limit;
   const to = from + limit - 1;
@@ -47,15 +43,12 @@ function getRange(page: number, limit: number) {
   return [from, to];
 }
 
-const useInfiniteSearch = (
-  search: string,
-  { showFriendsWhenEmpty = false }: FriendSearchOptions
-) => {
+const useInfiniteSearch = (search: string, { showFriendsWhenEmpty = false }: FriendSearchOptions) => {
   const user = useGetUser();
 
   return useInfiniteQuery({
     getNextPageParam: (lastPage: unknown[] | undefined, allPages: unknown[]) => {
-      return lastPage?.length ? allPages?.length : undefined;
+      return lastPage && Array.isArray(lastPage) && lastPage.length ? allPages?.length : undefined;
     },
     queryFn: async ({ pageParam = 0 }) => {
       const range = getRange(pageParam, 5);
@@ -68,24 +61,25 @@ const useInfiniteSearch = (
         .from('users')
         .select()
         .or(`email.ilike.%${search}%, "firstName".ilike.%${search}%, "lastName".ilike.%${search}%`)
-        .range(range[0], range[1]);
+        .range(range[0], range[1])
+        .order('firstName')
+        .throwOnError();
 
       const parsedResult = array(userSchema)
         .parse(result.data)
         .filter(({ id }) => id !== user?.id);
-      const ids = parsedResult.map((item) => item.id).join(',');
 
+      const ids = parsedResult.map((item) => item.id).join(',');
       const friends = await supabase
         .from('friends')
         .select('*, requesterId(id, *), receiverId(id, *)') // Fetch nested user data
-        .or(`requesterId.in.(${ids}),receiverId.in.(${ids})`);
+        .or(`requesterId.in.(${ids}),receiverId.in.(${ids})`)
+        .throwOnError();
 
       const parsedFriends = friendsQuerySchema.parse(friends.data);
 
-      return parsedResult.map((user) => {
-        const foundFriend = parsedFriends.find(
-          (friend) => friend.requester.id === user.id || friend.receiver.id === user.id
-        );
+      const users = parsedResult.map((user) => {
+        const foundFriend = parsedFriends.find((friend) => friend.requester.id === user.id || friend.receiver.id === user.id);
         return {
           status: foundFriend?.status ?? undefined,
           requester: foundFriend?.requester,
@@ -93,31 +87,33 @@ const useInfiniteSearch = (
           ...user,
         };
       }) as UserWithStatus[];
+
+      return users;
     },
     queryKey: [FRIENDS_QUERY_KEY, QUERY_KEYS.USERS.QUERY, user?.id, search.toLowerCase()],
   });
 };
 
-export const FriendSearchProvider = ({
-  children,
-  ...options
-}: PropsWithChildren & FriendSearchOptions) => {
-  const [search, setSearch] = useState('');
-  const { data: users, fetchNextPage, isFetching } = useInfiniteSearch(search, options);
-  const [renderedItems, setRenderedItems] = useState(defaultSearch);
+export const UserSearchProvider = ({ children, ...options }: PropsWithChildren & FriendSearchOptions) => {
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [searchDisplay, setSearchDisplay] = useState('');
+  const { data: users, fetchNextPage } = useInfiniteSearch(debouncedSearch, options);
+  const [renderedItems, setrenderedItems] = useState(NUMBER_OF_SEARCHED_USERS);
 
   const onLoadMore = useCallback(async () => {
-    setRenderedItems(renderedItems + 15);
+    setrenderedItems(renderedItems + NUMBER_OF_SEARCHED_USERS);
     await fetchNextPage();
   }, [fetchNextPage, renderedItems]);
 
   const value = useMemo(
     () => ({
       users: users?.pages.flat(1),
-      search: debounce(setSearch, 300),
+      search: debounce(setDebouncedSearch, 300),
+      searchDisplay,
+      setSearchDisplay,
       onLoadMore,
     }),
-    [users?.pages, onLoadMore]
+    [users?.pages, searchDisplay, onLoadMore]
   );
 
   return <SearchContext.Provider value={value}>{children}</SearchContext.Provider>;

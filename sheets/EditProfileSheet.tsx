@@ -7,11 +7,7 @@ import { Button } from '@/components/tamagui/Button';
 import { SheetProps, View } from 'tamagui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useUpdateUserMutation, useUserQuery } from '@/api/user';
-import {
-  useDeleteProfilePictureMutation,
-  useProfileImageQuery,
-  useUploadProfilePictureMutation,
-} from '@/api/images';
+import { useDeleteProfilePictureMutation, useProfileImageQuery, useUploadProfilePictureMutation } from '@/api/images';
 import { Input } from '@/components/tamagui/Input';
 import { FormFieldPhoneInput } from '@/components/FormFields/FormFieldPhoneInput';
 import { OnboardingSchema, onboardingSchema } from '@/api/types';
@@ -51,19 +47,9 @@ export const EditProfileSheet = ({ open, onOpenChange }: SheetProps) => {
   }, [deleteImage]);
 
   return (
-    <Sheet
-      snapPointsMode="percent"
-      open={open}
-      onOpenChange={onOpenChange}
-      unmountChildrenWhenHidden
-    >
+    <Sheet snapPointsMode="percent" open={open} onOpenChange={onOpenChange} unmountChildrenWhenHidden>
       <Screen flex={1} title="Profil bearbeiten">
-        <AvatarImagePicker
-          editable
-          image={image}
-          onImageDeleted={handleImageDeletion}
-          onImageSelected={updateImage}
-        />
+        <AvatarImagePicker editable image={image} onImageDeleted={handleImageDeletion} onImageSelected={updateImage} />
         <Input editable={false} disabled value={user?.email} />
         <View flex={1} gap="$5">
           <FormProvider {...form}>

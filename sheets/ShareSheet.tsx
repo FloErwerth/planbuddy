@@ -7,11 +7,13 @@ import { Pressable, Share } from 'react-native';
 import { ClipboardCopy, Share2 } from '@tamagui/lucide-icons';
 import * as ExpoClipboard from 'expo-clipboard';
 import { Screen } from '@/components/Screen';
+import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
 
 const websiteURL = process.env.EXPO_PUBLIC_WEBPAGE_URL;
 
-type ShareSheetProps = { eventId: string } & SheetProps;
-export const ShareSheet = ({ eventId, ...props }: ShareSheetProps) => {
+type ShareSheetProps = SheetProps;
+export const ShareSheet = ({ ...props }: ShareSheetProps) => {
+  const { eventId } = useEventDetailsContext();
   const { data: event, isLoading } = useSingleEventQuery(eventId);
   const { width } = useWindowDimensions();
   const invitationLink = `${websiteURL}?eventId=${eventId}`;

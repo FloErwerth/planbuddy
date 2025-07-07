@@ -1,22 +1,18 @@
-import { SizableText, useWindowDimensions, XStack, YStack } from 'tamagui';
+import { SizableText, XStack, YStack } from 'tamagui';
 import { CalendarDays, MapPin, MessageSquareText, Users } from '@tamagui/lucide-icons';
 import { router } from 'expo-router';
 import { useSingleEventQuery } from '@/api/events/queries';
 import { formatToDate, formatToTime } from '@/utils/date';
 import { PressableRow } from '@/components/PressableRow';
+import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
 
-type DetailsProps = {
-  eventId: string;
-};
-export const Details = ({ eventId }: DetailsProps) => {
+export const Details = () => {
+  const { eventId } = useEventDetailsContext();
   const { data: event } = useSingleEventQuery(eventId);
-  const { width } = useWindowDimensions();
 
   if (!event) {
     return null;
   }
-
-  const { participants } = event;
 
   return (
     <>
@@ -25,14 +21,7 @@ export const Details = ({ eventId }: DetailsProps) => {
       </SizableText>
       <XStack alignItems="center" gap="$3">
         <CalendarDays />
-        <XStack
-          flex={1}
-          justifyContent="space-evenly"
-          alignItems="center"
-          backgroundColor="$inputBackground"
-          padding="$3"
-          borderRadius="$4"
-        >
+        <XStack flex={1} justifyContent="space-evenly" alignItems="center" backgroundColor="$inputBackground" padding="$3" borderRadius="$4">
           <YStack>
             <SizableText size="$5">{formatToDate(parseInt(event.startTime))}</SizableText>
             <SizableText>{formatToTime(parseInt(event.startTime))} Uhr</SizableText>
@@ -52,10 +41,7 @@ export const Details = ({ eventId }: DetailsProps) => {
           <SizableText>{event.description}</SizableText>
         </PressableRow>
       )}
-      <PressableRow
-        icon={<Users />}
-        onPress={() => router.push({ pathname: `/eventDetails/participants`, params: { eventId } })}
-      >
+      <PressableRow icon={<Users />} onPress={() => router.push(`/eventDetails/participants`)}>
         <SizableText>Teilnehmer</SizableText>
       </PressableRow>
     </>

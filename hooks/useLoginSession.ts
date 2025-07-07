@@ -40,11 +40,7 @@ export const useLoginSession = () => {
     }
 
     try {
-      const result: PostgrestSingleResponse<User> = await supabase
-        .from('users')
-        .select()
-        .eq('id', user.id)
-        .single();
+      const result: PostgrestSingleResponse<User> = await supabase.from('users').select().eq('id', user.id).single();
 
       return result.data;
     } catch (e) {

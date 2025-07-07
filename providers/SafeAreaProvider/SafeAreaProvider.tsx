@@ -1,5 +1,5 @@
-import { PropsWithChildren } from "react";
-import { SafeAreaProvider as _SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { PropsWithChildren } from 'react';
+import { SafeAreaProvider as _SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const safeAreaViewStyles = { flex: 1 };
 

@@ -9,7 +9,7 @@ import { Screen } from '@/components/Screen';
 import { Button } from '@/components/tamagui/Button';
 import { ScrollView } from '@/components/tamagui/ScrollView';
 import { Card } from '@/components/tamagui/Card';
-import { FriendSearchInput, useFriendSearchContext } from '@/components/FriendSearch';
+import { UserSearchInput, useUserSearchContext } from '@/components/UserSearch';
 import { StatusEnum } from '@/api/types';
 
 type EventCreationAddFriendsProps = {
@@ -17,11 +17,8 @@ type EventCreationAddFriendsProps = {
 };
 export const EventCreationAddFriends = ({ onClose }: EventCreationAddFriendsProps) => {
   const { guests, addGuests, removeGuests } = useEventCreationContext();
-  const { users } = useFriendSearchContext();
-  const accepted = useMemo(
-    () => users?.filter((user) => user.status === StatusEnum.ACCEPTED) ?? [],
-    [users]
-  );
+  const { users } = useUserSearchContext();
+  const accepted = useMemo(() => users?.filter((user) => user.status === StatusEnum.ACCEPTED) ?? [], [users]);
 
   const user = useGetUser();
 
@@ -72,7 +69,7 @@ export const EventCreationAddFriends = ({ onClose }: EventCreationAddFriendsProp
         }
         title="Deine Gäste"
       >
-        <FriendSearchInput />
+        <UserSearchInput />
       </Screen>
       <ScrollView withShadow>{mappedFriends}</ScrollView>
     </>

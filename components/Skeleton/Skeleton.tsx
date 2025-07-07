@@ -1,11 +1,4 @@
-import Animated, {
-  FadeIn,
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withRepeat,
-  withTiming,
-} from 'react-native-reanimated';
+import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withTiming } from 'react-native-reanimated';
 import { PropsWithChildren, useEffect } from 'react';
 
 export const Skeleton = ({ children }: PropsWithChildren) => {

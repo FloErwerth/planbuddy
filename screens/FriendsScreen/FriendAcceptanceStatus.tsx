@@ -8,7 +8,7 @@ type AcceptanceStatusProps = {
   openOptions: () => void;
 };
 
-export const AcceptanceStatus = ({ status, openOptions }: AcceptanceStatusProps) => {
+export const FriendAcceptanceStatus = ({ status, openOptions }: AcceptanceStatusProps) => {
   if (status === StatusEnum.ACCEPTED) {
     return (
       <View>

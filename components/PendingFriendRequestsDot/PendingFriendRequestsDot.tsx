@@ -9,16 +9,7 @@ export const PendingFriendRequestsDot = (props: ViewProps) => {
   }
 
   return (
-    <View
-      width={12}
-      height={12}
-      backgroundColor="red"
-      borderRadius="$12"
-      position="absolute"
-      justifyContent="center"
-      alignItems="center"
-      {...props}
-    >
+    <View width={12} height={12} backgroundColor="red" borderRadius="$12" position="absolute" justifyContent="center" alignItems="center" {...props}>
       <SizableText size="$1" color="$background">
         {pendingToAccept.length}
       </SizableText>

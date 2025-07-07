@@ -8,7 +8,7 @@ import { Card } from '@/components/tamagui/Card';
 import { UserAvatar } from '@/components/UserAvatar';
 import Animated, { FadeOut } from 'react-native-reanimated';
 import { useGetUser } from '@/store/user';
-import { UserWithStatus } from '@/components/FriendSearch';
+import { UserWithStatus } from '@/components/UserSearch';
 
 type SearchAcceptanceStatusProps = { friend: UserWithStatus };
 const SearchAcceptanceStatus = ({ friend: { status, requester } }: SearchAcceptanceStatusProps) => {
@@ -91,8 +91,8 @@ export const FriendEntry = memo(({ friend }: { friend: UserWithStatus }) => {
   }, [doAddFriend, friend, status]);
 
   return (
-    <Animated.View exiting={FadeOut}>
-      <Card key={id}>
+    <Animated.View key={id} exiting={FadeOut}>
+      <Card>
         <XStack justifyContent="space-between" paddingRight="$2" alignItems="center">
           <XStack alignItems="center" gap="$4">
             <UserAvatar id={id} />

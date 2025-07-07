@@ -18,10 +18,7 @@ export const useAddFriendMutation = () => {
       const result = await supabase
         .from('friends')
         .insert([
-          { requesterId: user.id, receiverId: friendId, status: StatusEnum.PENDING } satisfies Omit<
-            SingleFriendQueryResponse,
-            'id' | 'sendAt' | 'acceptedAt'
-          >,
+          { requesterId: user.id, receiverId: friendId, status: StatusEnum.PENDING } satisfies Omit<SingleFriendQueryResponse, 'id' | 'sendAt' | 'acceptedAt'>,
         ])
         .select();
 
@@ -67,12 +64,7 @@ export const useRemoveFriendMutation = () => {
 
   return useMutation({
     mutationFn: async (friendId?: string) => {
-      const result = await supabase
-        .from('friends')
-        .delete()
-        .eq('id', friendId)
-        .throwOnError()
-        .select();
+      const result = await supabase.from('friends').delete().eq('id', friendId).throwOnError().select();
 
       return !result.error;
     },

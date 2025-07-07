@@ -8,7 +8,7 @@ import { router } from 'expo-router';
 import { ScrollView } from '@/components/tamagui/ScrollView';
 import { PressableRow } from '@/components/PressableRow';
 import { PendingFriendRequestsDot } from '@/components/PendingFriendRequestsDot/PendingFriendRequestsDot';
-import { AcceptanceStatus } from '@/screens/FriendsScreen/AcceptanceStatus';
+import { FriendAcceptanceStatus } from '@/screens/FriendsScreen/FriendAcceptanceStatus';
 import { FriendRequestsSheet } from '@/screens/FriendsScreen/FriendRequestsSheet';
 import { useFriendOverview } from '@/api/friends/refiners';
 import { useGetUser } from '@/store/user';
@@ -22,9 +22,7 @@ export const FriendsScreen = () => {
   const [requestsSheetOpen, setRequestsSheetOpen] = useState(false);
   const user = useGetUser();
   const [refreshing, setRefreshing] = useState(false);
-  const [editedFriend, setEditedFriend] = useState<FriendsQueryResponse[number] | undefined>(
-    undefined
-  );
+  const [editedFriend, setEditedFriend] = useState<FriendsQueryResponse[number] | undefined>(undefined);
 
   const handleOpenChange = useCallback((open: boolean) => {
     if (open) {
@@ -45,10 +43,7 @@ export const FriendsScreen = () => {
 
         return (
           <FriendDisplay key={friend.id} firstName={firstName} lastName={lastName} {...friend}>
-            <AcceptanceStatus
-              openOptions={() => handleOpenOptions(friend)}
-              status={friend.status}
-            />
+            <FriendAcceptanceStatus openOptions={() => handleOpenOptions(friend)} status={friend.status} />
           </FriendDisplay>
         );
       }),
@@ -101,11 +96,7 @@ export const FriendsScreen = () => {
         {mappedFriends}
       </ScrollView>
       <FriendRequestsSheet open={requestsSheetOpen} onOpenChange={setRequestsSheetOpen} />
-      <FriendOptionsSheet
-        friend={editedFriend}
-        open={!!editedFriend}
-        onOpenChange={handleOpenChange}
-      />
+      <FriendOptionsSheet friend={editedFriend} open={!!editedFriend} onOpenChange={handleOpenChange} />
     </>
   );
 };

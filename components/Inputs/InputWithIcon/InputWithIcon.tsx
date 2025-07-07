@@ -9,12 +9,7 @@ export type InputWithIconProps = InputProps & {
   isStreched?: boolean;
 };
 
-export const InputWithIcon = ({
-  Icon,
-  showIcon = true,
-  isStreched = false,
-  ...props
-}: InputWithIconProps) => {
+export const InputWithIcon = ({ Icon, showIcon = true, isStreched = false, ...props }: InputWithIconProps) => {
   const [inputHeight, setInputHeight] = useState<number>();
 
   const onLayout = useCallback((e: LayoutChangeEvent) => {
@@ -28,13 +23,7 @@ export const InputWithIcon = ({
     <View flex={isStreched ? 1 : 0}>
       <Input onLayout={onLayout} {...props} />
       {inputHeight && showIcon && Icon && (
-        <View
-          position="absolute"
-          alignItems="center"
-          justifyContent="center"
-          right="$3"
-          height={inputHeight}
-        >
+        <View position="absolute" alignItems="center" justifyContent="center" right="$3" height={inputHeight}>
           {Icon}
         </View>
       )}

@@ -21,10 +21,7 @@ export const useFriendsByStatus = () => {
 export const useFriendOverview = () => {
   const { data = [], refetch, isLoading } = useDatabaseFriendsQuery();
   const user = useGetUser();
-  const pending = useMemo(
-    () => data.filter((friend) => friend.status === StatusEnum.PENDING),
-    [data]
-  );
+  const pending = useMemo(() => data.filter((friend) => friend.status === StatusEnum.PENDING), [data]);
 
   return useMemo(
     () => ({

@@ -20,13 +20,7 @@ export const TabBarIcon = ({ Icon, title, scale = 1, Notification, ...props }: T
   }));
 
   return (
-    <Button
-      variant="transparent"
-      top="$2"
-      backgroundColor="transparent"
-      flex={1}
-      onPress={props.onPress}
-    >
+    <Button variant="transparent" top="$2" backgroundColor="transparent" flex={1} onPress={props.onPress}>
       <Animated.View style={iconStyle}>
         <Icon color={focused ? '$primary' : '$color'} />
       </Animated.View>

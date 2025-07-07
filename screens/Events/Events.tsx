@@ -12,10 +12,7 @@ const contentContainerStyle = { gap: '$3', paddingVertical: '$4' };
 export const Events = () => {
   const { data: events, isLoading } = useEventsQuery();
 
-  const mappedData = useMemo(
-    () => (events ?? []).map((event) => <EventSmall key={event.id} {...event} />),
-    [events]
-  );
+  const mappedData = useMemo(() => (events ?? []).map((event) => <EventSmall key={event.id} {...event} />), [events]);
 
   return (
     <>
@@ -24,9 +21,7 @@ export const Events = () => {
         <Screen justifyContent="center" alignItems="center" flex={1}>
           <CalendarX size="$4" />
           <SizableText textAlign="center">Leider keine bevorstehenden Events vorhanden</SizableText>
-          <SizableText textAlign="center">
-            Dies kannst Du leicht ändern, indem Du ein Event erstellst und Freunde dazu einlädst
-          </SizableText>
+          <SizableText textAlign="center">Dies kannst Du leicht ändern, indem Du ein Event erstellst und Freunde dazu einlädst</SizableText>
           <Button borderRadius="$12" onPress={() => router.replace('/(tabs)/add')}>
             Event erstellen
           </Button>

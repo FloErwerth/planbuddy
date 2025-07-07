@@ -50,9 +50,7 @@ export function getRelativeDate(timestamp: number): string {
   startOfTargetWeek.setHours(0, 0, 0, 0); // Ensure time is reset
 
   // Calculate the difference in weeks between the start of the current week and the start of the target week
-  const weeksDifference = Math.round(
-    (startOfTargetWeek.getTime() - startOfCurrentWeek.getTime()) / (1000 * 60 * 60 * 24 * 7)
-  );
+  const weeksDifference = Math.round((startOfTargetWeek.getTime() - startOfCurrentWeek.getTime()) / (1000 * 60 * 60 * 24 * 7));
 
   // Handle "this week", "next week", "in 2 weeks", "in 3 weeks"
   if (weeksDifference === 0) {

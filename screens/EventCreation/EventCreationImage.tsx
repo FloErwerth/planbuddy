@@ -46,13 +46,7 @@ export const EventCreationImage = ({ image, setImage }: EventCreationImageProps)
   return (
     <>
       <Animated.View style={buttonStyle}>
-        <Button
-          onPress={() => setImage(undefined)}
-          width="$3"
-          height="$3"
-          padding={0}
-          borderRadius="$12"
-        >
+        <Button onPress={() => setImage(undefined)} width="$3" height="$3" padding={0} borderRadius="$12">
           <Trash2 size="$1" color="$background" />
         </Button>
       </Animated.View>

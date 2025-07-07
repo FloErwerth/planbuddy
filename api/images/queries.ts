@@ -41,13 +41,7 @@ export const useProfileImageQuery = (userId?: string) => {
       }
 
       // get image
-      const download = await supabase.storage
-        .from('profile-images')
-        .download(`${userId}/profileImage.png`);
-
-      if (userId.includes('c2a') || userId.includes('68c9535f-9a3d-4af5-ab3a-e2d42e3c91d2')) {
-        console.log(download);
-      }
+      const download = await supabase.storage.from('profile-images').download(`${userId}/profileImage.png`);
 
       if (download.error) {
         if (download.error.name === 'StorageUnknownError') {

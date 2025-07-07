@@ -79,13 +79,7 @@ export const EventCreation = () => {
   return (
     <>
       <ScrollableScreen>
-        <View
-          backgroundColor="$background"
-          overflow="hidden"
-          elevationAndroid="$2"
-          width="100%"
-          borderRadius="$8"
-        >
+        <View backgroundColor="$background" overflow="hidden" elevationAndroid="$2" width="100%" borderRadius="$8">
           <EventCreationImage setImage={setImageToUpload} image={imageToUpload} />
         </View>
         <View gap="$4" height="100%">
@@ -146,14 +140,7 @@ export const EventCreation = () => {
       >
         Event erstellen
       </Button>
-      <Sheet
-        modal={false}
-        hideHandle
-        animation="quick"
-        unmountChildrenWhenHidden
-        open={addFriendsSheetOpen}
-        onOpenChange={setAddFriendsSheetOpen}
-      >
+      <Sheet modal={false} hideHandle animation="quick" unmountChildrenWhenHidden open={addFriendsSheetOpen} onOpenChange={setAddFriendsSheetOpen}>
         <EventCreationAddFriends onClose={() => setAddFriendsSheetOpen(false)} />
       </Sheet>
     </>

@@ -13,11 +13,7 @@ export default function Hosts() {
         <XStack gap="$4" alignItems="center">
           <Avatar circular size="$4" elevationAndroid={4}>
             <Avatar.Image src="http://some" />
-            <Avatar.Fallback
-              backgroundColor="$background"
-              alignItems="center"
-              justifyContent="center"
-            >
+            <Avatar.Fallback backgroundColor="$background" alignItems="center" justifyContent="center">
               <SizableText>F.E</SizableText>
             </Avatar.Fallback>
           </Avatar>

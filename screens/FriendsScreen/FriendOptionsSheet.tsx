@@ -29,29 +29,16 @@ export const FriendOptionsSheet = ({ friend, ...props }: FriendOptionsProps) => 
 
   return (
     <>
-      <Sheet
-        zIndex={deleteDialogOpen ? 0 : undefined}
-        snapPoints={undefined}
-        snapPointsMode="fit"
-        {...props}
-      >
+      <Sheet zIndex={deleteDialogOpen ? 0 : undefined} snapPoints={undefined} snapPointsMode="fit" {...props}>
         <Screen marginBottom="$4" title={`Deine Freundschaft mit ${firstName}`}>
-          <Button
-            onPress={() => setDeleteDialogOpen(true)}
-            backgroundColor="$color.red11Light"
-            size="$2"
-          >
+          <Button onPress={() => setDeleteDialogOpen(true)} backgroundColor="$color.red11Light" size="$2">
             Freundschaft beenden
           </Button>
         </Screen>
         <Dialog onOpenChange={setDeleteDialogOpen} open={deleteDialogOpen}>
           <Screen>
-            <SizableText>
-              Schade, dass Du deine Freundschaft mit {firstName} beenden willst.
-            </SizableText>
-            <SizableText>
-              Bitte bestätige noch einmal, dass dies auch wirklich dein Wunsch ist.
-            </SizableText>
+            <SizableText>Schade, dass Du deine Freundschaft mit {firstName} beenden willst.</SizableText>
+            <SizableText>Bitte bestätige noch einmal, dass dies auch wirklich dein Wunsch ist.</SizableText>
             <View gap="$2">
               <Button onPress={handleDeleteFriend} backgroundColor="$color.red11Light" size="$2">
                 Freundschaft beenden

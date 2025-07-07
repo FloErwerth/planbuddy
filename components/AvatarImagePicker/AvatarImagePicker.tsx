@@ -14,12 +14,7 @@ type AvatarImagePickerProps = {
   onImageDeleted?: () => void;
 };
 
-export const AvatarImagePicker = ({
-  editable = false,
-  image,
-  onImageSelected,
-  onImageDeleted,
-}: AvatarImagePickerProps) => {
+export const AvatarImagePicker = ({ editable = false, image, onImageSelected, onImageDeleted }: AvatarImagePickerProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -87,14 +82,7 @@ export const AvatarImagePicker = ({
           <SuccessAnimation />
         </Button>
       )}
-      <View
-        alignSelf="center"
-        width="$10"
-        height="$10"
-        backgroundColor="white"
-        borderRadius={100}
-        elevationAndroid="$4"
-      >
+      <View alignSelf="center" width="$10" height="$10" backgroundColor="white" borderRadius={100} elevationAndroid="$4">
         <Avatar size="$10" circular>
           <Avatar.Image source={{ uri: image }} />
         </Avatar>

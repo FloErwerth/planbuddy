@@ -4,11 +4,7 @@ import { FormField } from '@/components/FormFields/FormField';
 import { Input } from '@/components/tamagui/Input';
 import { InputProps } from 'tamagui';
 
-export const FormInput = <T extends FieldValues>({
-  name,
-  label,
-  ...inputProps
-}: BaseFormFieldProps<T> & InputProps) => {
+export const FormInput = <T extends FieldValues>({ name, label, ...inputProps }: BaseFormFieldProps<T> & InputProps) => {
   return (
     <FormField {...inputProps} name={name} label={label}>
       <Controller

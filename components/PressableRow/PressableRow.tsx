@@ -6,10 +6,11 @@ import { PropsWithChildren, ReactNode } from 'react';
 type PressableRowProps = {
   onPress?: () => void;
   icon?: ReactNode;
+  iconRight?: ReactNode;
 } & XStackProps &
   PropsWithChildren;
 
-export const PressableRow = ({ onPress, icon, children, ...wrapperProps }: PressableRowProps) => {
+export const PressableRow = ({ onPress, icon, iconRight = <ChevronRight />, children, ...wrapperProps }: PressableRowProps) => {
   return (
     <Pressable onPress={onPress}>
       <XStack gap="$3" alignItems="center">
@@ -25,7 +26,7 @@ export const PressableRow = ({ onPress, icon, children, ...wrapperProps }: Press
           {...wrapperProps}
         >
           {children}
-          <ChevronRight />
+          {iconRight}
         </View>
       </XStack>
     </Pressable>

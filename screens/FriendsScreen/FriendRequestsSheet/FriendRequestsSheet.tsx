@@ -14,15 +14,7 @@ export const FriendRequestsSheet = ({ open, onOpenChange, children }: SheetProps
   const { pendingToAccept, refetch } = useFriendOverview();
 
   return (
-    <Sheet
-      hideHandle
-      open={open}
-      dismissOnOverlayPress={false}
-      disableDrag={true}
-      snapPoints={[97]}
-      snapPointsMode="percent"
-      onOpenChange={onOpenChange}
-    >
+    <Sheet hideHandle open={open} dismissOnOverlayPress={false} disableDrag={true} snapPoints={[97]} snapPointsMode="percent" onOpenChange={onOpenChange}>
       <Screen
         flex={1}
         title="Anfragen"

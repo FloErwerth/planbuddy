@@ -29,14 +29,7 @@ export default function TabsLayout() {
           name="add"
           options={{
             title: '',
-            tabBarButton: (props) => (
-              <TabBarIcon
-                scale={1.6}
-                Icon={(props) => <Plus {...props} />}
-                title="Add"
-                {...props}
-              />
-            ),
+            tabBarButton: (props) => <TabBarIcon scale={1.6} Icon={(props) => <Plus {...props} />} title="Add" {...props} />,
             ...screenOptions,
           }}
         />

@@ -3,12 +3,7 @@ import { Text } from '@/components/tamagui/Text';
 import { FieldValues, useController } from 'react-hook-form';
 import { BaseFormFieldProps } from '@/components/FormFields/types';
 
-export const FormField = <T extends FieldValues>({
-  children,
-  label,
-  name,
-  ...props
-}: BaseFormFieldProps<T>) => {
+export const FormField = <T extends FieldValues>({ children, label, name, ...props }: BaseFormFieldProps<T>) => {
   const {
     fieldState: { error },
   } = useController({ name });

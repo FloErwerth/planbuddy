@@ -70,13 +70,8 @@ export default function LoginScreen() {
         >
           <Screen borderRadius="$4" maxWidth="90%">
             <SizableText size="$6">Email zugeschickt</SizableText>
-            <SizableText>
-              Das hat geklappt! Dir wurde eine Email an erwerthflorian@outlook.de zugeschickt.
-            </SizableText>
-            <SizableText>
-              Bitte überprüfe nun dein Postfach, nach dem Bestätigen des Logins wirst Du zur App
-              zurückgeleitet.
-            </SizableText>
+            <SizableText>Das hat geklappt! Dir wurde eine Email an erwerthflorian@outlook.de zugeschickt.</SizableText>
+            <SizableText>Bitte überprüfe nun dein Postfach, nach dem Bestätigen des Logins wirst Du zur App zurückgeleitet.</SizableText>
           </Screen>
         </Animated.View>
       )}

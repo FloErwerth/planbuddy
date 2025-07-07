@@ -10,13 +10,7 @@ type ScreenProps = PropsWithChildren & {
   submit?: ReactNode;
 };
 
-export const ScrollableScreen = ({
-  children,
-  showBackButton = false,
-  back,
-  title,
-  action,
-}: ScreenProps) => {
+export const ScrollableScreen = ({ children, showBackButton = false, back, title, action }: ScreenProps) => {
   return (
     <ScrollView
       contentContainerStyle={{

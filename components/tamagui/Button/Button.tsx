@@ -9,7 +9,7 @@ export const Button = styled(TamaguiButton, {
       primary: {
         backgroundColor: '$primary',
         color: 'white',
-        elevation: 4,
+        elevation: '$0.5',
       },
       secondary: {
         backgroundColor: '$inputBackground',
@@ -17,6 +17,11 @@ export const Button = styled(TamaguiButton, {
       },
       transparent: {
         elevation: 0,
+        padding: 0,
+      },
+      round: {
+        backgroundColor: '$primary',
+        borderRadius: '$12',
         padding: 0,
       },
     },

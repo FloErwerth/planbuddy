@@ -2,14 +2,9 @@ import { useQuery } from 'react-query';
 import { supabase } from '@/api/supabase';
 import { useGetUser } from '@/store/user';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
-import {
-  backendEventSchema,
-  Event,
-  Participant,
-  ParticipantQueryResponse,
-} from '@/api/events/types';
+import { backendEventSchema, Event, Participant, ParticipantQueryResponse } from '@/api/events/types';
 import { QUERY_KEYS } from '@/api/queryKeys';
-import { Status } from '@/api/types';
+import { Status, StatusEnum } from '@/api/types';
 
 export const useEventsQuery = () => {
   const user = useGetUser();
@@ -20,11 +15,7 @@ export const useEventsQuery = () => {
         return;
       }
 
-      const result = await supabase
-        .from('participants')
-        .select(`role,events(*)`)
-        .eq('userId', user.id)
-        .throwOnError();
+      const result = await supabase.from('participants').select(`role,events(*)`).eq('userId', user.id).throwOnError();
 
       return result.data?.map((data) => ({
         ...backendEventSchema.parse(data.events),
@@ -48,10 +39,7 @@ export const useParticipantsQuery = (eventId: string, filters: Status[] = [], se
       const participantsAndUsersQuery = supabase.from('participants').select('*, users(*)');
 
       if (search) {
-        participantsAndUsersQuery.or(
-          `email.ilike.%${search}%, "firstName".ilike.%${search}%, "lastName".ilike.%${search}%`,
-          { foreignTable: 'users' }
-        );
+        participantsAndUsersQuery.or(`email.ilike.%${search}%, "firstName".ilike.%${search}%, "lastName".ilike.%${search}%`, { foreignTable: 'users' });
       }
 
       for (let i = 0; i < filters.length; ++i) {
@@ -63,12 +51,21 @@ export const useParticipantsQuery = (eventId: string, filters: Status[] = [], se
       participantsAndUsersQuery.throwOnError();
       const result = await participantsAndUsersQuery;
 
-      return result.data
+      return (result.data ?? [])
         ?.filter((data) => data.users !== null)
-        .map((data) => ({
-          ...data,
-          ...data.users,
-        })) as ParticipantQueryResponse[];
+        .map(
+          (data) =>
+            ({
+              id: data.id,
+              userId: data.users.id,
+              role: data.role,
+              status: data.status,
+              eventId,
+              email: data.users.email,
+              lastName: data.users.lastName,
+              firstName: data.users.firstName,
+            }) satisfies ParticipantQueryResponse
+        );
     },
     queryKey: [QUERY_KEYS.PARTICIPANTS.QUERY, eventId, filters, search],
   });
@@ -91,10 +88,7 @@ export const useSingleEventQuery = (eventId: string) => {
         .filter('events', 'not.is', 'null')
         .single();
 
-      const participants: PostgrestSingleResponse<Participant[]> = await supabase
-        .from('participants')
-        .select(`eventId, role, status`)
-        .eq('eventId', eventId);
+      const participants: PostgrestSingleResponse<Participant[]> = await supabase.from('participants').select(`eventId, role, status`).eq('eventId', eventId);
 
       if (result.error) {
         throw result.error;
@@ -103,8 +97,7 @@ export const useSingleEventQuery = (eventId: string) => {
       return {
         ...result.data.events,
         participants: {
-          accepted: participants.data?.filter((participant) => participant.status === 'accepted')
-            .length,
+          accepted: participants.data?.filter((participant) => participant.status === StatusEnum.ACCEPTED).length,
           total: participants.data?.length,
           role: result.data.role,
           status: result.data.status,

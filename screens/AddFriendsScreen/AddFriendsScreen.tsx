@@ -2,14 +2,10 @@ import { SizableText, View } from 'tamagui';
 import { Screen } from '@/components/Screen';
 import { FriendEntry } from '@/screens/AddFriendsScreen/FriendEntry';
 import { FlashList } from '@shopify/flash-list';
-import {
-  FriendSearchInput,
-  FriendSearchProvider,
-  useFriendSearchContext,
-} from '@/components/FriendSearch';
+import { UserSearchInput, UserSearchProvider, useUserSearchContext } from '@/components/UserSearch';
 
-const FoundUsers = () => {
-  const { users, onLoadMore } = useFriendSearchContext();
+const AddFriendsDisplay = () => {
+  const { users, onLoadMore } = useUserSearchContext();
 
   if (users !== undefined && users?.length === 0) {
     return <SizableText>Placeholder </SizableText>;
@@ -31,11 +27,11 @@ const FoundUsers = () => {
 
 export const AddFriendsScreen = () => {
   return (
-    <FriendSearchProvider>
+    <UserSearchProvider>
       <Screen title="Freunde hinzufügen">
-        <FriendSearchInput />
+        <UserSearchInput />
       </Screen>
-      <FoundUsers />
-    </FriendSearchProvider>
+      <AddFriendsDisplay />
+    </UserSearchProvider>
   );
 };

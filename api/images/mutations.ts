@@ -17,12 +17,10 @@ export const useUploadProfilePictureMutation = () => {
 
       const base64 = await FileSystem.readAsStringAsync(file, { encoding: 'base64' });
 
-      return await supabase.storage
-        .from('profile-images')
-        .upload(`${user.id}/profileImage.png`, decode(base64), {
-          upsert: true,
-          contentType: 'image/png',
-        });
+      return await supabase.storage.from('profile-images').upload(`${user.id}/profileImage.png`, decode(base64), {
+        upsert: true,
+        contentType: 'image/png',
+      });
     },
     mutationKey: [QUERY_KEYS.IMAGES.PROFILES.MUTATION],
     onSuccess: async () => {
@@ -41,9 +39,7 @@ export const useDeleteProfilePictureMutation = () => {
         return;
       }
 
-      const result = await supabase.storage
-        .from('profile-images')
-        .remove([`${user.id}/profileImage.png`]);
+      const result = await supabase.storage.from('profile-images').remove([`${user.id}/profileImage.png`]);
 
       if (result.error) {
         throw new Error(result.error.message);
@@ -65,12 +61,10 @@ export const useUploadEventImageMutation = () => {
     mutationFn: async ({ image, eventId }: UploadedEventData) => {
       const base64 = await FileSystem.readAsStringAsync(image, { encoding: 'base64' });
 
-      return await supabase.storage
-        .from('event-images')
-        .upload(`${eventId}/image.png`, decode(base64), {
-          upsert: true,
-          contentType: 'image/png',
-        });
+      return await supabase.storage.from('event-images').upload(`${eventId}/image.png`, decode(base64), {
+        upsert: true,
+        contentType: 'image/png',
+      });
     },
     mutationKey: [QUERY_KEYS.IMAGES.EVENTS.MUTATION],
     onSuccess: async () => {

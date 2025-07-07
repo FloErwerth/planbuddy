@@ -2,14 +2,9 @@ import { QueryOptions, useQuery, UseQueryResult } from 'react-query';
 import { FRIENDS_QUERY_KEY } from '@/api/friends/constants';
 import { useGetUser } from '@/store/user';
 import { supabase } from '@/api/supabase';
-import { User } from '@/api/types';
-import { ParticipantStatus } from '@/api/events/types';
+import { Status, User } from '@/api/types';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
-import {
-  friendsQuerySchema,
-  SingleFriendQueryResponse,
-  singleFriendSchema,
-} from '@/api/friends/schema';
+import { friendsQuerySchema, SingleFriendQueryResponse, singleFriendSchema } from '@/api/friends/schema';
 
 type FriendDatabaseType = {
   id: string;
@@ -17,7 +12,7 @@ type FriendDatabaseType = {
   sendAt: string;
   fromUserId: User;
   toUserId: User;
-  status: ParticipantStatus;
+  status: Status;
 };
 
 export const useDatabaseFriendsQuery = () => {
@@ -41,10 +36,7 @@ export const useDatabaseFriendsQuery = () => {
   });
 };
 
-export const useDatabaseFriendQuery = (
-  friendId?: string,
-  options: QueryOptions = {}
-): UseQueryResult<SingleFriendQueryResponse | undefined> => {
+export const useDatabaseFriendQuery = (friendId?: string, options: QueryOptions = {}): UseQueryResult<SingleFriendQueryResponse | undefined> => {
   const user = useGetUser();
 
   return useQuery({

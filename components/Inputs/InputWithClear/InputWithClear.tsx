@@ -21,11 +21,5 @@ export const InputWithClear = (inputProps: InputWithIconProps) => {
     inputProps.onChangeText?.(value);
   };
 
-  return (
-    <InputWithIcon
-      {...inputProps}
-      Icon={<Pressable onPress={clearText}>{Icon}</Pressable>}
-      onChangeText={handleTextInput}
-    />
-  );
+  return <InputWithIcon {...inputProps} Icon={<Pressable onPress={clearText}>{Icon}</Pressable>} onChangeText={handleTextInput} />;
 };
