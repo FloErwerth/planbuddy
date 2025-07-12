@@ -13,7 +13,6 @@ import { useSetUser } from '@/store/user';
 import { useQueryClient } from 'react-query';
 import { PendingFriendRequestsDot } from '@/components/PendingFriendRequestsDot/PendingFriendRequestsDot';
 import { UserAvatar } from '@/components/UserAvatar';
-import { AddFriendsSheet } from '@/sheets/AddFriendsSheet';
 
 export default function SettingsPage() {
   const { data: user, isLoading: isLoadingProfile } = useUserQuery();
@@ -21,7 +20,6 @@ export default function SettingsPage() {
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const queryClient = useQueryClient();
   const setUser = useSetUser();
-  const [friendsSheetOpen, setFriendsSheetOpen] = useState(false);
 
   if (isLoadingProfile || isLoadingImage) {
     return (
@@ -49,7 +47,7 @@ export default function SettingsPage() {
           <SizableText>{user?.email}</SizableText>
         </View>
         <Separator />
-        <PressableRow onPress={() => setFriendsSheetOpen(true)} backgroundColor="transparent" icon={<Users />}>
+        <PressableRow onPress={() => router.navigate('/friends')} backgroundColor="transparent" icon={<Users />}>
           <XStack>
             <SizableText>Freunde</SizableText>
             <PendingFriendRequestsDot position="relative" />
@@ -73,7 +71,6 @@ export default function SettingsPage() {
         </Pressable>
       </Screen>
       <EditProfileSheet open={editProfileOpen} onOpenChange={setEditProfileOpen} />
-      <AddFriendsSheet open={friendsSheetOpen} onOpenChange={setFriendsSheetOpen} />
     </>
   );
 }

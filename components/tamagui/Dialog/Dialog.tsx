@@ -4,12 +4,13 @@ import { ComponentProps, ReactElement } from 'react';
 type DialogProps = TamaguiDialogProps & {
   title?: ReactElement;
   fullscreen?: boolean;
+  zIndex?: number;
 };
 
 const overlayAnimationStyles = { opacity: 0 };
 const contentStyles = {
-  enterStyle: { opacity: 0, rotate: '5deg' },
-  exitStyle: { opacity: 0, scale: 0.95 },
+  enterStyle: { opacity: 0, scale: 0.95, rotate: '5deg' },
+  exitStyle: { opacity: 0, scale: 0.95, rotate: '5deg' },
 } as const;
 const contentAnimation: ComponentProps<typeof TamaguiDialog.Content>['animation'] = [
   'quicker',
@@ -23,7 +24,7 @@ const contentAnimation: ComponentProps<typeof TamaguiDialog.Content>['animation'
 export const Dialog = ({ title, fullscreen, children, ...props }: DialogProps) => {
   return (
     <TamaguiDialog modal={props.modal || true} {...props}>
-      <TamaguiDialog.Portal>
+      <TamaguiDialog.Portal zIndex={props.zIndex}>
         {!fullscreen && (
           <TamaguiDialog.Overlay
             key="overlay"

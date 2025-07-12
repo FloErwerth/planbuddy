@@ -79,8 +79,6 @@ export const useCreateParticipationMutation = () => {
         { ignoreDuplicates: true }
       );
 
-      console.log(result);
-
       if (result.error) {
         throw new Error(result.error.message);
       }

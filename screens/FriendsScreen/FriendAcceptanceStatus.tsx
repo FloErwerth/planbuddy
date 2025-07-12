@@ -4,7 +4,7 @@ import { Ellipsis } from '@tamagui/lucide-icons';
 import { Pressable } from 'react-native';
 
 type AcceptanceStatusProps = {
-  status: Status;
+  status: Status | undefined;
   openOptions: () => void;
 };
 

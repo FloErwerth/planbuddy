@@ -13,6 +13,7 @@ export const QUERY_KEYS = {
     CREATE: 'participantCreate',
   },
   USERS: {
+    INIFINTE_QUERY: 'inifiniteusersquery',
     QUERY: 'usersquerykey',
     MUTATION: 'usersmutation',
   },

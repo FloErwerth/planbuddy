@@ -7,12 +7,16 @@ type AcceptanceStatusProps = {
 
 export const ParticipantsAcceptanceStatus = ({ status }: AcceptanceStatusProps) => {
   if (status === StatusEnum.ACCEPTED) {
-    return null;
+    return (
+      <View padding="$2" borderRadius="$12" backgroundColor="$color.green8Light">
+        <SizableText size="$1">Befreundet</SizableText>
+      </View>
+    );
   }
 
   if (status === StatusEnum.PENDING) {
     return (
-      <View padding="$2" borderRadius="$12" backgroundColor="$color.yellow5Light">
+      <View padding="$2" borderRadius="$12" backgroundColor="$color.yellow7Light">
         <SizableText size="$1">Ausstehend</SizableText>
       </View>
     );

@@ -1,25 +1,24 @@
 import { BackButton } from '@/components/BackButton';
-import { Redirect } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useParticipantsQuery } from '@/api/events/queries';
 import { useGetUser } from '@/store/user';
 import { RefreshControl } from 'react-native';
 import { XStack } from 'tamagui';
 import { Button } from '@/components/tamagui/Button';
-import { Eye, Plus } from '@tamagui/lucide-icons';
+import { Eye } from '@tamagui/lucide-icons';
 import { ScrollView } from '@/components/tamagui/ScrollView';
 import { Screen } from '@/components/Screen';
 import { ParticipantSkeleton } from '@/screens/Participants/ParticipantSkeleton';
 import { Status, StatusEnum } from '@/api/types';
 import { SearchInput } from '@/components/SearchInput';
-import { ParticipantsAddSheet } from '@/screens/Participants/ParticipantsAdd';
 import { Participant } from '@/screens/Participants/Participant';
 import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
+import { PlusButton } from '@/components/PlusButton';
 
 export const Participants = () => {
-  const { eventId, setEditedGuest, editedGuest } = useEventDetailsContext();
+  const { eventId, setEditedGuest } = useEventDetailsContext();
   const [activeFilters, setActiveFilters] = useState<Status[]>([]);
-  const [addSheetOpen, setAddSheetOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const { data: participants, refetch, isLoading } = useParticipantsQuery(eventId, activeFilters, search);
@@ -59,15 +58,7 @@ export const Participants = () => {
 
   return (
     <>
-      <Screen
-        back={<BackButton href=".." />}
-        title="Teilnehmer"
-        action={
-          <Button variant="round" onPress={() => setAddSheetOpen(true)} width="$2" height="$2">
-            <Plus color="$background" scale={0.85} />
-          </Button>
-        }
-      >
+      <Screen back={<BackButton href=".." />} title="Teilnehmer" action={<PlusButton onPress={() => router.push('./addFriends')} />}>
         <XStack gap="$3">
           <Button size="$2" variant={acceptedFilterActive ? 'primary' : 'secondary'} borderRadius="$12" onPress={() => toggleFilter(StatusEnum.ACCEPTED)}>
             Zugesagt
@@ -100,8 +91,6 @@ export const Participants = () => {
       >
         {refreshing ? sceletons : mappedParticipants}
       </ScrollView>
-
-      <ParticipantsAddSheet eventId={eventId} open={addSheetOpen} onOpenChange={setAddSheetOpen} />
     </>
   );
 };
