@@ -47,6 +47,7 @@ export default Sentry.wrap(function RootLayout() {
         <Stack.Screen name="friends" options={defaultOptions} />
         <Stack.Screen name="eventDetails" options={{ ...defaultOptions, presentation: 'modal', animation: 'fade' }} />
         <Stack.Screen name="login" options={defaultOptions} />
+        <Stack.Screen name="token" options={defaultOptions} />
       </Stack>
     </Providers>
   );

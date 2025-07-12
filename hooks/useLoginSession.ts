@@ -57,6 +57,7 @@ export const useLoginSession = () => {
     setTimeout(() => {
       void SplashScreen.hideAsync();
     }, 500);
+
     if (user === null) {
       router.replace('/');
       return;
@@ -80,21 +81,4 @@ export const useLoginSession = () => {
   useEffect(() => {
     void handleCheckLoginstate();
   }, []);
-
-  // after login
-  useEffect(() => {
-    if (url === null) {
-      return;
-    }
-    createSessionFromUrl(url).then(async (user) => {
-      const userInDB = await getUserFromDB(user?.data.user);
-      setUser(user?.data.user!);
-      if (userInDB) {
-        router.replace('/(tabs)');
-        return;
-      }
-
-      router.replace('/onboarding');
-    });
-  }, [getUserFromDB, setUser, url]);
 };

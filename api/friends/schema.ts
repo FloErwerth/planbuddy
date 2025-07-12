@@ -28,8 +28,8 @@ export const friendsQuerySchema = z.array(
   friendSchema
     .and(
       object({
-        requesterId: userSchema,
-        receiverId: userSchema,
+        requesterId: userSchema.nullable(),
+        receiverId: userSchema.nullable(),
       })
     )
     .transform(({ receiverId, requesterId, ...rest }) => ({

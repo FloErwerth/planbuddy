@@ -2,23 +2,17 @@ import { createContext, PropsWithChildren, useCallback, useContext, useMemo, use
 import { ParticipantQueryResponse } from '@/api/events/types';
 import { router, useGlobalSearchParams } from 'expo-router';
 import { useCreateParticipationMutation } from '@/api/events/mutations';
-import { UserWithStatus, useUserSearchContext } from '@/components/UserSearch';
 import { AnimatePresence, SizableText, View } from 'tamagui';
 import { Button } from '@/components/tamagui/Button';
-import { useFriendSearchContext } from '@/components/FriendSearch';
 
-export type UserWithStatusAndSelection = UserWithStatus & { selected?: boolean };
 type EventDetailsContextType =
   | {
       eventId: string;
       editedGuest: ParticipantQueryResponse | undefined;
       setEditedGuest: (guest: ParticipantQueryResponse | undefined) => void;
-      users: UserWithStatusAndSelection[];
-      friends: UserWithStatusAndSelection[];
-      addUserToUsersToAdd: (userId: string) => void;
-      removeUserFromUsersToAdd: (userId: string) => void;
-      toggleUsersToAdd: (userId: string) => void;
+      toggleInviteToEvent: (userId: string) => void;
       numberOfAddedUsers: number;
+      usersToAdd: Set<string>;
     }
   | undefined;
 
@@ -38,9 +32,7 @@ export const EventDetailsProvider = ({ children }: PropsWithChildren) => {
   const { eventId } = useGlobalSearchParams<{ eventId: string }>();
   const [editedGuest, setEditedGuest] = useState<ParticipantQueryResponse>();
   const [usersToAdd, setUsersToAdd] = useState<Set<string>>(new Set());
-  const { users } = useUserSearchContext();
   const { mutateAsync } = useCreateParticipationMutation();
-  const { friends: others } = useFriendSearchContext();
 
   const handleSetEditedGuest = useCallback(
     (guest: ParticipantQueryResponse | undefined) => {
@@ -58,7 +50,7 @@ export const EventDetailsProvider = ({ children }: PropsWithChildren) => {
     [editedGuest?.id]
   );
 
-  const addUserToUsersToAdd = useCallback((id: string) => {
+  const addFriendsToEvent = useCallback((id: string) => {
     setUsersToAdd((current) => {
       const newSet = new Set(current.values());
       newSet.add(id);
@@ -74,16 +66,16 @@ export const EventDetailsProvider = ({ children }: PropsWithChildren) => {
     });
   }, []);
 
-  const toggleUsersToAdd = useCallback(
+  const toggleInviteToEvent = useCallback(
     (id: string) => {
       if (usersToAdd.has(id)) {
         removeUserFromUsersToAdd(id);
         return;
       }
 
-      addUserToUsersToAdd(id);
+      addFriendsToEvent(id);
     },
-    [addUserToUsersToAdd, removeUserFromUsersToAdd, usersToAdd]
+    [addFriendsToEvent, removeUserFromUsersToAdd, usersToAdd]
   );
 
   const handleInviteUsers = useCallback(async () => {
@@ -101,27 +93,11 @@ export const EventDetailsProvider = ({ children }: PropsWithChildren) => {
       eventId,
       editedGuest,
       setEditedGuest: handleSetEditedGuest,
-      toggleUsersToAdd,
-      friends: (others ?? [])?.map((friend) => {
-        return {
-          ...friend,
-          selected: usersToAdd.has(friend?.id!),
-        };
-      }),
-      users:
-        users
-          ?.filter((user) => !others?.find((friend) => friend?.id === user.id))
-          .map((user) => {
-            return {
-              ...user,
-              selected: usersToAdd.has(user.id!),
-            };
-          }) ?? [],
-      addUserToUsersToAdd,
-      removeUserFromUsersToAdd,
+      toggleInviteToEvent,
       numberOfAddedUsers: usersToAdd.size,
+      usersToAdd,
     }),
-    [addUserToUsersToAdd, editedGuest, eventId, handleSetEditedGuest, others, removeUserFromUsersToAdd, toggleUsersToAdd, users, usersToAdd]
+    [editedGuest, eventId, handleSetEditedGuest, toggleInviteToEvent, usersToAdd]
   );
 
   return (

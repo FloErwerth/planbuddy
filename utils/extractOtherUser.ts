@@ -8,7 +8,7 @@ export const useExtractOtherUser = (friend?: SimpleFriend) => {
   return useMemo(() => extractOtherUser(user?.id!, friend), [friend, user]);
 };
 
-export const extractOtherUser = (userId: string, friend?: Partial<FriendsQueryResponse[number]>) => {
+export const extractOtherUser = (userId?: string, friend?: Partial<FriendsQueryResponse[number]>) => {
   const { me, other } = (() => {
     if (friend?.requester?.id !== userId) {
       return { me: friend?.receiver, other: friend?.requester };

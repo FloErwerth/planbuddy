@@ -1,7 +1,7 @@
 import { User } from '@supabase/auth-js';
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 
-const userAtom = atom<User>();
+const userAtom = atom<User>({ id: 'some', aud: '', user_metadata: '' });
 
 export const useSetUser = () => {
   return useSetAtom(userAtom);

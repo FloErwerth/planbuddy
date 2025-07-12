@@ -43,14 +43,14 @@ ParticipantEntry.displayName = 'ParticipantEntry';
 
 export const ParticipantsSearchResults = () => {
   const { onLoadMore } = useUserSearchContext();
-  const { toggleUsersToAdd, users, numberOfAddedUsers } = useEventDetailsContext();
+  const { toggleFriend, users, numberOfAddedUsers } = useEventDetailsContext();
   const ref = useRef<FlashList<any>>(null);
 
   const renderItem = useCallback(
     ({ item: user }: ListRenderItemInfo<UserWithStatusAndSelection>) => {
-      return <ParticipantEntry toggleUser={toggleUsersToAdd} selected={!!user.selected} user={user} />;
+      return <ParticipantEntry toggleUser={toggleFriend} selected={!!user.selected} user={user} />;
     },
-    [toggleUsersToAdd]
+    [toggleFriend]
   );
 
   if (users !== undefined && users?.length === 0) {

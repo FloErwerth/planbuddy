@@ -10,6 +10,7 @@ import { BackButton } from '@/components/BackButton';
 import { useState } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { makeRedirectUri } from 'expo-auth-session';
+import { router } from 'expo-router';
 
 export const registerSchema = z.object({
   email: z.string().email(),
@@ -36,7 +37,7 @@ export default function LoginScreen() {
       return;
     }
 
-    setEmailSent(true);
+    router.push({ pathname: '/token', params: { email } });
   }
 
   return (
