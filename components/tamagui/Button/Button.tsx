@@ -1,5 +1,9 @@
 import { Button as TamaguiButton, styled } from 'tamagui';
 
+interface ButtonProps {
+  onPress?: () => void;
+}
+
 export const Button = styled(TamaguiButton, {
   pressStyle: {
     opacity: 0.85,
@@ -12,7 +16,7 @@ export const Button = styled(TamaguiButton, {
         elevation: '$0.5',
       },
       secondary: {
-        backgroundColor: '$inputBackground',
+        backgroundColor: '$secondary',
         color: '$color',
       },
       transparent: {

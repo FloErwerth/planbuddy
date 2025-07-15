@@ -31,7 +31,7 @@ export const EventDetails = () => {
   }
 
   return (
-    <ScrollableScreen back={<BackButton href=".." />}>
+    <ScrollableScreen back={<BackButton href="/(tabs)" />}>
       <View backgroundColor="$background" overflow="hidden" elevationAndroid="$2" width="100%" borderRadius="$8">
         <Image source={image} style={{ width: 'auto', height: 200 }} />
       </View>

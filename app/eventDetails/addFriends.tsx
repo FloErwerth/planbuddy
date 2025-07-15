@@ -10,8 +10,10 @@ import { Card } from '@/components/tamagui/Card';
 import { UserAvatar } from '@/components/UserAvatar';
 import { FriendSearchInput, FriendSearchProvider, useFriendSearchContext } from '@/components/FriendSearch';
 import { UserWithStatus } from '@/components/UserSearch';
+import { useHasFriends } from '@/api/friends/refiners';
 
 export const AddFriendsScreen = () => {
+  const hasFriends = useHasFriends();
   const { friends } = useFriendSearchContext();
   const { toggleInviteToEvent, usersToAdd } = useEventDetailsContext();
 
@@ -46,17 +48,19 @@ export const AddFriendsScreen = () => {
   return (
     <>
       <Screen back={<BackButton />} title="Freunde einladen">
-        <FriendSearchInput />
+        {hasFriends ? <FriendSearchInput /> : <SizableText textAlign="center">Füge neue Freunde hinzu, um Freunde einzuladen</SizableText>}
       </Screen>
-      <FlashList
-        renderItem={render}
-        data={mappedFriends}
-        contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
-        ItemSeparatorComponent={() => <View height="$1" />}
-        estimatedItemSize={100}
-        showsVerticalScrollIndicator={false}
-        onEndReachedThreshold={0.5}
-      />
+      {hasFriends && (
+        <FlashList
+          renderItem={render}
+          data={mappedFriends}
+          contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
+          ItemSeparatorComponent={() => <View height="$1" />}
+          estimatedItemSize={100}
+          showsVerticalScrollIndicator={false}
+          onEndReachedThreshold={0.5}
+        />
+      )}
     </>
   );
 };

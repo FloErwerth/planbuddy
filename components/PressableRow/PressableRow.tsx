@@ -11,6 +11,14 @@ type PressableRowProps = {
   PropsWithChildren;
 
 export const PressableRow = ({ onPress, icon, iconRight = <ChevronRight />, children, ...wrapperProps }: PressableRowProps) => {
+  const IconRight = () => {
+    if (!iconRight) {
+      return <View padding="$3" />;
+    }
+
+    return iconRight;
+  };
+
   return (
     <Pressable onPress={onPress}>
       <XStack gap="$3" alignItems="center">
@@ -26,7 +34,7 @@ export const PressableRow = ({ onPress, icon, iconRight = <ChevronRight />, chil
           {...wrapperProps}
         >
           {children}
-          {iconRight}
+          <IconRight />
         </View>
       </XStack>
     </Pressable>

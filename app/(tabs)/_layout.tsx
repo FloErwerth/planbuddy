@@ -3,7 +3,6 @@ import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
 import { TabBarIcon } from '@/components/TabBarIcon';
 import { Home, Plus } from '@tamagui/lucide-icons';
 import { ProfileTabBarIcon } from '@/components/ProfileTabBarIcon/ProfileTabBarIcon';
-import { useGetUser } from '@/store/user';
 
 const screenOptions: BottomTabNavigationOptions = {
   tabBarStyle: {
@@ -15,7 +14,6 @@ const screenOptions: BottomTabNavigationOptions = {
 };
 
 export default function TabsLayout() {
-  const user = useGetUser();
   return (
     <>
       <Tabs screenOptions={screenOptions}>
@@ -30,6 +28,7 @@ export default function TabsLayout() {
         <Tabs.Screen
           name="add"
           options={{
+            unmountOnBlur: true,
             title: '',
             tabBarButton: (props) => <TabBarIcon scale={1.6} Icon={(props) => <Plus {...props} />} title="Add" {...props} />,
             ...screenOptions,

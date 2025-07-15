@@ -33,7 +33,7 @@ export const Details = () => {
           </YStack>
         </XStack>
       </XStack>
-      <PressableRow icon={<MapPin />}>
+      <PressableRow icon={<MapPin />} iconRight={null}>
         <SizableText>{event.location}</SizableText>
       </PressableRow>
       {event.description && (

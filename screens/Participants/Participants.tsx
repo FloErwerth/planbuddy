@@ -15,9 +15,11 @@ import { SearchInput } from '@/components/SearchInput';
 import { Participant } from '@/screens/Participants/Participant';
 import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
 import { PlusButton } from '@/components/PlusButton';
+import { useFriendsByStatus } from '@/api/friends/refiners';
 
 export const Participants = () => {
   const { eventId, setEditedGuest } = useEventDetailsContext();
+  const { accepted } = useFriendsByStatus();
   const [activeFilters, setActiveFilters] = useState<Status[]>([]);
   const [search, setSearch] = useState('');
   const [refreshing, setRefreshing] = useState(false);

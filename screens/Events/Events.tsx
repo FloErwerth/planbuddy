@@ -10,7 +10,7 @@ import { router } from 'expo-router';
 
 const contentContainerStyle = { gap: '$3', paddingVertical: '$4' };
 export const Events = () => {
-  const { data: events, isLoading } = useEventsQuery();
+  const { data: events } = useEventsQuery();
 
   const mappedData = useMemo(() => (events ?? []).map((event) => <EventSmall key={event.id} {...event} />), [events]);
 

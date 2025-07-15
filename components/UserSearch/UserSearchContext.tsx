@@ -31,7 +31,7 @@ export const useUserSearchContext = () => {
   const context = useContext(SearchContext);
 
   if (!context) {
-    throw new Error('The searchContext must be used within a search context.');
+    throw new Error('The user search must be used within a user search search context.');
   }
 
   return context as SearchContextType;

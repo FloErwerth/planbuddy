@@ -31,10 +31,15 @@ export const useFriendOverview = () => {
       data: data.sort(sortFriendsToTop),
       others: data.map((friend) => extractOtherUser(user?.id!, friend)) as SimpleFriend[],
       pending,
-      pendingToAccept: pending.filter((friend) => friend.requester.id !== user?.id),
+      pendingToAccept: pending.filter((friend) => friend.requester?.id !== user?.id),
       refetch,
       isLoading,
     }),
     [data, pending, refetch, isLoading, user?.id]
   );
+};
+
+export const useHasFriends = () => {
+  const { accepted } = useFriendsByStatus();
+  return accepted.length > 0;
 };

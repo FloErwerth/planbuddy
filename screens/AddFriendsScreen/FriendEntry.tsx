@@ -6,7 +6,6 @@ import { Button } from '@/components/tamagui/Button';
 import { UserPlus } from '@tamagui/lucide-icons';
 import { Card } from '@/components/tamagui/Card';
 import { UserAvatar } from '@/components/UserAvatar';
-import Animated, { FadeOut } from 'react-native-reanimated';
 import { useGetUser } from '@/store/user';
 import { UserWithStatus } from '@/components/UserSearch';
 
@@ -91,17 +90,15 @@ export const FriendEntry = memo(({ friend }: { friend: UserWithStatus }) => {
   }, [doAddFriend, friend, status]);
 
   return (
-    <Animated.View key={id} exiting={FadeOut}>
-      <Card>
-        <XStack justifyContent="space-between" paddingRight="$2" alignItems="center">
-          <XStack alignItems="center" gap="$4">
-            <UserAvatar id={id} />
-            <SizableText>{firstName || lastName ? `${firstName} ${lastName}` : email}</SizableText>
-          </XStack>
-          {renderedButton}
+    <Card key={id}>
+      <XStack justifyContent="space-between" paddingRight="$2" alignItems="center">
+        <XStack alignItems="center" gap="$4">
+          <UserAvatar id={id} />
+          <SizableText>{firstName || lastName ? `${firstName} ${lastName}` : email}</SizableText>
         </XStack>
-      </Card>
-    </Animated.View>
+        {renderedButton}
+      </XStack>
+    </Card>
   );
 });
 

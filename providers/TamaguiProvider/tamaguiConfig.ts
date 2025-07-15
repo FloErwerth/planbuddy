@@ -5,6 +5,8 @@ import { color } from '@tamagui/themes';
 export const colors = {
   ...color,
   inputBackground: 'rgb(220,220,220)',
+  primary: '#3f4e93',
+  secondary: '#b9b9ff',
 };
 
 const font = createFont({
@@ -70,8 +72,8 @@ export const tamaguiConfig = createTamagui({
     ...config.tokens,
     color: {
       ...config.tokens.color,
-      primary: '#3f4e93',
-      secondary: '#a8aee1',
+      primary: colors.primary,
+      secondary: colors.secondary,
       accent: '#DD7568',
       lightShade: '#F4F3F7',
       darkShade: '#354173',
@@ -86,6 +88,7 @@ export const tamaguiConfig = createTamagui({
       borderColor: '#656565',
       focusColor: '#354173',
       placeholderColor: color.gray10Light,
+      primary: colors.primary,
     },
     error: {
       darkShade: color.red9Light,

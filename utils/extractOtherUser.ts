@@ -20,8 +20,11 @@ export const extractOtherUser = (userId?: string, friend?: Partial<FriendsQueryR
     other,
     me,
     id: other?.id,
+    status: friend?.status,
     firstName: other?.firstName,
     lastName: other?.lastName,
     email: other?.email,
+    sendAt: friend?.sendAt,
+    acceptedAt: friend?.acceptedAt,
   };
 };

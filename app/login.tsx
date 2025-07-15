@@ -1,16 +1,16 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { supabase } from '@/api/supabase';
 import { Screen } from '@/components/Screen';
-import { SizableText } from 'tamagui';
+import { SizableText, View } from 'tamagui';
 import { FormInput } from '@/components/FormFields';
 import { Button } from '@/components/tamagui/Button';
 import { z } from 'zod';
 import { BackButton } from '@/components/BackButton';
-import { useState } from 'react';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { makeRedirectUri } from 'expo-auth-session';
-import { router } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
+import { useLoginContext } from '@/providers/LoginProvider';
+import { Separator } from '@/components/tamagui/Separator';
+import { useCallback, useEffect, useState } from 'react';
+import { Sheet } from '@/components/tamagui/Sheet';
 
 export const registerSchema = z.object({
   email: z.string().email(),
@@ -19,63 +19,71 @@ export const registerSchema = z.object({
 export type RegisterSchema = z.infer<typeof registerSchema>;
 
 export default function LoginScreen() {
-  const [emailSent, setEmailSent] = useState(false);
+  const navigation = useNavigation();
+  const [hintSheetOpen, setHintSheetOpen] = useState(false);
+  const { email: previousEmail, setEmail, setStartedLoginAttempt, startResendTokenTimer, resendTokenTime } = useLoginContext();
   const form = useForm({
     resolver: zodResolver(registerSchema),
+    defaultValues: { email: previousEmail },
   });
 
-  async function signUpWithPhone({ email }: RegisterSchema) {
-    const result = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: makeRedirectUri(),
-      },
-    });
+  const resetForm = useCallback(() => {
+    form.reset({ email: previousEmail });
+  }, [form, previousEmail]);
 
-    if (result.error) {
-      // show information but nothing we can do really
-      return;
-    }
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', resetForm);
+    return () => {
+      unsubscribe();
+    };
+  }, [navigation, resetForm]);
 
-    router.push({ pathname: '/token', params: { email } });
-  }
+  const signUpWithPhone = useCallback(
+    ({ email }: RegisterSchema) => {
+      if (email === previousEmail && resendTokenTime > 0) {
+        setHintSheetOpen(true);
+        return;
+      }
+
+      router.push({ pathname: '/sendingEmail', params: { email } });
+      setEmail(email);
+      startResendTokenTimer();
+    },
+    [previousEmail, resendTokenTime, setEmail, startResendTokenTimer]
+  );
+
+  const handleEnterCode = useCallback(() => {
+    setHintSheetOpen(false);
+    setStartedLoginAttempt(true);
+    router.push('/token');
+  }, [setStartedLoginAttempt]);
 
   return (
     <>
-      <Screen back={<BackButton href=".." />} flex={1} gap="$8">
+      <Screen back={<BackButton href=".." />} flex={1}>
         <FormProvider {...form}>
           <SizableText size="$8" textAlign="center">
             Melde dich ganz bequem ohne Passwort an
           </SizableText>
           <FormInput label="Email" name="email" autoCapitalize="none" />
-          <Button onPress={form.handleSubmit(signUpWithPhone)}>Weiter</Button>
+          <Button onPress={form.handleSubmit(signUpWithPhone)}>Anmelden</Button>
         </FormProvider>
       </Screen>
-      {emailSent && (
-        <Animated.View
-          layout={FadeIn}
-          entering={FadeIn}
-          exiting={FadeOut}
-          style={[
-            {
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '100%',
-              backgroundColor: 'rgba(0,0,0,0.5)',
-            },
-          ]}
-        >
-          <Screen borderRadius="$4" maxWidth="90%">
-            <SizableText size="$6">Email zugeschickt</SizableText>
-            <SizableText>Das hat geklappt! Dir wurde eine Email an erwerthflorian@outlook.de zugeschickt.</SizableText>
-            <SizableText>Bitte überprüfe nun dein Postfach, nach dem Bestätigen des Logins wirst Du zur App zurückgeleitet.</SizableText>
-          </Screen>
-        </Animated.View>
-      )}
+      <Sheet snapPoints={undefined} snapPointsMode="fit" open={hintSheetOpen} onOpenChange={setHintSheetOpen}>
+        <Screen>
+          <SizableText size="$6">Gleiche E-Mail</SizableText>
+          <SizableText>Es sieht so aus als hättest Du die gleiche E-Mail wie in deinem vorherigen Login-Versuch benutzt.</SizableText>
+          <View gap="$2">
+            <SizableText>Du kannst Dir erneut einen Code an {previousEmail} verschicken</SizableText>
+            <Button disabled={resendTokenTime > 0}>{resendTokenTime > 0 ? `Code in ${resendTokenTime} erneut versenden` : `Code erneut versenden`}</Button>
+          </View>
+          <Separator />
+          <View gap="$2">
+            <SizableText>Oder, wenn Du doch einen Code erhalten hast:</SizableText>
+            <Button onPress={handleEnterCode}>Deinen Code eingeben</Button>
+          </View>
+        </Screen>
+      </Sheet>
     </>
   );
 }

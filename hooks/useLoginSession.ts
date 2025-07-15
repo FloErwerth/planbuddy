@@ -1,6 +1,5 @@
 import * as QueryParams from 'expo-auth-session/build/QueryParams';
 import { supabase } from '@/api/supabase';
-import { useURL } from 'expo-linking';
 import { useSetUser } from '@/store/user';
 import { useCallback, useEffect } from 'react';
 import { router, SplashScreen } from 'expo-router';
@@ -30,11 +29,10 @@ const createSessionFromUrl = async (url: string | null) => {
 };
 
 export const useLoginSession = () => {
-  const url = useURL();
   const setUser = useSetUser();
   const queryClient = useQueryClient();
 
-  const getUserFromDB = useCallback(async (user: SupabaseUser | null | undefined) => {
+  const getUserFromDB = useCallback(async (user: SupabaseUser) => {
     if (!user) {
       return undefined;
     }
@@ -63,19 +61,18 @@ export const useLoginSession = () => {
       return;
     }
 
+    setUser(user);
+
     const userFromDb = await getUserFromDB(user);
 
-    if (user) {
-      setUser(user!);
-      if (!userFromDb) {
-        router.replace('/onboarding');
-        return;
-      }
-
-      void queryClient.refetchQueries();
-      router.replace('/(tabs)');
+    if (!userFromDb) {
+      router.replace('/onboarding');
+      return;
     }
-  }, [getUserFromDB, setUser]);
+
+    void queryClient.refetchQueries();
+    router.replace('/(tabs)');
+  }, [getUserFromDB, queryClient, setUser]);
 
   // upon app start
   useEffect(() => {

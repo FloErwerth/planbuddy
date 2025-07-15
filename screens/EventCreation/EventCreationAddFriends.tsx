@@ -7,18 +7,20 @@ import { useEventCreationContext } from '@/screens/EventCreation/EventCreationCo
 import { Pressable } from 'react-native';
 import { Screen } from '@/components/Screen';
 import { Button } from '@/components/tamagui/Button';
-import { ScrollView } from '@/components/tamagui/ScrollView';
 import { Card } from '@/components/tamagui/Card';
-import { UserSearchInput, useUserSearchContext } from '@/components/UserSearch';
 import { StatusEnum } from '@/api/types';
+import { FriendSearchInput, useFriendSearchContext } from '@/components/FriendSearch';
+import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
+import { SimpleFriend } from '@/api/friends/types';
 
 type EventCreationAddFriendsProps = {
   onClose: () => void;
 };
+
 export const EventCreationAddFriends = ({ onClose }: EventCreationAddFriendsProps) => {
   const { guests, addGuests, removeGuests } = useEventCreationContext();
-  const { users } = useUserSearchContext();
-  const accepted = useMemo(() => users?.filter((user) => user.status === StatusEnum.ACCEPTED) ?? [], [users]);
+  const { friends } = useFriendSearchContext();
+  const accepted: SimpleFriend[] = useMemo(() => friends.filter((friend) => friend.status === StatusEnum.ACCEPTED) ?? [], [friends]);
 
   const user = useGetUser();
 
@@ -41,22 +43,21 @@ export const EventCreationAddFriends = ({ onClose }: EventCreationAddFriendsProp
     [addGuests, getIsGuest, removeGuests]
   );
 
-  const mappedFriends = useMemo(
-    () =>
-      accepted.map((friend) => {
-        const { id, firstName, lastName } = extractOtherUser(user!.id, friend);
-        const checked = Boolean(getIsGuest(id!));
-        return (
-          <Card key={id} margin="$4">
-            <Pressable onPress={() => toggleGuest(id!)}>
-              <FriendDisplay {...friend} lastName={lastName} firstName={firstName}>
-                <Checkbox checked={checked} />
-              </FriendDisplay>
-            </Pressable>
-          </Card>
-        );
-      }),
-    [accepted, getIsGuest, toggleGuest, user]
+  const render = useCallback(
+    ({ item: friend }: ListRenderItemInfo<SimpleFriend>) => {
+      const { id, firstName, lastName } = extractOtherUser(user!.id, friend);
+      const checked = Boolean(getIsGuest(id!));
+      return (
+        <Card key={id} margin="$4">
+          <Pressable onPress={() => toggleGuest(id!)}>
+            <FriendDisplay {...friend} lastName={lastName} firstName={firstName}>
+              <Checkbox checked={checked} />
+            </FriendDisplay>
+          </Pressable>
+        </Card>
+      );
+    },
+    [getIsGuest, toggleGuest, user]
   );
 
   return (
@@ -69,9 +70,9 @@ export const EventCreationAddFriends = ({ onClose }: EventCreationAddFriendsProp
         }
         title="Deine Gäste"
       >
-        <UserSearchInput />
+        <FriendSearchInput />
       </Screen>
-      <ScrollView withShadow>{mappedFriends}</ScrollView>
+      <FlashList data={accepted} renderItem={render} estimatedItemSize={200} />
     </>
   );
 };

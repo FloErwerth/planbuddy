@@ -13,12 +13,13 @@ import { ScrollableScreen } from '@/components/Screen';
 import { EventCreationImage } from '@/screens/EventCreation/EventCreationImage';
 import { router } from 'expo-router';
 import { PressableRow } from '@/components/PressableRow';
-import { Sheet } from '@/components/tamagui/Sheet';
-import { EventCreationAddFriends } from '@/screens/EventCreation/EventCreationAddFriends';
 import { useEventCreationContext } from '@/screens/EventCreation/EventCreationContext';
+import { useFriendsByStatus } from '@/api/friends/refiners';
+import { AddFriendModal } from '@/screens/AddFriendsScreen/AddFriendModal';
 
 export const EventCreation = () => {
   const [addFriendsSheetOpen, setAddFriendsSheetOpen] = useState(false);
+  const { accepted } = useFriendsByStatus();
   const { guests } = useEventCreationContext();
 
   const now = new Date();
@@ -75,6 +76,25 @@ export const EventCreation = () => {
     [createEvent, guests, imageToUpload, uploadEventImage]
   );
 
+  const AddFriendRow = useCallback(() => {
+    if (!accepted.length) {
+      return null;
+    }
+
+    return (
+      <PressableRow onPress={() => setAddFriendsSheetOpen(true)}>
+        <XStack justifyContent="space-between" flex={1}>
+          {guests.length > 0 && (
+            <SizableText>
+              {guests.length} {guests.length === 1 ? 'Gast' : 'Gäste'} hinzugefügt
+            </SizableText>
+          )}
+          <SizableText>{guests.length > 0 ? 'Verwalten' : 'Gäste hinzufügen'}</SizableText>
+        </XStack>
+      </PressableRow>
+    );
+  }, [accepted.length, guests.length]);
+
   const hasErrors = Object.values(form.formState.errors).length > 0;
   return (
     <>
@@ -113,16 +133,7 @@ export const EventCreation = () => {
 
             <FormInput label="Ort" name="location" />
             <FormTextArea multiline verticalAlign="top" label="Details" name="description" />
-            <PressableRow onPress={() => setAddFriendsSheetOpen(true)}>
-              <XStack justifyContent="space-between" flex={1}>
-                {guests.length > 0 && (
-                  <SizableText>
-                    {guests.length} {guests.length === 1 ? 'Gast' : 'Gäste'} hinzugefügt
-                  </SizableText>
-                )}
-                <SizableText>{guests.length > 0 ? 'Verwalten' : 'Gäste hinzufügen'}</SizableText>
-              </XStack>
-            </PressableRow>
+            <AddFriendRow />
           </FormProvider>
         </View>
       </ScrollableScreen>
@@ -140,9 +151,7 @@ export const EventCreation = () => {
       >
         Event erstellen
       </Button>
-      <Sheet modal={false} hideHandle animation="quick" unmountChildrenWhenHidden open={addFriendsSheetOpen} onOpenChange={setAddFriendsSheetOpen}>
-        <EventCreationAddFriends onClose={() => setAddFriendsSheetOpen(false)} />
-      </Sheet>
+      {accepted.length > 0 && <AddFriendModal open={addFriendsSheetOpen} onOpenChange={setAddFriendsSheetOpen} />}
     </>
   );
 };

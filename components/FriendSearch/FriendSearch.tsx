@@ -11,7 +11,7 @@ import { extractOtherUser } from '@/utils/extractOtherUser';
 const NUMBER_OF_SEARCHED_FRIENDS = 15;
 
 type SearchContextType = {
-  friends: (SimpleFriend | undefined)[];
+  friends: SimpleFriend[];
   search: (search: string) => void;
   setSearchDisplay: (search: string) => void;
   searchDisplay: string;
@@ -24,7 +24,7 @@ export const useFriendSearchContext = () => {
   const context = useContext(SearchContext);
 
   if (!context) {
-    throw new Error('The searchContext must be used within a search context.');
+    throw new Error('The friend search must be used within a friend search context.');
   }
 
   return context as SearchContextType;
@@ -77,24 +77,26 @@ export const FriendSearchProvider = ({ children }: PropsWithChildren) => {
     await fetchNextPage();
   }, [fetchNextPage, renderedItems]);
 
-  const flattenPages = useMemo(() => friends?.pages.flat(1), [friends?.pages]);
+  const flattenPages: SimpleFriend[] = useMemo(() => friends?.pages.flat(1) ?? [], [friends?.pages]);
 
-  const exactFriend = useMemo(() => {
+  const exactFriend: SimpleFriend[] = useMemo(() => {
     const found = flattenPages?.find(({ firstName, lastName, email }) => `${firstName} ${lastName}` === debouncedSearch || email === debouncedSearch);
     if (found) {
       return [found];
     }
+
+    return [];
   }, [debouncedSearch, flattenPages]);
 
   const contextValue: SearchContextType = useMemo(
     () => ({
-      friends: exactFriend || (friends ?? { pages: [] })?.pages.flat(1),
+      friends: exactFriend || flattenPages,
       search: debounce(setDebouncedSearch, 300, false),
       searchDisplay,
       setSearchDisplay,
       onLoadMore,
     }),
-    [exactFriend, friends, searchDisplay, onLoadMore]
+    [exactFriend, flattenPages, searchDisplay, onLoadMore]
   );
 
   return <SearchContext.Provider value={contextValue}>{children}</SearchContext.Provider>;

@@ -11,10 +11,6 @@ export const useEventsQuery = () => {
 
   return useQuery({
     queryFn: async () => {
-      if (!user) {
-        return;
-      }
-
       const result = await supabase.from('participants').select(`role,events(*)`).eq('userId', user.id).throwOnError();
 
       return result.data?.map((data) => ({
