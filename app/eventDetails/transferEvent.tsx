@@ -33,7 +33,7 @@ export default function TransferEvent() {
     });
     await removeGuest(me.id);
     setGuestToTransferTo(undefined);
-    router.replace('(tabs)');
+    router.replace('/(tabs)');
   }, [eventId, guestToTransferTo, me, removeGuest, updateGuest]);
 
   const mappedParticipants = useMemo(

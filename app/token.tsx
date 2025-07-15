@@ -47,7 +47,7 @@ export default function Token() {
         return;
       }
 
-      await handleCheckLoginstate(data);
+      await handleCheckLoginstate(data.user);
       await supabase.auth.setSession(data.session);
       router.replace('/(tabs)');
       resetTokenPage();

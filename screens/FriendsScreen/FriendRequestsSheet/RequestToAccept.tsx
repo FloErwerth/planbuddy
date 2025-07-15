@@ -18,7 +18,7 @@ export const RequestToAccept = ({ friend }: RequestToAcceptProps) => {
   return (
     <View flex={1} gap="$1">
       <SizableText>
-        {friend.requester.firstName} {friend.requester.lastName}
+        {friend.requester?.firstName} {friend.requester?.lastName}
       </SizableText>
       <XStack flex={0.5} gap="$2">
         <Button onPress={() => acceptFriend(friend)} size="$2" flex={1}>

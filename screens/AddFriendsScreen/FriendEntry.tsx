@@ -1,7 +1,7 @@
 import { StatusEnum } from '@/api/types';
 import { useAddFriendMutation } from '@/api/friends/addFriendsMutation';
-import { memo, useCallback, useMemo } from 'react';
-import { SizableText, View, XStack } from 'tamagui';
+import { memo, useCallback, useMemo, useState } from 'react';
+import { SizableText, Spinner, View, XStack } from 'tamagui';
 import { Button } from '@/components/tamagui/Button';
 import { UserPlus } from '@tamagui/lucide-icons';
 import { Card } from '@/components/tamagui/Card';
@@ -67,14 +67,16 @@ const SearchAcceptanceStatus = ({ friend: { status, requester } }: SearchAccepta
 };
 
 export const FriendEntry = memo(({ friend }: { friend: UserWithStatus }) => {
-  const { mutateAsync: addFriend } = useAddFriendMutation();
+  const { mutateAsync: addFriend, ...rest } = useAddFriendMutation();
   const { id, status, firstName, lastName, email } = friend;
-
+  const [isRequesting, setIsRequesting] = useState(false);
   const doAddFriend = useCallback(async () => {
     if (!id) {
       return;
     }
+    setIsRequesting(true);
     await addFriend(id);
+    setIsRequesting(false);
   }, [addFriend, id]);
 
   const renderedButton = useMemo(() => {
@@ -82,12 +84,22 @@ export const FriendEntry = memo(({ friend }: { friend: UserWithStatus }) => {
       return <SearchAcceptanceStatus friend={friend} />;
     }
 
+    if (isRequesting) {
+      return (
+        <View animation="bouncy" width="$5" borderRadius="$12" backgroundColor="$primary" enterStyle={{ scale: 0.5 }}>
+          <View scale={0.7}>
+            <Spinner animation="bouncy" enterStyle={{ scale: 1.1 }} color="$background" />
+          </View>
+        </View>
+      );
+    }
+
     return (
-      <Button borderRadius="$12" size="$2" onPress={doAddFriend}>
+      <Button disabled={isRequesting} borderRadius="$12" size="$2" onPress={doAddFriend}>
         <UserPlus color="white" scale={0.7} />
       </Button>
     );
-  }, [doAddFriend, friend, status]);
+  }, [doAddFriend, friend, isRequesting, status]);
 
   return (
     <Card key={id}>

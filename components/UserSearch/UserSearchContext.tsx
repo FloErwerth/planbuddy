@@ -1,15 +1,13 @@
-import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import { Status, User, userSchema } from '@/api/types';
 import { supabase } from '@/api/supabase';
 import { useGetUser } from '@/store/user';
-import { useInfiniteQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { array } from 'zod';
 import { debounce } from 'tamagui';
 import { friendsQuerySchema } from '@/api/friends/schema';
 import { QUERY_KEYS } from '@/api/queryKeys';
 import { FRIENDS_QUERY_KEY } from '@/api/friends/constants';
-
-const NUMBER_OF_SEARCHED_USERS = 15;
 
 export type UserWithStatus = User & { status?: Status; receiver?: User; requester?: User };
 type SearchContextType = {
@@ -17,7 +15,6 @@ type SearchContextType = {
   search: (search: string) => void;
   setSearchDisplay: (search: string) => void;
   searchDisplay: string;
-  onLoadMore: () => void;
 };
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
@@ -37,34 +34,21 @@ export const useUserSearchContext = () => {
   return context as SearchContextType;
 };
 
-function getRange(page: number, limit: number) {
-  const from = page * limit;
-  const to = from + limit - 1;
-
-  return [from, to];
-}
-
-const useInfiniteSearch = (search: string, { showUsersWhenEmpty = false }: UserSearchOptions) => {
+const useUsersWithStatusQuery = (search: string, { showUsersWhenEmpty = false, showOnlyFriends = false }: UserSearchOptions) => {
   const user = useGetUser();
 
-  return useInfiniteQuery({
-    getNextPageParam: (lastPage: unknown[] | undefined, allPages: unknown[]) => {
-      return lastPage && Array.isArray(lastPage) && lastPage.length ? allPages?.length : undefined;
-    },
+  return useQuery({
     queryFn: async ({ pageParam = 0 }) => {
-      const range = getRange(pageParam, 5);
-
       if (!showUsersWhenEmpty && !search) {
         return [];
       }
 
-      const result = await supabase
-        .from('users')
-        .select()
-        .or(`email.ilike.%${search}%, "firstName".ilike.%${search}%, "lastName".ilike.%${search}%`)
-        .order('firstName')
-        .range(range[0], range[1])
-        .throwOnError();
+      const terms = search
+        .split(' ')
+        .map((term) => `email.ilike.%${term}%, "firstName".ilike.%${term}%, "lastName".ilike.%${term}%`)
+        .join(', ');
+
+      const result = await supabase.from('users').select().or(terms).order('firstName').throwOnError();
 
       const parsedResult = array(userSchema)
         .parse(result.data)
@@ -79,8 +63,17 @@ const useInfiniteSearch = (search: string, { showUsersWhenEmpty = false }: UserS
 
       const parsedFriends = friendsQuerySchema.parse(friends.data);
 
-      const users = parsedResult.map((user) => {
-        const foundFriend = parsedFriends.find((friend) => friend.requester.id === user.id || friend.receiver.id === user.id);
+      return parsedResult.map((user) => {
+        const foundFriend = parsedFriends.find((friend) => {
+          const isValid = friend.requester?.id === user.id || friend.receiver?.id === user.id;
+          const isRelated = friend.status !== undefined;
+
+          if (showOnlyFriends) {
+            return isValid && isRelated;
+          }
+          return isValid;
+        });
+
         return {
           status: foundFriend?.status ?? undefined,
           requester: foundFriend?.requester,
@@ -88,8 +81,6 @@ const useInfiniteSearch = (search: string, { showUsersWhenEmpty = false }: UserS
           ...user,
         };
       }) as UserWithStatus[];
-
-      return users;
     },
     queryKey: [FRIENDS_QUERY_KEY, QUERY_KEYS.USERS.QUERY, user?.id, search.toLowerCase()],
   });
@@ -98,31 +89,16 @@ const useInfiniteSearch = (search: string, { showUsersWhenEmpty = false }: UserS
 export const UserSearchProvider = ({ children, ...options }: PropsWithChildren & UserSearchOptions) => {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [searchDisplay, setSearchDisplay] = useState('');
-  const { data: users, fetchNextPage } = useInfiniteSearch(debouncedSearch, options);
-  const [renderedItems, setrenderedItems] = useState(NUMBER_OF_SEARCHED_USERS);
-
-  const onLoadMore = useCallback(async () => {
-    setrenderedItems(renderedItems + NUMBER_OF_SEARCHED_USERS);
-    await fetchNextPage();
-  }, [fetchNextPage, renderedItems]);
+  const { data: users } = useUsersWithStatusQuery(debouncedSearch, options);
 
   const contextValue: SearchContextType = useMemo(
     () => ({
-      users: Array.from(
-        (users?.pages.flat(1) ?? [])
-          .reduce((uniqueUsers, current) => {
-            uniqueUsers.set(current.id!, current);
-
-            return uniqueUsers;
-          }, new Map<string, UserWithStatus>())
-          .values()
-      ),
+      users,
       search: debounce(setDebouncedSearch, 300),
       searchDisplay,
       setSearchDisplay,
-      onLoadMore,
     }),
-    [users?.pages, searchDisplay, onLoadMore]
+    [users, searchDisplay]
   );
 
   return <SearchContext.Provider value={contextValue}>{children}</SearchContext.Provider>;

@@ -1,11 +1,10 @@
 import { useFriendOverview } from '@/api/friends/refiners';
-import { Pressable } from 'react-native';
-import Animated, { FadeOut } from 'react-native-reanimated';
+import { Pressable, RefreshControl } from 'react-native';
 import { Card } from '@/components/tamagui/Card';
 import { SizableText, View, XStack } from 'tamagui';
 import { UserAvatar } from '@/components/UserAvatar';
 import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { SimpleFriend } from '@/api/friends/types';
 
 type FriendsListProps = {
@@ -14,24 +13,23 @@ type FriendsListProps = {
 };
 
 export const FriendsList = ({ onFriendPressed, Action }: FriendsListProps) => {
-  const { others = [] } = useFriendOverview();
+  const { others = [], refetch } = useFriendOverview();
+  const [refreshing, setRefreshing] = useState(false);
 
   const render = useCallback(
     ({ item: friend }: ListRenderItemInfo<SimpleFriend>) => {
       const { id, firstName, lastName, email } = friend;
       return (
         <Pressable onPress={() => onFriendPressed(friend)}>
-          <Animated.View key={id} exiting={FadeOut}>
-            <Card>
-              <XStack justifyContent="space-between" paddingRight="$2" alignItems="center">
-                <XStack alignItems="center" gap="$4">
-                  <UserAvatar id={id} />
-                  <SizableText>{firstName || lastName ? `${firstName} ${lastName}` : email}</SizableText>
-                </XStack>
-                <Action friend={friend} />
+          <Card>
+            <XStack justifyContent="space-between" paddingRight="$2" alignItems="center">
+              <XStack alignItems="center" gap="$4">
+                <UserAvatar id={id} />
+                <SizableText>{firstName || lastName ? `${firstName} ${lastName}` : email}</SizableText>
               </XStack>
-            </Card>
-          </Animated.View>
+              <Action friend={friend} />
+            </XStack>
+          </Card>
         </Pressable>
       );
     },
@@ -40,13 +38,23 @@ export const FriendsList = ({ onFriendPressed, Action }: FriendsListProps) => {
 
   return (
     <FlashList
+      refreshControl={
+        <RefreshControl
+          onRefresh={async () => {
+            setRefreshing(true);
+            await refetch();
+            setRefreshing(false);
+          }}
+          refreshing={refreshing}
+        />
+      }
+      refreshing={refreshing}
       renderItem={render}
       data={others}
       contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
       ItemSeparatorComponent={() => <View height="$1" />}
       estimatedItemSize={100}
       showsVerticalScrollIndicator={false}
-      onEndReachedThreshold={0.5}
     />
   );
 };

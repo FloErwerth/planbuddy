@@ -8,7 +8,7 @@ import { useCallback } from 'react';
 const containerStyle = { padding: 16, paddingBottom: 32 } as const;
 
 const AddFriendsDisplay = () => {
-  const { users, onLoadMore } = useUserSearchContext();
+  const { users } = useUserSearchContext();
 
   const renderItem = useCallback(({ item: user }: ListRenderItemInfo<UserWithStatus>) => <FriendEntry friend={user} />, []);
 
@@ -21,11 +21,9 @@ const AddFriendsDisplay = () => {
       renderItem={renderItem}
       data={users}
       contentContainerStyle={containerStyle}
-      ItemSeparatorComponent={() => <View height="$2" />}
-      onEndReached={onLoadMore}
+      ItemSeparatorComponent={() => <View height="$1" />}
       estimatedItemSize={100}
       showsVerticalScrollIndicator={false}
-      onEndReachedThreshold={0.5}
     />
   );
 };

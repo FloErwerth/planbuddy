@@ -2,15 +2,15 @@ import { SheetProps, SizableText, View } from 'tamagui';
 import { Sheet } from '@/components/tamagui/Sheet';
 import { Screen } from '@/components/Screen';
 import { Button } from '@/components/tamagui/Button';
-import { FriendsQueryResponse } from '@/api/friends/schema';
 import { useGetUser } from '@/store/user';
 import { extractOtherUser } from '@/utils/extractOtherUser';
 import { useCallback, useState } from 'react';
 import { Dialog } from '@/components/tamagui/Dialog';
 import { useRemoveFriendMutation } from '@/api/friends/addFriendsMutation';
+import { SimpleFriend } from '@/api/friends/types';
 
 type FriendOptionsProps = {
-  friend: FriendsQueryResponse[number] | undefined;
+  friend: SimpleFriend;
 } & SheetProps;
 export const FriendOptionsSheet = ({ friend, ...props }: FriendOptionsProps) => {
   const user = useGetUser();
@@ -20,12 +20,12 @@ export const FriendOptionsSheet = ({ friend, ...props }: FriendOptionsProps) => 
   const { firstName } = extractOtherUser(user!.id, friend);
 
   const handleDeleteFriend = useCallback(async () => {
-    const success = await removeFriend(friend?.id);
+    const success = await removeFriend(friend?.userId);
     if (success) {
       setDeleteDialogOpen(false);
       props.onOpenChange?.(false);
     }
-  }, [friend?.id, props, removeFriend]);
+  }, [friend?.userId, props, removeFriend]);
 
   return (
     <>

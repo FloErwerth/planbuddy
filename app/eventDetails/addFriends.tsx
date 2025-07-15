@@ -8,18 +8,17 @@ import { useCallback, useMemo } from 'react';
 import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
 import { Card } from '@/components/tamagui/Card';
 import { UserAvatar } from '@/components/UserAvatar';
-import { FriendSearchInput, FriendSearchProvider, useFriendSearchContext } from '@/components/FriendSearch';
-import { UserWithStatus } from '@/components/UserSearch';
+import { UserSearchInput, UserSearchProvider, UserWithStatus, useUserSearchContext } from '@/components/UserSearch';
 import { useHasFriends } from '@/api/friends/refiners';
 
 export const AddFriendsScreen = () => {
   const hasFriends = useHasFriends();
-  const { friends } = useFriendSearchContext();
+  const { users: friends } = useUserSearchContext();
   const { toggleInviteToEvent, usersToAdd } = useEventDetailsContext();
 
   const mappedFriends = useMemo(
     () =>
-      friends.map((friend) => {
+      friends?.map((friend) => {
         return { ...friend, selected: usersToAdd.has(friend?.id ?? '') };
       }),
     [friends, usersToAdd]
@@ -48,7 +47,7 @@ export const AddFriendsScreen = () => {
   return (
     <>
       <Screen back={<BackButton />} title="Freunde einladen">
-        {hasFriends ? <FriendSearchInput /> : <SizableText textAlign="center">Füge neue Freunde hinzu, um Freunde einzuladen</SizableText>}
+        {hasFriends ? <UserSearchInput /> : <SizableText textAlign="center">Füge neue Freunde hinzu, um Freunde einzuladen</SizableText>}
       </Screen>
       {hasFriends && (
         <FlashList
@@ -67,8 +66,8 @@ export const AddFriendsScreen = () => {
 
 export default function AddFriends() {
   return (
-    <FriendSearchProvider>
+    <UserSearchProvider showOnlyFriends>
       <AddFriendsScreen />
-    </FriendSearchProvider>
+    </UserSearchProvider>
   );
 }

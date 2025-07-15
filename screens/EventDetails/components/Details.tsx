@@ -42,7 +42,7 @@ export const Details = () => {
         </PressableRow>
       )}
       <PressableRow icon={<Users />} onPress={() => router.push(`/eventDetails/participants`)}>
-        <SizableText>Teilnehmer</SizableText>
+        <SizableText>Gäste</SizableText>
       </PressableRow>
     </>
   );

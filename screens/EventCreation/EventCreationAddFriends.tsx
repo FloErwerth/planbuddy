@@ -9,7 +9,7 @@ import { Screen } from '@/components/Screen';
 import { Button } from '@/components/tamagui/Button';
 import { Card } from '@/components/tamagui/Card';
 import { StatusEnum } from '@/api/types';
-import { FriendSearchInput, useFriendSearchContext } from '@/components/FriendSearch';
+import { UserSearchInput, useUserSearchContext } from '@/components/UserSearch';
 import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
 import { SimpleFriend } from '@/api/friends/types';
 
@@ -19,8 +19,8 @@ type EventCreationAddFriendsProps = {
 
 export const EventCreationAddFriends = ({ onClose }: EventCreationAddFriendsProps) => {
   const { guests, addGuests, removeGuests } = useEventCreationContext();
-  const { friends } = useFriendSearchContext();
-  const accepted: SimpleFriend[] = useMemo(() => friends.filter((friend) => friend.status === StatusEnum.ACCEPTED) ?? [], [friends]);
+  const { users: friends } = useUserSearchContext();
+  const accepted: SimpleFriend[] = useMemo(() => friends?.filter((friend) => friend.status === StatusEnum.ACCEPTED) ?? [], [friends]);
 
   const user = useGetUser();
 
@@ -70,7 +70,7 @@ export const EventCreationAddFriends = ({ onClose }: EventCreationAddFriendsProp
         }
         title="Deine Gäste"
       >
-        <FriendSearchInput />
+        <UserSearchInput />
       </Screen>
       <FlashList data={accepted} renderItem={render} estimatedItemSize={200} />
     </>
