@@ -1,10 +1,10 @@
 import * as QueryParams from 'expo-auth-session/build/QueryParams';
 import { supabase } from '@/api/supabase';
 import { useSetUser } from '@/store/user';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { router, SplashScreen } from 'expo-router';
 import { User as SupabaseUser } from '@supabase/auth-js';
-import { PostgrestSingleResponse } from '@supabase/supabase-js';
+import { AuthUser, PostgrestSingleResponse } from '@supabase/supabase-js';
 import { User } from '@/api/types';
 import { useQueryClient } from 'react-query';
 
@@ -28,7 +28,7 @@ const createSessionFromUrl = async (url: string | null) => {
   return await supabase.auth.getUser();
 };
 
-export const useLoginSession = () => {
+export const useCheckLoginState = () => {
   const setUser = useSetUser();
   const queryClient = useQueryClient();
 
@@ -47,35 +47,47 @@ export const useLoginSession = () => {
     }
   }, []);
 
-  const handleCheckLoginstate = useCallback(async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  const handleCheckLoginstate = useCallback(
+    async (user: AuthUser | null) => {
+      if (user === null) {
+        await supabase.auth.signOut();
+        setUser(undefined);
+        router.replace('/');
+        return;
+      }
 
-    setTimeout(() => {
-      void SplashScreen.hideAsync();
-    }, 500);
+      setUser(user);
 
-    if (user === null) {
-      router.replace('/');
-      return;
-    }
+      const userFromDb = await getUserFromDB(user);
 
-    setUser(user);
+      if (!userFromDb) {
+        router.replace('/onboarding');
+        return;
+      }
 
-    const userFromDb = await getUserFromDB(user);
+      void queryClient.refetchQueries();
+      router.replace('/(tabs)');
+    },
+    [getUserFromDB, queryClient, setUser]
+  );
 
-    if (!userFromDb) {
-      router.replace('/onboarding');
-      return;
-    }
-
-    void queryClient.refetchQueries();
-    router.replace('/(tabs)');
-  }, [getUserFromDB, queryClient, setUser]);
-
-  // upon app start
   useEffect(() => {
-    void handleCheckLoginstate();
-  }, []);
+    supabase.auth
+      .getUser()
+      .then(async (user) => {
+        await handleCheckLoginstate(user.data.user);
+      })
+      .finally(() => {
+        setTimeout(() => {
+          void SplashScreen.hideAsync();
+        }, 500);
+      });
+  }, [handleCheckLoginstate]);
+
+  return useMemo(
+    () => ({
+      handleCheckLoginstate,
+    }),
+    [handleCheckLoginstate]
+  );
 };

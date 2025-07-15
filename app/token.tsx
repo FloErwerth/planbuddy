@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
-import { SizableText, View } from 'tamagui';
+import { AnimatePresence, debounce, SizableText, View } from 'tamagui';
 import { BackButton } from '@/components/BackButton';
 import { TokenInput } from '@/components/TokenInput/TokenInput';
 import { useCallback, useEffect, useState } from 'react';
@@ -10,6 +10,7 @@ import { useSetUser } from '@/store/user';
 import { Sheet } from '@/components/tamagui/Sheet';
 import { Button } from '@/components/tamagui/Button';
 import { useLoginContext } from '@/providers/LoginProvider';
+import { useCheckLoginState } from '@/hooks/useCheckLoginState';
 
 const tokenSchema = array(string()).refine((val) => {
   const combined = val.join('');
@@ -18,37 +19,45 @@ const tokenSchema = array(string()).refine((val) => {
 });
 
 export default function Token() {
-  const {
-    setEmail,
-    email = 'erwerthflorian@outlook.de',
-    resendTokenTime,
-    startedLoginAttempt,
-    setStartedLoginAttempt,
-    startResendTokenTimer,
-    resetTokenPage,
-  } = useLoginContext();
+  const { email, resendTokenTime, startedLoginAttempt, setStartedLoginAttempt, startResendTokenTimer, setLoginError, resetTokenPage } = useLoginContext();
   const [token, setToken] = useState<string[]>([]);
-  const [authenticationActive, setAuthenticationActive] = useState(false);
+  const [previousToken, setPreviousToken] = useState<string[]>([]);
   const [showSheet, setShowSheet] = useState(false);
   const setUser = useSetUser();
-
-  console.log(startedLoginAttempt, resendTokenTime);
+  const [tokenError, setTokenError] = useState<string>('');
+  const hasValue = !token.every((val) => !val);
+  const { handleCheckLoginstate } = useCheckLoginState();
 
   const onComplete = useCallback(async () => {
-    if (!email || authenticationActive) {
+    if (!email || token.join('') === previousToken.join('') || !hasValue) {
       return;
     }
+    setPreviousToken(token);
 
-    setAuthenticationActive(true);
-    const { data, error } = await supabase.auth.verifyOtp({ email: email, token: token.join(''), type: 'email' });
+    try {
+      const { data, error } = await supabase.auth.verifyOtp({ email: email, token: token.join(''), type: 'email' });
 
-    if (error || !data.session || !data.user) {
-      return;
+      if (error || !data.session || !data.user) {
+        console.error(error?.code);
+        switch (error?.code) {
+          case 'invalid_credentials':
+          case 'otp_expired':
+            setTokenError('Der eingegebene Code ist ungültig');
+        }
+        return;
+      }
+
+      await handleCheckLoginstate(data);
+      await supabase.auth.setSession(data.session);
+      router.replace('/(tabs)');
+      resetTokenPage();
+      setUser(data.user);
+    } catch (e) {
+      if (e instanceof Error) {
+        console.error(e.message);
+      }
     }
-    setUser(data.user);
-    await supabase.auth.setSession(data.session);
-    router.replace('/(tabs)');
-  }, [authenticationActive, email, setUser, token]);
+  }, [email, hasValue, previousToken, resetTokenPage, setUser, token]);
 
   const resendToken = async () => {
     router.push({ pathname: '/sendingEmail', params: { email } });
@@ -59,9 +68,19 @@ export default function Token() {
     startResendTokenTimer();
 
     if (result.error) {
+      switch (result.error.code) {
+        case 'over_request_rate_limit':
+        case 'over_email_send_rate_limit':
+          // should never happen
+          setLoginError(`Es wurden mit ${email} zu viele Loginversuche gemacht. Bitte versuche es später noch einmal`);
+          break;
+        case 'email_exists':
+          setLoginError('Diese E-Mail ist bereits vergeben');
+          break;
+        default:
+          setLoginError('Es ist ein Fehler aufgetreten, bitte versuche es erneut');
+      }
       router.replace('/login');
-
-      // set errors in form
       return;
     }
   };
@@ -75,10 +94,10 @@ export default function Token() {
   useEffect(() => {
     const parsedToken = tokenSchema.safeParse(token);
 
-    if (parsedToken.success && !authenticationActive) {
+    if (parsedToken.success) {
       void onComplete();
     }
-  }, [token, onComplete, authenticationActive]);
+  }, [token, onComplete]);
 
   return (
     <>
@@ -88,7 +107,29 @@ export default function Token() {
           <SizableText>
             Wir haben dir eine E-Mail an <SizableText fontWeight="bold">{email}</SizableText> gesendet. Bitte gib den dort angezeigten Code unten ein
           </SizableText>
-          <TokenInput disabled={authenticationActive} value={token} onChange={setToken} />
+          <View gap="$2">
+            {tokenError && (
+              <SizableText animation="bouncy" enterStyle={{ height: 0, opacity: 0, scale: 0.9 }} pointerEvents="none" theme="error">
+                {tokenError}
+              </SizableText>
+            )}
+            <TokenInput value={token} onChange={setToken} />
+            {hasValue && (
+              <AnimatePresence>
+                <Button
+                  variant="transparent"
+                  animation="bouncy"
+                  enterStyle={{ opacity: 0, scale: 0.9, height: 0 }}
+                  exitStyle={{ opacity: 0, scale: 0.9, height: 0 }}
+                  alignSelf="flex-end"
+                  size="$2"
+                  onPress={() => setToken([])}
+                >
+                  <SizableText color="$primary">Eingabe enternen</SizableText>
+                </Button>
+              </AnimatePresence>
+            )}
+          </View>
           <Button onPress={() => setShowSheet(true)} size="$3" alignSelf="flex-start" variant="secondary">
             Keinen Code erhalten
           </Button>
@@ -99,10 +140,10 @@ export default function Token() {
           <SizableText size="$6">Hast Du keinen Code erhalten?</SizableText>
           <SizableText>Wenn Du keinen Code erhalten hast, dann hast Du folgende Möglichkeiten:</SizableText>
           <View gap="$2">
-            <Button onPress={resendToken} disabled={resendTokenTime > 0 && startedLoginAttempt}>
+            <Button onPress={debounce(resendToken, 200, true)} disabled={resendTokenTime > 0 && startedLoginAttempt}>
               {startedLoginAttempt && resendTokenTime > 0 ? `In ${resendTokenTime} erneut senden` : 'Erneut senden'}
             </Button>
-            <Button onPress={handleChangeMail}>E-Mail-Addresse ändern</Button>
+            <Button onPress={debounce(handleChangeMail, 200, true)}>E-Mail-Addresse ändern</Button>
           </View>
         </Screen>
       </Sheet>

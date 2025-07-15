@@ -1,13 +1,11 @@
 import { createContext, PropsWithChildren, useCallback, useContext, useRef, useState } from 'react';
-import { useLoginSession } from '@/hooks/useLoginSession';
-import { AuthApiError } from '@supabase/auth-js';
 
 type LoginContextType =
   | {
       email: string;
       setEmail: (email: string) => void;
-      setLoginError: (error: AuthApiError['code']) => void;
-      loginError?: AuthApiError['code'];
+      setLoginError: (error: string) => void;
+      loginError?: string;
       startedLoginAttempt: boolean;
       setStartedLoginAttempt: (attemptStarted: boolean) => void;
       resendTokenTime: number;
@@ -32,7 +30,7 @@ const RESEND_TIME_SECONDS = 60;
 const SECOND_MS = 1000;
 export const LoginProvider = ({ children }: PropsWithChildren) => {
   const [email, setEmail] = useState<string>('');
-  const [loginError, setLoginError] = useState<AuthApiError['code']>('');
+  const [loginError, setLoginError] = useState<string>('');
   const [resendTokenTime, setResendTokenTime] = useState<number>(RESEND_TIME_SECONDS);
   const [startedLoginAttempt, setStartedLoginAttempt] = useState(false);
   const timer = useRef<ReturnType<typeof setInterval>>();
@@ -56,8 +54,6 @@ export const LoginProvider = ({ children }: PropsWithChildren) => {
       });
     }, SECOND_MS);
   }, []);
-
-  useLoginSession();
 
   return (
     <LoginContext.Provider

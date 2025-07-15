@@ -98,5 +98,5 @@ export const TokenInput = ({ value, onChange, length = 6, disabled = false }: OT
     [disabled, handleChange, handleKeyPress, length, value]
   );
 
-  return <XStack gap="$1">{mappedInputs}</XStack>;
+  return <XStack justifyContent="space-between">{mappedInputs}</XStack>;
 };
