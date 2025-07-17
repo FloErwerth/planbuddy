@@ -2,47 +2,55 @@ import { Tabs } from 'expo-router';
 import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
 import { Home, Plus, User } from '@tamagui/lucide-icons';
 import { colors } from '@/providers/TamaguiProvider/tamaguiConfig';
+import { View } from 'tamagui';
+import { PendingFriendRequestsDot } from '@/components/PendingFriendRequestsDot/PendingFriendRequestsDot';
 
 const screenOptions: BottomTabNavigationOptions = {
-  tabBarStyle: {
-    borderTopLeftRadius: 6,
-    height: 60,
-    borderTopRightRadius: 6,
-  },
-  tabBarLabelStyle: { height: 0 },
-  tabBarActiveTintColor: colors.primary,
-  headerShown: false,
+    tabBarStyle: {
+        borderTopLeftRadius: 6,
+        height: 60,
+        borderTopRightRadius: 6,
+    },
+    tabBarLabelStyle: { height: 0 },
+    tabBarActiveTintColor: colors.primary,
+    headerShown: false,
 };
 
 export default function TabsLayout() {
-  return (
-    <>
-      <Tabs screenOptions={screenOptions}>
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: undefined,
-            tabBarIcon: ({ focused }) => <Home top="$2" scale={1.1} color={focused ? '$primary' : undefined} />,
-            ...screenOptions,
-          }}
-        />
-        <Tabs.Screen
-          name="add"
-          options={{
-            title: '',
-            tabBarIcon: ({ focused }) => <Plus top="$2" scale={1.5} color={focused ? '$primary' : undefined} />,
-            ...screenOptions,
-          }}
-        />
-        <Tabs.Screen
-          name="settings"
-          options={{
-            title: '',
-            tabBarIcon: ({ focused }) => <User top="$2" scale={1.1} color={focused ? '$primary' : undefined} />,
-            ...screenOptions,
-          }}
-        />
-      </Tabs>
-    </>
-  );
+    return (
+        <>
+            <Tabs screenOptions={screenOptions}>
+                <Tabs.Screen
+                    name="index"
+                    options={{
+                        title: undefined,
+                        tabBarIcon: ({ focused }) => <Home top="$2" scale={1.1} color={focused ? '$primary' : undefined} />,
+                        ...screenOptions,
+                    }}
+                />
+                <Tabs.Screen
+                    name="eventCreation"
+                    options={{
+                        title: '',
+                        popToTopOnBlur: true,
+                        tabBarIcon: ({ focused }) => <Plus top="$2" scale={1.5} color={focused ? '$primary' : undefined} />,
+                        ...screenOptions,
+                    }}
+                />
+                <Tabs.Screen
+                    name="settings"
+                    options={{
+                        title: '',
+                        tabBarIcon: ({ focused }) => (
+                            <View>
+                                <PendingFriendRequestsDot top="$1" left="55%" />
+                                <User top="$2" scale={1.1} color={focused ? '$primary' : undefined} />
+                            </View>
+                        ),
+                        ...screenOptions,
+                    }}
+                />
+            </Tabs>
+        </>
+    );
 }

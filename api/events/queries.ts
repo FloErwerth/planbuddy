@@ -7,99 +7,102 @@ import { QUERY_KEYS } from '@/api/queryKeys';
 import { Status, StatusEnum } from '@/api/types';
 
 export const useEventsQuery = () => {
-  const user = useGetUser();
+    const user = useGetUser();
 
-  return useQuery({
-    queryFn: async () => {
-      const result = await supabase.from('participants').select(`role,events(*)`).eq('userId', user?.id).throwOnError();
+    return useQuery({
+        queryFn: async () => {
+            const result = await supabase.from('participants').select(`role,events(*)`).eq('userId', user?.id).throwOnError();
 
-      return result.data?.map((data) => ({
-        ...backendEventSchema.parse(data.events),
-        role: data.role,
-      }));
-    },
-    queryKey: [QUERY_KEYS.EVENTS.QUERY, user?.id],
-  });
+            return result.data?.map((data) => ({
+                ...backendEventSchema.parse(data.events),
+                role: data.role,
+            }));
+        },
+        queryKey: [QUERY_KEYS.EVENTS.QUERY, user?.id],
+    });
 };
 
 type SingleQueryResponse = {
-  events: Event;
-  role: Participant['role'];
-  status: Participant['status'];
-  numberOfParticipants?: number;
+    events: Event;
+    role: Participant['role'];
+    status: Participant['status'];
+    numberOfParticipants?: number;
 };
 
 export const useParticipantsQuery = (eventId: string, filters: Status[] = [], search = '') => {
-  return useQuery({
-    queryFn: async (): Promise<ParticipantQueryResponse[]> => {
-      const participantsAndUsersQuery = supabase.from('participants').select('*, users(*)');
+    return useQuery({
+        queryFn: async (): Promise<ParticipantQueryResponse[]> => {
+            const participantsAndUsersQuery = supabase.from('participants').select('*, users(*)');
 
-      if (search) {
-        participantsAndUsersQuery.or(`email.ilike.%${search}%, "firstName".ilike.%${search}%, "lastName".ilike.%${search}%`, { foreignTable: 'users' });
-      }
+            if (search) {
+                participantsAndUsersQuery.or(`email.ilike.%${search}%, "firstName".ilike.%${search}%, "lastName".ilike.%${search}%`, { foreignTable: 'users' });
+            }
 
-      for (let i = 0; i < filters.length; ++i) {
-        participantsAndUsersQuery.eq('status', filters[i]);
-      }
+            for (let i = 0; i < filters.length; ++i) {
+                participantsAndUsersQuery.eq('status', filters[i]);
+            }
 
-      participantsAndUsersQuery.eq('eventId', eventId);
+            participantsAndUsersQuery.eq('eventId', eventId);
 
-      participantsAndUsersQuery.throwOnError();
-      const result = await participantsAndUsersQuery;
+            participantsAndUsersQuery.throwOnError();
+            const result = await participantsAndUsersQuery;
 
-      return (result.data ?? [])
-        ?.filter((data) => data.users !== null)
-        .map(
-          (data) =>
-            ({
-              id: data.id,
-              userId: data.users.id,
-              role: data.role,
-              status: data.status,
-              eventId,
-              email: data.users.email,
-              lastName: data.users.lastName,
-              firstName: data.users.firstName,
-            }) satisfies ParticipantQueryResponse
-        );
-    },
-    queryKey: [QUERY_KEYS.PARTICIPANTS.QUERY, eventId, filters, search],
-  });
+            return (result.data ?? [])
+                ?.filter((data) => data.users !== null)
+                .map(
+                    (data) =>
+                        ({
+                            id: data.id,
+                            userId: data.users.id,
+                            role: data.role,
+                            status: data.status,
+                            eventId,
+                            email: data.users.email,
+                            lastName: data.users.lastName,
+                            firstName: data.users.firstName,
+                        }) satisfies ParticipantQueryResponse
+                );
+        },
+        queryKey: [QUERY_KEYS.PARTICIPANTS.QUERY, eventId, filters, search],
+    });
 };
 
 export const useSingleEventQuery = (eventId: string) => {
-  const user = useGetUser();
+    const user = useGetUser();
 
-  return useQuery({
-    queryFn: async () => {
-      if (!user) {
-        return undefined;
-      }
+    return useQuery({
+        queryFn: async () => {
+            if (!user) {
+                return undefined;
+            }
 
-      const result: PostgrestSingleResponse<SingleQueryResponse> = await supabase
-        .from('participants')
-        .select(`role, status, events(*)`)
-        .eq('events.id', eventId)
-        .eq('userId', user.id)
-        .filter('events', 'not.is', 'null')
-        .single();
+            const result: PostgrestSingleResponse<SingleQueryResponse> = await supabase
+                .from('participants')
+                .select(`role, status, events(*)`)
+                .eq('events.id', eventId)
+                .eq('userId', user.id)
+                .filter('events', 'not.is', 'null')
+                .single();
 
-      const participants: PostgrestSingleResponse<Participant[]> = await supabase.from('participants').select(`eventId, role, status`).eq('eventId', eventId);
+            const participants: PostgrestSingleResponse<Participant[]> = await supabase
+                .from('participants')
+                .select(`eventId, role, status`)
+                .eq('eventId', eventId);
 
-      if (result.error) {
-        throw result.error;
-      }
+            if (result.error) {
+                throw result.error;
+            }
 
-      return {
-        ...result.data.events,
-        participants: {
-          accepted: participants.data?.filter((participant) => participant.status === StatusEnum.ACCEPTED).length,
-          total: participants.data?.length,
-          role: result.data.role,
-          status: result.data.status,
+            return {
+                ...result.data.events,
+                participants: {
+                    accepted: participants.data?.filter((participant) => participant.status === StatusEnum.ACCEPTED).length,
+                    total: participants.data?.length,
+                    role: result.data.role,
+                    status: result.data.status,
+                },
+            };
         },
-      };
-    },
-    queryKey: [QUERY_KEYS.EVENTS.QUERY, eventId],
-  });
+        queryKey: [QUERY_KEYS.EVENTS.QUERY, eventId],
+    });
 };

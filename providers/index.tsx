@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, StrictMode } from 'react';
 import { TamaguiProvider } from '@/providers/TamaguiProvider';
 import { QueryProvider } from '@/providers/QueryClient';
 import { StatusBar } from 'expo-status-bar';
@@ -8,16 +8,18 @@ import { LoginProvider } from '@/providers/LoginProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const Providers = ({ children }: PropsWithChildren) => {
-  return (
-    <ErrorBoundary fallback={ErrorScreen}>
-      <QueryProvider>
-        <LoginProvider>
-          <TamaguiProvider>
-            <StatusBar hidden />
-            <SafeAreaView style={{ flex: 1 }}>{children}</SafeAreaView>
-          </TamaguiProvider>
-        </LoginProvider>
-      </QueryProvider>
-    </ErrorBoundary>
-  );
+    return (
+        <StrictMode>
+            <ErrorBoundary fallback={ErrorScreen}>
+                <QueryProvider>
+                    <LoginProvider>
+                        <TamaguiProvider>
+                            <StatusBar hidden />
+                            <SafeAreaView style={{ flex: 1 }}>{children}</SafeAreaView>
+                        </TamaguiProvider>
+                    </LoginProvider>
+                </QueryProvider>
+            </ErrorBoundary>
+        </StrictMode>
+    );
 };

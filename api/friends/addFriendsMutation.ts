@@ -8,78 +8,81 @@ import { QUERY_KEYS } from '@/api/queryKeys';
 import { useFriendOverview } from '@/api/friends/refiners';
 
 export const useAddFriendMutation = () => {
-  const user = useGetUser();
-  const queryClient = useQueryClient();
-  const { data } = useFriendOverview();
+    const user = useGetUser();
+    const queryClient = useQueryClient();
+    const { data } = useFriendOverview();
 
-  return useMutation({
-    mutationFn: async (friendId: string) => {
-      if (!user) {
-        throw new Error('Probably not logged in.');
-      }
+    return useMutation({
+        mutationFn: async (friendId: string) => {
+            if (!user) {
+                throw new Error('Probably not logged in.');
+            }
 
-      const isAlreadyFriend = data.find((friend) => friend.requester?.id === friendId || friend.receiver?.id === friendId);
+            const isAlreadyFriend = data.find((friend) => friend.requester?.id === friendId || friend.receiver?.id === friendId);
 
-      if (isAlreadyFriend) {
-        return;
-      }
+            if (isAlreadyFriend) {
+                return;
+            }
 
-      const result = await supabase
-        .from('friends')
-        .insert([
-          { requesterId: user.id, receiverId: friendId, status: StatusEnum.PENDING } satisfies Omit<SingleFriendQueryResponse, 'id' | 'sendAt' | 'acceptedAt'>,
-        ])
-        .select();
+            const result = await supabase
+                .from('friends')
+                .insert([
+                    {
+                        requesterId: user.id,
+                        receiverId: friendId,
+                        status: StatusEnum.PENDING,
+                    } satisfies Omit<SingleFriendQueryResponse, 'id' | 'sendAt' | 'acceptedAt'>,
+                ])
+                .select();
 
-      return !result.error;
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries([FRIENDS_QUERY_KEY]);
-      await queryClient.invalidateQueries([QUERY_KEYS.USERS.QUERY]);
-    },
-    mutationKey: [FRIENDS_MUTATION_KEY],
-  });
+            return !result.error;
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries([FRIENDS_QUERY_KEY]);
+            await queryClient.invalidateQueries([QUERY_KEYS.USERS.QUERY]);
+        },
+        mutationKey: [FRIENDS_MUTATION_KEY],
+    });
 };
 
 export const useUpdateFriendMutation = () => {
-  const user = useGetUser();
-  const queryClient = useQueryClient();
+    const user = useGetUser();
+    const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (friend: FriendsQueryResponse[number]) => {
-      if (!user) {
-        throw new Error('Probably not logged in.');
-      }
+    return useMutation({
+        mutationFn: async (friend: Partial<FriendsQueryResponse[number]>) => {
+            if (!user) {
+                throw new Error('Probably not logged in.');
+            }
 
-      const result = await supabase
-        .from('friends')
-        .update({
-          status: StatusEnum.ACCEPTED,
-        })
-        .eq('id', friend.id)
-        .throwOnError()
-        .select();
+            const mapped = {
+                ...friend,
+                acceptedAt: friend.acceptedAt?.toISOString(),
+                sendAt: friend.acceptedAt?.toISOString(),
+            };
 
-      return !result.error;
-    },
-    mutationKey: [FRIENDS_MUTATION_KEY],
-    onSuccess: async () => {
-      await queryClient.invalidateQueries([FRIENDS_QUERY_KEY]);
-    },
-  });
+            const result = await supabase.from('friends').update(mapped).eq('id', friend.id).throwOnError().select();
+
+            return !result.error;
+        },
+        mutationKey: [FRIENDS_MUTATION_KEY],
+        onSuccess: async () => {
+            await queryClient.invalidateQueries([FRIENDS_QUERY_KEY]);
+        },
+    });
 };
 
 export const useRemoveFriendMutation = () => {
-  const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (friendId?: string) => {
-      const result = await supabase.from('friends').delete().eq('id', friendId).throwOnError().select();
-      return !result.error;
-    },
-    mutationKey: [FRIENDS_MUTATION_KEY],
-    onSuccess: async () => {
-      await queryClient.refetchQueries([FRIENDS_QUERY_KEY]);
-    },
-  });
+    return useMutation({
+        mutationFn: async (friendId?: string) => {
+            const result = await supabase.from('friends').delete().eq('id', friendId).throwOnError().select();
+            return !result.error;
+        },
+        mutationKey: [FRIENDS_MUTATION_KEY],
+        onSuccess: async () => {
+            await queryClient.refetchQueries([FRIENDS_QUERY_KEY]);
+        },
+    });
 };

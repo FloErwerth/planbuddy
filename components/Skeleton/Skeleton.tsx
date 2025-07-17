@@ -2,28 +2,28 @@ import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withDelay, withRepe
 import { PropsWithChildren, useEffect } from 'react';
 
 export const Skeleton = ({ children }: PropsWithChildren) => {
-  const opacity = useSharedValue(0);
+    const opacity = useSharedValue(0);
 
-  useEffect(() => {
-    opacity.value = withDelay(
-      Math.random() * 250,
-      withRepeat(
-        withTiming(1, {
-          duration: 750,
-        }),
-        -1,
-        true
-      )
+    useEffect(() => {
+        opacity.value = withDelay(
+            Math.random() * 250,
+            withRepeat(
+                withTiming(1, {
+                    duration: 750,
+                }),
+                -1,
+                true
+            )
+        );
+    }, [opacity]);
+
+    const style = useAnimatedStyle(() => ({
+        opacity: opacity.value,
+    }));
+
+    return (
+        <Animated.View layout={FadeIn} entering={FadeIn} style={style}>
+            {children}
+        </Animated.View>
     );
-  }, [opacity]);
-
-  const style = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-  }));
-
-  return (
-    <Animated.View layout={FadeIn} entering={FadeIn} style={style}>
-      {children}
-    </Animated.View>
-  );
 };

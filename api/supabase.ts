@@ -6,12 +6,12 @@ const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_PROJECT_URL ?? '';
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_API_KEY ?? '';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    storage: AsyncStorage,
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: false,
-  },
+    auth: {
+        storage: AsyncStorage,
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: false,
+    },
 });
 
 // Tells Supabase Auth to continuously refresh the session automatically
@@ -20,9 +20,9 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 // `SIGNED_OUT` event if the user's session is terminated. This should
 // only be registered once.
 AppState.addEventListener('change', (state) => {
-  if (state === 'active') {
-    void supabase.auth.startAutoRefresh();
-  } else {
-    void supabase.auth.stopAutoRefresh();
-  }
+    if (state === 'active') {
+        void supabase.auth.startAutoRefresh();
+    } else {
+        void supabase.auth.stopAutoRefresh();
+    }
 });

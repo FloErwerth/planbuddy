@@ -13,30 +13,30 @@ import { BackButton } from '@/components/BackButton';
 import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
 
 export const EventDetails = () => {
-  const { eventId } = useEventDetailsContext();
-  const [showShare, setShowShare] = useState(false);
+    const { eventId } = useEventDetailsContext();
+    const [showShare, setShowShare] = useState(false);
 
-  const user = useGetUser();
-  const { data: event, isLoading } = useSingleEventQuery(eventId);
-  const { data: image } = useEventImageQuery(eventId);
+    const user = useGetUser();
+    const { data: event, isLoading } = useSingleEventQuery(eventId);
+    const { data: image } = useEventImageQuery(eventId);
 
-  if (isLoading) {
-    return <ActivityIndicator />;
-  }
+    if (isLoading) {
+        return <ActivityIndicator />;
+    }
 
-  const hasMissingData = !user || !event;
+    const hasMissingData = !user || !event;
 
-  if (!isLoading && hasMissingData) {
-    return <Redirect href="/(tabs)" />;
-  }
+    if (!isLoading && hasMissingData) {
+        return <Redirect href="/(tabs)" />;
+    }
 
-  return (
-    <ScrollableScreen back={<BackButton href="/(tabs)" />}>
-      <View backgroundColor="$background" overflow="hidden" elevationAndroid="$2" width="100%" borderRadius="$8">
-        <Image source={image} style={{ width: 'auto', height: 200 }} />
-      </View>
-      {event?.id && <Details />}
-      {event?.id && <ShareSheet onOpenChange={setShowShare} open={showShare} />}
-    </ScrollableScreen>
-  );
+    return (
+        <ScrollableScreen back={<BackButton href="/(tabs)" />}>
+            <View backgroundColor="$background" overflow="hidden" elevationAndroid="$2" width="100%" borderRadius="$8">
+                <Image source={image} style={{ width: 'auto', height: 200 }} />
+            </View>
+            {event?.id && <Details />}
+            {event?.id && <ShareSheet onOpenChange={setShowShare} open={showShare} />}
+        </ScrollableScreen>
+    );
 };

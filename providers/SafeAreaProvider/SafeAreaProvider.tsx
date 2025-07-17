@@ -4,9 +4,9 @@ import { SafeAreaProvider as _SafeAreaProvider, SafeAreaView } from 'react-nativ
 const safeAreaViewStyles = { flex: 1 };
 
 export const SafeAreaProvider = ({ children }: PropsWithChildren) => {
-  return (
-    <_SafeAreaProvider>
-      <SafeAreaView style={safeAreaViewStyles}>{children}</SafeAreaView>
-    </_SafeAreaProvider>
-  );
+    return (
+        <_SafeAreaProvider>
+            <SafeAreaView style={safeAreaViewStyles}>{children}</SafeAreaView>
+        </_SafeAreaProvider>
+    );
 };

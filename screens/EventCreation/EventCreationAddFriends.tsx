@@ -1,84 +1,88 @@
-import { useCallback } from 'react';
 import { FriendDisplay } from '@/components/FriendDisplay';
-import { useGetUser } from '@/store/user';
-import { extractOtherUser } from '@/utils/extractOtherUser';
 import { Checkbox } from '@/components/tamagui/Checkbox';
 import { useEventCreationContext } from '@/screens/EventCreation/EventCreationContext';
 import { Pressable } from 'react-native';
 import { Screen } from '@/components/Screen';
-import { Button } from '@/components/tamagui/Button';
 import { Card } from '@/components/tamagui/Card';
-import { UserSearchInput, useUserSearchContext } from '@/components/UserSearch';
 import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
 import { SimpleFriend } from '@/api/friends/types';
-import { StatusEnum } from '@/api/types';
 import { View } from 'tamagui';
+import { useFriendsByStatus } from '@/api/friends/refiners';
+import { BackButton } from '@/components/BackButton';
+import { SearchInput } from '@/components/SearchInput';
+import { useState } from 'react';
 
-type EventCreationAddFriendsProps = {
-  onClose: () => void;
+const Guest = ({ id, onPress, checked, ...friend }: SimpleFriend & { checked: boolean; onPress: (id: string) => void }) => {
+    return (
+        <Card marginHorizontal="$4" key={id}>
+            <Pressable onPress={() => onPress(id!)}>
+                <FriendDisplay {...friend}>
+                    <Checkbox checked={checked} />
+                </FriendDisplay>
+            </Pressable>
+        </Card>
+    );
 };
 
-export const EventCreationAddFriends = ({ onClose }: EventCreationAddFriendsProps) => {
-  const { guests, addGuests, removeGuests } = useEventCreationContext();
-  const { users } = useUserSearchContext();
-  const friends = users?.filter(({ status }) => status === StatusEnum.ACCEPTED);
-  const user = useGetUser();
+export const EventCreationAddFriends = () => {
+    const { guests, addGuests, removeGuests } = useEventCreationContext();
+    const { accepted: friends } = useFriendsByStatus();
+    const [filter, setFilter] = useState<string>();
 
-  const getIsGuest = useCallback(
-    (guestId: string) => {
-      return guests.includes(guestId);
-    },
-    [guests]
-  );
-
-  const toggleGuest = useCallback(
-    (guest: string) => {
-      const isGuest = getIsGuest(guest);
-      if (isGuest) {
-        removeGuests([guest]);
-      } else {
-        addGuests([guest]);
-      }
-    },
-    [addGuests, getIsGuest, removeGuests]
-  );
-
-  const render = useCallback(
-    ({ item: friend }: ListRenderItemInfo<SimpleFriend>) => {
-      const { id, firstName, lastName } = extractOtherUser(user!.id, friend);
-      const checked = Boolean(getIsGuest(id!));
-      return (
-        <Card marginHorizontal="$4" key={id}>
-          <Pressable onPress={() => toggleGuest(id!)}>
-            <FriendDisplay {...friend} lastName={lastName} firstName={firstName}>
-              <Checkbox checked={checked} />
-            </FriendDisplay>
-          </Pressable>
-        </Card>
-      );
-    },
-    [getIsGuest, toggleGuest, user]
-  );
-
-  return (
-    <>
-      <Screen
-        action={
-          <Button onPress={onClose} variant="secondary" size="$2">
-            Schließen
-          </Button>
+    const applyFilter = (other: SimpleFriend | undefined) => {
+        if (!filter || !other) {
+            return true;
         }
-        title="Deine Gäste"
-      >
-        <UserSearchInput />
-      </Screen>
-      <FlashList
-        contentContainerStyle={{ paddingVertical: 16 }}
-        ItemSeparatorComponent={() => <View height="$1" />}
-        data={friends}
-        renderItem={render}
-        estimatedItemSize={200}
-      />
-    </>
-  );
+
+        const terms = filter.split(' ');
+
+        if (terms.length === 0) {
+            return true;
+        }
+
+        let foundMatch = false;
+
+        for (let i = 0; i < terms.length; i++) {
+            const currentTerm = terms[i].toLowerCase();
+            if (!foundMatch) {
+                foundMatch = Boolean(other.firstName?.includes(currentTerm) || other.lastName?.includes(currentTerm) || other.email?.includes(currentTerm));
+            }
+        }
+
+        return foundMatch;
+    };
+
+    const friendsWithChecked = friends
+        .map((friend) => ({
+            ...friend,
+            checked: guests.has(friend.userId!),
+        }))
+        .filter(applyFilter);
+
+    const toggleGuest = (guestId: string, isGuest: boolean) => {
+        if (isGuest) {
+            removeGuests([guestId]);
+        } else {
+            addGuests([guestId]);
+        }
+    };
+
+    const render = ({ item: friend }: ListRenderItemInfo<SimpleFriend & { checked: boolean }>) => {
+        return <Guest {...friend} onPress={() => toggleGuest(friend.userId!, friend.checked)} />;
+    };
+
+    return (
+        <>
+            <Screen back={<BackButton href="/(tabs)/eventCreation" />} title="Gäste hinzufügen">
+                <SearchInput placeholder="Name oder E-Mail" onChangeText={setFilter} />
+            </Screen>
+            <FlashList
+                contentContainerStyle={{ paddingVertical: 16 }}
+                ItemSeparatorComponent={() => <View height="$1" />}
+                data={friendsWithChecked}
+                renderItem={render}
+                estimatedItemSize={200}
+            />
+        </>
+    );
 };

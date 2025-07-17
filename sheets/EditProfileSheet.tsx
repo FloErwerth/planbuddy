@@ -14,54 +14,56 @@ import { OnboardingSchema, onboardingSchema } from '@/api/types';
 import { Sheet } from '@/components/tamagui/Sheet';
 
 export const EditProfileSheet = ({ open, onOpenChange }: SheetProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { data: user } = useUserQuery();
-  const { mutate: updateUser } = useUpdateUserMutation();
-  const { mutate: updateImage } = useUploadProfilePictureMutation();
-  const { mutateAsync: deleteImage } = useDeleteProfilePictureMutation();
-  const { data: imageFromDatabase } = useProfileImageQuery();
-  const [image, setImage] = useState<string>();
+    const [isLoading, setIsLoading] = useState(false);
+    const { data: user } = useUserQuery();
+    const { mutate: updateUser } = useUpdateUserMutation();
+    const { mutate: updateImage } = useUploadProfilePictureMutation();
+    const { mutateAsync: deleteImage } = useDeleteProfilePictureMutation();
+    const { data: imageFromDatabase } = useProfileImageQuery();
+    const [image, setImage] = useState<string>();
 
-  useEffect(() => {
-    setImage(imageFromDatabase);
-  }, [imageFromDatabase]);
+    useEffect(() => {
+        setImage(imageFromDatabase);
+    }, [imageFromDatabase]);
 
-  const form = useForm<OnboardingSchema>({ resolver: zodResolver(onboardingSchema) });
+    const form = useForm<OnboardingSchema>({
+        resolver: zodResolver(onboardingSchema),
+    });
 
-  useEffect(() => {
-    if (user) {
-      form.reset(user);
-    }
-  }, [form, user]);
+    useEffect(() => {
+        if (user) {
+            form.reset(user);
+        }
+    }, [form, user]);
 
-  const handleSubmit = form.handleSubmit(async (data) => {
-    setIsLoading(true);
+    const handleSubmit = form.handleSubmit(async (data) => {
+        setIsLoading(true);
 
-    updateUser({ updatedUser: data, onSuccess: () => setIsLoading(false) });
-    setIsLoading(false);
-  });
+        updateUser({ updatedUser: data, onSuccess: () => setIsLoading(false) });
+        setIsLoading(false);
+    });
 
-  const handleImageDeletion = useCallback(async () => {
-    await deleteImage();
-    setImage(undefined);
-  }, [deleteImage]);
+    const handleImageDeletion = useCallback(async () => {
+        await deleteImage();
+        setImage(undefined);
+    }, [deleteImage]);
 
-  return (
-    <Sheet snapPointsMode="percent" open={open} onOpenChange={onOpenChange} unmountChildrenWhenHidden>
-      <Screen flex={1} title="Profil bearbeiten">
-        <AvatarImagePicker editable image={image} onImageDeleted={handleImageDeletion} onImageSelected={updateImage} />
-        <Input editable={false} disabled value={user?.email} />
-        <View flex={1} gap="$5">
-          <FormProvider {...form}>
-            <FormInput label="Vorname" name="firstName" />
-            <FormInput label="Nachname" name="lastName" />
-            <FormFieldPhoneInput label="Telefonnummer" name="phone" />
-          </FormProvider>
-        </View>
-        <Button onPress={handleSubmit} disabled={!form.formState.isDirty || isLoading}>
-          Änderungen abschicken
-        </Button>
-      </Screen>
-    </Sheet>
-  );
+    return (
+        <Sheet snapPointsMode="percent" open={open} onOpenChange={onOpenChange} unmountChildrenWhenHidden>
+            <Screen flex={1} title="Profil bearbeiten">
+                <AvatarImagePicker editable image={image} onImageDeleted={handleImageDeletion} onImageSelected={updateImage} />
+                <Input editable={false} disabled value={user?.email} />
+                <View flex={1} gap="$5">
+                    <FormProvider {...form}>
+                        <FormInput label="Vorname" name="firstName" />
+                        <FormInput label="Nachname" name="lastName" />
+                        <FormFieldPhoneInput label="Telefonnummer" name="phone" />
+                    </FormProvider>
+                </View>
+                <Button onPress={handleSubmit} disabled={!form.formState.isDirty || isLoading}>
+                    Änderungen abschicken
+                </Button>
+            </Screen>
+        </Sheet>
+    );
 };

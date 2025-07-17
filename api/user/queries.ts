@@ -5,22 +5,22 @@ import { User } from '@/api/types';
 import { QUERY_KEYS } from '@/api/queryKeys';
 
 export const useUserQuery = () => {
-  const user = useGetUser();
+    const user = useGetUser();
 
-  return useQuery({
-    queryFn: async () => {
-      if (!user) {
-        return;
-      }
+    return useQuery({
+        queryFn: async () => {
+            if (!user) {
+                return;
+            }
 
-      const result = await supabase.from('users').select().eq('id', user.id);
+            const result = await supabase.from('users').select().eq('id', user.id);
 
-      if (result.error) {
-        throw new Error(result.error.message);
-      }
+            if (result.error) {
+                throw new Error(result.error.message);
+            }
 
-      return result.data[0] as User;
-    },
-    queryKey: [QUERY_KEYS.USERS.QUERY, user?.id],
-  });
+            return result.data[0] as User;
+        },
+        queryKey: [QUERY_KEYS.USERS.QUERY, user?.id],
+    });
 };

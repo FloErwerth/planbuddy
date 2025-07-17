@@ -12,19 +12,26 @@ type EventSmallProps = Pick<Event, 'name' | 'location' | 'startTime' | 'id'>;
 
 const imageStyle = { aspectRatio: '4/3', borderRadius: 8 } as const;
 export const EventSmall = ({ name, location, startTime, id }: EventSmallProps) => {
-  const { data: image } = useEventImageQuery(id);
-  return (
-    <Pressable onPress={() => router.push({ pathname: '/eventDetails', params: { eventId: id } })}>
-      <Card marginHorizontal="$4">
-        <XStack justifyContent="space-between">
-          <YStack>
-            <Text size="$6">{name}</Text>
-            <Text size="$3">{getRelativeDate(parseInt(startTime))}</Text>
-            <Text size="$3">{location}</Text>
-          </YStack>
-          {image && <Image source={image} style={imageStyle} />}
-        </XStack>
-      </Card>
-    </Pressable>
-  );
+    const { data: image } = useEventImageQuery(id);
+    return (
+        <Pressable
+            onPress={() =>
+                router.push({
+                    pathname: '/eventDetails',
+                    params: { eventId: id },
+                })
+            }
+        >
+            <Card marginHorizontal="$4">
+                <XStack justifyContent="space-between">
+                    <YStack>
+                        <Text size="$6">{name}</Text>
+                        <Text size="$3">{getRelativeDate(parseInt(startTime))}</Text>
+                        <Text size="$3">{location}</Text>
+                    </YStack>
+                    {image && <Image source={image} style={imageStyle} />}
+                </XStack>
+            </Card>
+        </Pressable>
+    );
 };
