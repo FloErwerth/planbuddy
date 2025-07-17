@@ -21,7 +21,6 @@ const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
 type UserSearchOptions = {
   showUsersWhenEmpty?: boolean;
-  showOnlyFriends?: boolean;
 };
 
 export const useUserSearchContext = () => {
@@ -34,11 +33,11 @@ export const useUserSearchContext = () => {
   return context as SearchContextType;
 };
 
-const useUsersWithStatusQuery = (search: string, { showUsersWhenEmpty = false, showOnlyFriends = false }: UserSearchOptions) => {
+const useUsersWithStatusQuery = (search: string, { showUsersWhenEmpty = false }: UserSearchOptions) => {
   const user = useGetUser();
 
   return useQuery({
-    queryFn: async ({ pageParam = 0 }) => {
+    queryFn: async () => {
       if (!showUsersWhenEmpty && !search) {
         return [];
       }
@@ -48,7 +47,15 @@ const useUsersWithStatusQuery = (search: string, { showUsersWhenEmpty = false, s
         .map((term) => `email.ilike.%${term}%, "firstName".ilike.%${term}%, "lastName".ilike.%${term}%`)
         .join(', ');
 
-      const result = await supabase.from('users').select().or(terms).order('firstName').throwOnError();
+      const base = supabase.from('users').select();
+
+      if (terms.length > 0) {
+        base.or(terms);
+      }
+
+      base.order('firstName').throwOnError();
+
+      const result = await base;
 
       const parsedResult = array(userSchema)
         .parse(result.data)
@@ -64,15 +71,7 @@ const useUsersWithStatusQuery = (search: string, { showUsersWhenEmpty = false, s
       const parsedFriends = friendsQuerySchema.parse(friends.data);
 
       return parsedResult.map((user) => {
-        const foundFriend = parsedFriends.find((friend) => {
-          const isValid = friend.requester?.id === user.id || friend.receiver?.id === user.id;
-          const isRelated = friend.status !== undefined;
-
-          if (showOnlyFriends) {
-            return isValid && isRelated;
-          }
-          return isValid;
-        });
+        const foundFriend = parsedFriends.find((friend) => friend.requester?.id === user.id || friend.receiver?.id === user.id);
 
         return {
           status: foundFriend?.status ?? undefined,

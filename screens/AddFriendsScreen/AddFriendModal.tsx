@@ -6,7 +6,7 @@ import { SheetProps } from 'tamagui';
 export const AddFriendModal = (props: SheetProps) => {
   return (
     <Sheet modal={false} hideHandle animation="quick" unmountChildrenWhenHidden open={props.open} onOpenChange={props.onOpenChange}>
-      <UserSearchProvider showOnlyFriends showUsersWhenEmpty>
+      <UserSearchProvider showUsersWhenEmpty>
         <EventCreationAddFriends onClose={() => props.onOpenChange?.(false)} />
       </UserSearchProvider>
     </Sheet>

@@ -1,8 +1,7 @@
 import { Tabs } from 'expo-router';
 import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
-import { TabBarIcon } from '@/components/TabBarIcon';
-import { Home, Plus } from '@tamagui/lucide-icons';
-import { ProfileTabBarIcon } from '@/components/ProfileTabBarIcon/ProfileTabBarIcon';
+import { Home, Plus, User } from '@tamagui/lucide-icons';
+import { colors } from '@/providers/TamaguiProvider/tamaguiConfig';
 
 const screenOptions: BottomTabNavigationOptions = {
   tabBarStyle: {
@@ -10,6 +9,8 @@ const screenOptions: BottomTabNavigationOptions = {
     height: 60,
     borderTopRightRadius: 6,
   },
+  tabBarLabelStyle: { height: 0 },
+  tabBarActiveTintColor: colors.primary,
   headerShown: false,
 };
 
@@ -20,17 +21,16 @@ export default function TabsLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: '',
-            tabBarButton: (props) => <TabBarIcon Icon={Home} title="Home" {...props} />,
+            title: undefined,
+            tabBarIcon: ({ focused }) => <Home top="$2" scale={1.1} color={focused ? '$primary' : undefined} />,
             ...screenOptions,
           }}
         />
         <Tabs.Screen
           name="add"
           options={{
-            unmountOnBlur: true,
             title: '',
-            tabBarButton: (props) => <TabBarIcon scale={1.6} Icon={(props) => <Plus {...props} />} title="Add" {...props} />,
+            tabBarIcon: ({ focused }) => <Plus top="$2" scale={1.5} color={focused ? '$primary' : undefined} />,
             ...screenOptions,
           }}
         />
@@ -38,7 +38,7 @@ export default function TabsLayout() {
           name="settings"
           options={{
             title: '',
-            tabBarButton: (props) => <ProfileTabBarIcon {...props} />,
+            tabBarIcon: ({ focused }) => <User top="$2" scale={1.1} color={focused ? '$primary' : undefined} />,
             ...screenOptions,
           }}
         />

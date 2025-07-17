@@ -66,7 +66,7 @@ export const AddFriendsScreen = () => {
 
 export default function AddFriends() {
   return (
-    <UserSearchProvider showOnlyFriends>
+    <UserSearchProvider>
       <AddFriendsScreen />
     </UserSearchProvider>
   );

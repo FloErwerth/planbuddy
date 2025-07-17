@@ -63,6 +63,9 @@ const font = createFont({
 export const tamaguiConfig = createTamagui({
   ...config,
 
+  animations: {
+    ...config.animations,
+  },
   fonts: {
     body: font,
     heading: font,

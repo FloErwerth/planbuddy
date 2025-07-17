@@ -1,4 +1,4 @@
-import { Checkbox as TamaguiCheckbox, CheckboxProps as TamaguiCheckboxProps, XStack } from 'tamagui';
+import { AnimatePresence, Checkbox as TamaguiCheckbox, CheckboxProps as TamaguiCheckboxProps, XStack } from 'tamagui';
 import { Check } from '@tamagui/lucide-icons';
 
 type CheckboxProps = TamaguiCheckboxProps & {
@@ -15,10 +15,25 @@ export const Checkbox = ({ checked, children, ...props }: CheckboxProps) => {
 
   return (
     <XStack pointerEvents="none" alignItems="center" gap={props.gap ?? '$4'}>
-      <TamaguiCheckbox {...props} overflow="hidden">
-        <TamaguiCheckbox.Indicator forceMount backgroundColor={checked ? '$primary' : '$background'}>
-          <CheckIcon />
-        </TamaguiCheckbox.Indicator>
+      <TamaguiCheckbox {...props} overflow="visible">
+        <AnimatePresence>
+          {checked && (
+            <TamaguiCheckbox.Indicator
+              borderRadius="$2"
+              animation="tooltip"
+              width="$1"
+              height="$1"
+              alignItems="center"
+              justifyContent="center"
+              enterStyle={{ scale: 0.5, opacity: 0 }}
+              exitStyle={{ scale: 0.5, opacity: 0 }}
+              forceMount
+              backgroundColor="$primary"
+            >
+              <CheckIcon />
+            </TamaguiCheckbox.Indicator>
+          )}
+        </AnimatePresence>
       </TamaguiCheckbox>
       {children}
     </XStack>

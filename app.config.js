@@ -23,6 +23,7 @@ export default {
     },
     android: {
       package: 'de.florian.erwerth.planbuddy',
+      edgeToEdgeEnabled: true,
       adaptiveIcon: {
         backgroundColor: '#ffffff',
       },
@@ -63,6 +64,7 @@ export default {
           organization: 'florian-erwerth',
         },
       ],
+      'expo-build-properties',
     ],
     experiments: {
       typedRoutes: true,

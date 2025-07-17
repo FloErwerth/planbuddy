@@ -42,7 +42,6 @@ export default Sentry.wrap(function RootLayout() {
         <Stack.Screen name="index" options={defaultOptions} />
         <Stack.Screen name="onboarding" options={defaultOptions} />
         <Stack.Screen name="(tabs)" options={defaultOptions} />
-
         <Stack.Screen name="joinEvent" options={defaultOptions} />
         <Stack.Screen name="sendingEmail" options={defaultOptions} />
         <Stack.Screen name="friends" options={defaultOptions} />

@@ -1,4 +1,3 @@
-import * as QueryParams from 'expo-auth-session/build/QueryParams';
 import { supabase } from '@/api/supabase';
 import { useSetUser } from '@/store/user';
 import { useCallback, useEffect, useMemo } from 'react';
@@ -7,26 +6,6 @@ import { User as SupabaseUser } from '@supabase/auth-js';
 import { AuthUser, PostgrestSingleResponse } from '@supabase/supabase-js';
 import { User } from '@/api/types';
 import { useQueryClient } from 'react-query';
-
-const createSessionFromUrl = async (url: string | null) => {
-  if (url === null) {
-    return;
-  }
-  const { params, errorCode } = QueryParams.getQueryParams(url);
-
-  if (errorCode) throw new Error(errorCode);
-  const { access_token, refresh_token } = params;
-  if (!access_token) return;
-  const { error } = await supabase.auth.setSession({
-    access_token,
-    refresh_token,
-  });
-  if (error) {
-    // nothing we can do
-  }
-
-  return await supabase.auth.getUser();
-};
 
 export const useCheckLoginState = () => {
   const setUser = useSetUser();

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { FriendDisplay } from '@/components/FriendDisplay';
 import { useGetUser } from '@/store/user';
 import { extractOtherUser } from '@/utils/extractOtherUser';
@@ -8,10 +8,11 @@ import { Pressable } from 'react-native';
 import { Screen } from '@/components/Screen';
 import { Button } from '@/components/tamagui/Button';
 import { Card } from '@/components/tamagui/Card';
-import { StatusEnum } from '@/api/types';
 import { UserSearchInput, useUserSearchContext } from '@/components/UserSearch';
 import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
 import { SimpleFriend } from '@/api/friends/types';
+import { StatusEnum } from '@/api/types';
+import { View } from 'tamagui';
 
 type EventCreationAddFriendsProps = {
   onClose: () => void;
@@ -19,9 +20,8 @@ type EventCreationAddFriendsProps = {
 
 export const EventCreationAddFriends = ({ onClose }: EventCreationAddFriendsProps) => {
   const { guests, addGuests, removeGuests } = useEventCreationContext();
-  const { users: friends } = useUserSearchContext();
-  const accepted: SimpleFriend[] = useMemo(() => friends?.filter((friend) => friend.status === StatusEnum.ACCEPTED) ?? [], [friends]);
-
+  const { users } = useUserSearchContext();
+  const friends = users?.filter(({ status }) => status === StatusEnum.ACCEPTED);
   const user = useGetUser();
 
   const getIsGuest = useCallback(
@@ -48,7 +48,7 @@ export const EventCreationAddFriends = ({ onClose }: EventCreationAddFriendsProp
       const { id, firstName, lastName } = extractOtherUser(user!.id, friend);
       const checked = Boolean(getIsGuest(id!));
       return (
-        <Card key={id} margin="$4">
+        <Card marginHorizontal="$4" key={id}>
           <Pressable onPress={() => toggleGuest(id!)}>
             <FriendDisplay {...friend} lastName={lastName} firstName={firstName}>
               <Checkbox checked={checked} />
@@ -72,7 +72,13 @@ export const EventCreationAddFriends = ({ onClose }: EventCreationAddFriendsProp
       >
         <UserSearchInput />
       </Screen>
-      <FlashList data={accepted} renderItem={render} estimatedItemSize={200} />
+      <FlashList
+        contentContainerStyle={{ paddingVertical: 16 }}
+        ItemSeparatorComponent={() => <View height="$1" />}
+        data={friends}
+        renderItem={render}
+        estimatedItemSize={200}
+      />
     </>
   );
 };
