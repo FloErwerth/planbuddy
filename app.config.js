@@ -1,3 +1,5 @@
+const packageJson = require('./package.json');
+
 export default {
     expo: {
         extra: {
@@ -7,7 +9,7 @@ export default {
         },
         name: 'planbuddy',
         slug: 'planbuddy',
-        version: '1.0.0',
+        version: packageJson.version,
         orientation: 'portrait',
         icon: './assets/images/icon.png',
         scheme: 'planbuddy',

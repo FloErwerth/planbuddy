@@ -124,7 +124,7 @@ export const EditEventScreen = () => {
             <Button
                 marginHorizontal="$4"
                 marginBottom="$4"
-                disabled={hasErrors || !form.formState.isDirty}
+                disabled={hasErrors}
                 onPress={form.handleSubmit(async (data) => {
                     await handleCreateEvent(data);
                 })}
