@@ -38,9 +38,10 @@ export default function TabsLayout() {
                     }}
                 />
                 <Tabs.Screen
-                    name="settings"
+                    name="profile"
                     options={{
                         title: '',
+                        popToTopOnBlur: true,
                         tabBarIcon: ({ focused }) => (
                             <View>
                                 <PendingFriendRequestsDot top="$1" left="55%" />

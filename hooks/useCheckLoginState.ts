@@ -1,11 +1,11 @@
 import { supabase } from '@/api/supabase';
-import { useSetUser } from '@/store/user';
 import { useCallback, useEffect, useMemo } from 'react';
 import { router, SplashScreen } from 'expo-router';
 import { User as SupabaseUser } from '@supabase/auth-js';
 import { AuthUser, PostgrestSingleResponse } from '@supabase/supabase-js';
 import { User } from '@/api/types';
 import { useQueryClient } from 'react-query';
+import { useSetUser } from '@/store/authentication';
 
 export const useCheckLoginState = () => {
     const setUser = useSetUser();
@@ -40,7 +40,7 @@ export const useCheckLoginState = () => {
             const userFromDb = await getUserFromDB(user);
 
             if (!userFromDb) {
-                router.replace('/onboarding');
+                router.replace('/authentication/onboarding');
                 return;
             }
 
@@ -50,6 +50,16 @@ export const useCheckLoginState = () => {
         [getUserFromDB, queryClient, setUser]
     );
 
+    return useMemo(
+        () => ({
+            handleCheckLoginstate,
+        }),
+        [handleCheckLoginstate]
+    );
+};
+
+export const useCheckLoginStateOnAppStart = () => {
+    const { handleCheckLoginstate } = useCheckLoginState();
     useEffect(() => {
         supabase.auth
             .getUser()
@@ -61,12 +71,5 @@ export const useCheckLoginState = () => {
                     void SplashScreen.hideAsync();
                 }, 500);
             });
-    }, [handleCheckLoginstate]);
-
-    return useMemo(
-        () => ({
-            handleCheckLoginstate,
-        }),
-        [handleCheckLoginstate]
-    );
+    }, []);
 };

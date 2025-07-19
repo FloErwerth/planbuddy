@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { FRIENDS_MUTATION_KEY, FRIENDS_QUERY_KEY } from '@/api/friends/constants';
-import { useGetUser } from '@/store/user';
 import { supabase } from '@/api/supabase';
 import { FriendsQueryResponse, SingleFriendQueryResponse } from '@/api/friends/schema';
 import { StatusEnum } from '@/api/types';
 import { QUERY_KEYS } from '@/api/queryKeys';
 import { useFriendOverview } from '@/api/friends/refiners';
+import { useGetUser } from '@/store/authentication';
 
 export const useAddFriendMutation = () => {
     const user = useGetUser();

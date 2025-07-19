@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useSetTimeout } from '@/hooks/useSetTimeout';
 import { SizableText, Spinner, useWindowDimensions, View } from 'tamagui';
-import { Check } from '@tamagui/lucide-icons';
 import { router } from 'expo-router';
+import { Check } from '@tamagui/lucide-icons';
 
-export default function SendingEmail() {
+export const SendingEmailScreen = () => {
     const [emailSent, setEmailSent] = useState(false);
     const { setTimeout: setEmailSentTimeout, clear: clearEmailSentTimeout } = useSetTimeout();
     const { setTimeout: setRedirectTimeout, clear: clearRedirectTimeout } = useSetTimeout();
@@ -21,7 +21,7 @@ export default function SendingEmail() {
         setEmailSentTimeout(() => {
             setEmailSent(true);
             setRedirectTimeout(() => {
-                router.replace('/token');
+                router.replace('/authentication/token');
             }, 1500);
         }, 3000);
 
@@ -57,4 +57,4 @@ export default function SendingEmail() {
             )}
         </View>
     );
-}
+};

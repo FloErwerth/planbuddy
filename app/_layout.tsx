@@ -1,8 +1,10 @@
-import { SplashScreen, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { Providers } from '@/providers';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import * as Sentry from '@sentry/react-native';
+import { useCheckLoginStateOnAppStart } from '@/hooks/useCheckLoginState';
 
 Sentry.init({
     dsn: 'https://468683226bfb2668906c6fee1941aa74@o4509455416229888.ingest.de.sentry.io/4509455421800528',
@@ -17,9 +19,33 @@ Sentry.init({
 });
 
 SplashScreen.preventAutoHideAsync();
+SplashScreen.setOptions({
+    duration: 1000,
+    fade: true,
+});
 
 const defaultOptions: NativeStackNavigationOptions = {
     headerShown: false,
+};
+
+const AppStack = () => {
+    useCheckLoginStateOnAppStart();
+
+    return (
+        <Stack>
+            <Stack.Screen name="index" options={defaultOptions} />
+            <Stack.Screen name="(tabs)" options={defaultOptions} />
+            <Stack.Screen
+                name="eventDetails"
+                options={{
+                    ...defaultOptions,
+                    presentation: 'modal',
+                    animation: 'fade',
+                }}
+            />
+            <Stack.Screen name="authentication" options={defaultOptions} />
+        </Stack>
+    );
 };
 
 export default Sentry.wrap(function RootLayout() {
@@ -38,25 +64,7 @@ export default Sentry.wrap(function RootLayout() {
 
     return (
         <Providers>
-            <Stack>
-                <Stack.Screen name="index" options={defaultOptions} />
-                <Stack.Screen name="onboarding" options={defaultOptions} />
-                <Stack.Screen name="(tabs)" options={defaultOptions} />
-                <Stack.Screen name="joinEvent" options={defaultOptions} />
-                <Stack.Screen name="sendingEmail" options={defaultOptions} />
-                <Stack.Screen name="friends" options={defaultOptions} />
-                <Stack.Screen name="friendRequests" options={defaultOptions} />
-                <Stack.Screen
-                    name="eventDetails"
-                    options={{
-                        ...defaultOptions,
-                        presentation: 'modal',
-                        animation: 'fade',
-                    }}
-                />
-                <Stack.Screen name="login" options={defaultOptions} />
-                <Stack.Screen name="token" options={defaultOptions} />
-            </Stack>
+            <AppStack />
         </Providers>
     );
 });

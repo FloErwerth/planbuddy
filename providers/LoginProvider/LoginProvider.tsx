@@ -33,7 +33,7 @@ export const LoginProvider = ({ children }: PropsWithChildren) => {
     const [loginError, setLoginError] = useState<string>('');
     const [resendTokenTime, setResendTokenTime] = useState<number>(RESEND_TIME_SECONDS);
     const [startedLoginAttempt, setStartedLoginAttempt] = useState(false);
-    const timer = useRef<ReturnType<typeof setInterval>>();
+    const timer = useRef<ReturnType<typeof setInterval>>(-1);
 
     const resetTokenPage = useCallback(() => {
         clearInterval(timer.current);

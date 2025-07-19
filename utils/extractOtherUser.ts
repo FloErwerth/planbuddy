@@ -1,7 +1,7 @@
 import { FriendsQueryResponse } from '@/api/friends/schema';
 import { useMemo } from 'react';
-import { useGetUser } from '@/store/user';
 import { SimpleFriend } from '@/api/friends/types';
+import { useGetUser } from '@/store/authentication';
 
 export const useExtractedUser = (friend?: SimpleFriend) => {
     const user = useGetUser();

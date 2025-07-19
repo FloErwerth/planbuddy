@@ -1,9 +1,9 @@
 import { useDatabaseFriendsQuery } from '@/api/friends/databaseQuery';
 import { StatusEnum } from '@/api/types';
 import { useMemo } from 'react';
-import { useGetUser } from '@/store/user';
 import { sortFriendsToTop } from '@/utils/sorters';
 import { extractOtherUser, useExtractOtherUser } from '@/utils/extractOtherUser';
+import { useGetUser } from '@/store/authentication';
 
 export const useFriendsByStatus = () => {
     const { data = [], refetch, isLoading } = useDatabaseFriendsQuery();

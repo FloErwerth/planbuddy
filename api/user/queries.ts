@@ -1,8 +1,8 @@
 import { useQuery } from 'react-query';
 import { supabase } from '@/api/supabase';
-import { useGetUser } from '@/store/user';
 import { User } from '@/api/types';
 import { QUERY_KEYS } from '@/api/queryKeys';
+import { useGetUser } from '@/store/authentication';
 
 export const useUserQuery = () => {
     const user = useGetUser();

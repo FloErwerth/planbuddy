@@ -1,24 +1,18 @@
-import { router } from 'expo-router';
-import { Screen } from '@/components/Screen';
-import { AnimatePresence, debounce, SizableText, View } from 'tamagui';
-import { BackButton } from '@/components/BackButton';
-import { TokenInput } from '@/components/TokenInput/TokenInput';
 import { useCallback, useEffect, useState } from 'react';
-import { array, string } from 'zod';
-import { supabase } from '@/api/supabase';
-import { useSetUser } from '@/store/user';
-import { Sheet } from '@/components/tamagui/Sheet';
-import { Button } from '@/components/tamagui/Button';
 import { useLoginContext } from '@/providers/LoginProvider';
 import { useCheckLoginState } from '@/hooks/useCheckLoginState';
+import { supabase } from '@/api/supabase';
+import { router } from 'expo-router';
+import { BackButton } from '@/components/BackButton';
+import { tokenSchema } from '@/screens/Authentication/types';
+import { AnimatePresence, debounce, SizableText, View } from 'tamagui';
+import { TokenInput } from '@/components/TokenInput/TokenInput';
+import { Button } from '@/components/tamagui/Button';
+import { Sheet } from '@/components/tamagui/Sheet';
+import { Screen } from '@/components/Screen';
+import { useSetUser } from '@/store/authentication';
 
-const tokenSchema = array(string()).refine((val) => {
-    const combined = val.join('');
-    const parsedInt = parseInt(combined);
-    return val.length === 6 && !Number.isNaN(parsedInt);
-});
-
-export default function Token() {
+export const TokenScreen = () => {
     const { email, resendTokenTime, startedLoginAttempt, setStartedLoginAttempt, startResendTokenTimer, setLoginError, resetTokenPage } = useLoginContext();
     const [token, setToken] = useState<string[]>([]);
     const [previousToken, setPreviousToken] = useState<string[]>([]);
@@ -28,7 +22,7 @@ export default function Token() {
     const hasValue = !token.every((val) => !val);
     const { handleCheckLoginstate } = useCheckLoginState();
 
-    const onComplete = useCallback(async () => {
+    const onComplete = async () => {
         if (!email || token.join('') === previousToken.join('') || !hasValue) {
             return;
         }
@@ -53,6 +47,7 @@ export default function Token() {
 
             await handleCheckLoginstate(data.user);
             await supabase.auth.setSession(data.session);
+            console.log('tabs');
             router.replace('/(tabs)');
             resetTokenPage();
             setUser(data.user);
@@ -61,11 +56,12 @@ export default function Token() {
                 console.error(e.message);
             }
         }
-    }, [email, hasValue, previousToken, resetTokenPage, setUser, token]);
+    };
 
     const resendToken = async () => {
-        router.push({ pathname: '/sendingEmail', params: { email } });
+        console.log('resend');
 
+        router.push({ pathname: '/authentication/sendingEmail', params: { email } });
         const result = await supabase.auth.signInWithOtp({
             email,
         });
@@ -84,7 +80,7 @@ export default function Token() {
                 default:
                     setLoginError('Es ist ein Fehler aufgetreten, bitte versuche es erneut');
             }
-            router.replace('/login');
+            router.replace('/authentication');
             return;
         }
     };
@@ -92,7 +88,9 @@ export default function Token() {
     const handleChangeMail = useCallback(() => {
         setStartedLoginAttempt(false);
         setShowSheet(false);
-        router.push('/login');
+        console.log('change');
+
+        router.push('/authentication');
     }, [setStartedLoginAttempt]);
 
     useEffect(() => {
@@ -101,11 +99,11 @@ export default function Token() {
         if (parsedToken.success) {
             void onComplete();
         }
-    }, [token, onComplete]);
+    }, [token]);
 
     return (
         <>
-            <Screen back={<BackButton href="/login" />} flex={1} title="Verifizierung">
+            <Screen back={<BackButton href="/authentication" />} flex={1} title="Verifizierung">
                 <View flex={1} justifyContent="center" gap="$6">
                     <SizableText size="$8">Checke deine E-Mails</SizableText>
                     <SizableText>
@@ -171,4 +169,4 @@ export default function Token() {
             </Sheet>
         </>
     );
-}
+};

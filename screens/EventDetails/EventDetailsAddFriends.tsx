@@ -1,16 +1,16 @@
-import { FriendDisplay } from '@/components/FriendDisplay';
-import { Checkbox } from '@/components/tamagui/Checkbox';
-import { useEventCreationContext } from '@/screens/EventCreation/EventCreationContext';
-import { Pressable } from 'react-native';
-import { Screen } from '@/components/Screen';
-import { Card } from '@/components/tamagui/Card';
-import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
-import { SimpleFriend } from '@/api/friends/types';
-import { View } from 'tamagui';
 import { useFriendsByStatus } from '@/api/friends/refiners';
+import { useState } from 'react';
+import { SimpleFriend } from '@/api/friends/types';
+import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
+import { Screen } from '@/components/Screen';
 import { BackButton } from '@/components/BackButton';
 import { SearchInput } from '@/components/SearchInput';
-import { useState } from 'react';
+import { AnimatePresence, getTokenValue, useWindowDimensions, View } from 'tamagui';
+import { Card } from '@/components/tamagui/Card';
+import { Pressable } from 'react-native';
+import { FriendDisplay } from '@/components/FriendDisplay';
+import { Checkbox } from '@/components/tamagui/Checkbox';
+import { Button } from '@/components/tamagui/Button';
 
 const Guest = ({ id, onPress, checked, ...friend }: SimpleFriend & { checked: boolean; onPress: (id: string) => void }) => {
     return (
@@ -24,10 +24,11 @@ const Guest = ({ id, onPress, checked, ...friend }: SimpleFriend & { checked: bo
     );
 };
 
-export const EventCreationAddFriends = () => {
-    const { guests, addGuests, removeGuests } = useEventCreationContext();
+export const EventDetailsAddFriends = () => {
+    const [addedGuests, setAddedGuests] = useState<Set<string>>(new Set());
     const { accepted: friends } = useFriendsByStatus();
     const [filter, setFilter] = useState<string>();
+    const { width } = useWindowDimensions();
 
     const applyFilter = (other: SimpleFriend | undefined) => {
         if (!filter || !other) {
@@ -55,16 +56,18 @@ export const EventCreationAddFriends = () => {
     const friendsWithChecked = friends
         .map((friend) => ({
             ...friend,
-            checked: guests.has(friend.userId!),
+            checked: addedGuests.has(friend.userId!),
         }))
         .filter(applyFilter);
 
-    const toggleGuest = (guestId: string, isGuest: boolean) => {
+    const toggleGuest = (userId: string, isGuest: boolean) => {
+        const newGuests = new Set(addedGuests.values());
         if (isGuest) {
-            removeGuests([guestId]);
+            newGuests.delete(userId);
         } else {
-            addGuests([guestId]);
+            newGuests.add(userId);
         }
+        setAddedGuests(newGuests);
     };
 
     const render = ({ item: friend }: ListRenderItemInfo<SimpleFriend & { checked: boolean }>) => {
@@ -73,7 +76,7 @@ export const EventCreationAddFriends = () => {
 
     return (
         <>
-            <Screen back={<BackButton href="/(tabs)/eventCreation" />} title="Gäste hinzufügen">
+            <Screen back={<BackButton href="/eventDetails/participants" />} title="Gäste hinzufügen">
                 <SearchInput placeholder="Name oder E-Mail" onChangeText={setFilter} />
             </Screen>
             <FlashList
@@ -83,6 +86,22 @@ export const EventCreationAddFriends = () => {
                 renderItem={render}
                 estimatedItemSize={200}
             />
+            <AnimatePresence>
+                {addedGuests.size > 0 && (
+                    <Button
+                        animation="bouncy"
+                        enterStyle={{ scale: 0.9, opacity: 0 }}
+                        exitStyle={{ scale: 0.9, opacity: 0 }}
+                        margin="$4"
+                        position="absolute"
+                        bottom={0}
+                        width={width - 2 * getTokenValue('$4', 'space')}
+                        onPress={() => undefined}
+                    >
+                        Gäste hinzufügen
+                    </Button>
+                )}
+            </AnimatePresence>
         </>
     );
 };

@@ -1,4 +1,4 @@
-import { useGetUser } from '@/store/user';
+import { useGetUser } from '@/store/authentication';
 
 export const useIsMe = (participantUserId?: string) => {
     const user = useGetUser();

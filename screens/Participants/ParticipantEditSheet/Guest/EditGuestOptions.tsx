@@ -3,35 +3,41 @@ import { PressableRow } from '@/components/PressableRow';
 import { Checkbox } from '@/components/tamagui/Checkbox';
 import { ParticipantQueryResponse, Role } from '@/api/events/types';
 import { Button } from '@/components/tamagui/Button';
-import { useCallback } from 'react';
+import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
+import { useMe } from '@/api/events/refiners';
 
 type ParticipantEditGuestOptionsProps = {
-    me: ParticipantQueryResponse;
-    guest?: ParticipantQueryResponse;
     onRemoveGuest?: () => void;
-    setGuest: (guest: ParticipantQueryResponse) => void;
 };
-export const EditGuestOptions = ({ me, guest, setGuest, onRemoveGuest }: ParticipantEditGuestOptionsProps) => {
-    const toggleRole = useCallback(() => {
+export const EditGuestOptions = ({ onRemoveGuest }: ParticipantEditGuestOptionsProps) => {
+    const { editedGuest: guest, setEditedGuest: setGuest, eventId } = useEventDetailsContext();
+    const me = useMe(eventId);
+
+    const toggleRole = () => {
         if (!guest) {
             return;
         }
 
+        const newRole = guest.role !== Role.enum.ADMIN ? Role.enum.ADMIN : Role.enum.GUEST;
+
         const newGuest: ParticipantQueryResponse = {
             ...guest,
-            role: guest.role === Role.enum.GUEST ? Role.enum.ADMIN : Role.enum.GUEST,
+            role: newRole,
         };
 
         setGuest(newGuest);
-    }, [guest, setGuest]);
+    };
 
     return (
         <>
             <YStack gap="$2">
                 <SizableText>Rolle</SizableText>
-                <PressableRow onPress={toggleRole} iconRight={null} justifyContent="space-between">
+                <PressableRow
+                    onPress={toggleRole}
+                    iconRight={<Checkbox onPress={toggleRole} checked={guest?.role === Role.enum.ADMIN} />}
+                    justifyContent="space-between"
+                >
                     <SizableText>Ist Admin</SizableText>
-                    <Checkbox checked={guest?.role === Role.enum.ADMIN} />
                 </PressableRow>
             </YStack>
             <YStack gap="$2">

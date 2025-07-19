@@ -1,20 +1,20 @@
-import { SizableText, View } from 'tamagui';
-import { Button } from '@/components/tamagui/Button';
-import { Screen } from '@/components/Screen';
 import { FormProvider, useForm } from 'react-hook-form';
-import { FormInput } from '@/components/FormFields/FormInput';
-import { AvatarImagePicker } from '@/components/AvatarImagePicker';
-import { useEffect, useState } from 'react';
+import { onboardingSchema, OnboardingSchema } from '@/api/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useProfileImageQuery, useUploadProfilePictureMutation } from '@/api/images';
-import { useGetUser } from '@/store/user';
 import { useInsertUserMutation } from '@/api/user';
-import { router } from 'expo-router';
-import { readInviteId } from '@/utils/invite';
 import { useCreateParticipationMutation } from '@/api/events/mutations';
-import { OnboardingSchema, onboardingSchema } from '@/api/types';
+import { useEffect, useState } from 'react';
+import { readInviteId } from '@/utils/invite';
+import { router } from 'expo-router';
+import { Screen } from '@/components/Screen';
+import { SizableText, View } from 'tamagui';
+import { AvatarImagePicker } from '@/components/AvatarImagePicker';
+import { FormInput } from '@/components/FormFields';
+import { Button } from '@/components/tamagui/Button';
+import { useGetUser } from '@/store/authentication';
 
-export default function Onboarding() {
+export const OnboardingScreen = () => {
     const form = useForm<OnboardingSchema>({
         resolver: zodResolver(onboardingSchema),
     });
@@ -79,4 +79,4 @@ export default function Onboarding() {
             <Button onPress={form.handleSubmit(completeOnboarding)}>Abschließen</Button>
         </Screen>
     );
-}
+};

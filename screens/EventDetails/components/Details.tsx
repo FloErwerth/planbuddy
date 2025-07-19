@@ -1,10 +1,11 @@
 import { SizableText, XStack, YStack } from 'tamagui';
-import { CalendarDays, MapPin, MessageSquareText, Users } from '@tamagui/lucide-icons';
+import { CalendarDays, ChevronRight, ExternalLink, Link2, MapPin, MessageSquareText, Users } from '@tamagui/lucide-icons';
 import { router } from 'expo-router';
 import { useSingleEventQuery } from '@/api/events/queries';
 import { formatToDate, formatToTime } from '@/utils/date';
 import { PressableRow } from '@/components/PressableRow';
 import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
+import { Linking } from 'react-native';
 
 export const Details = () => {
     const { eventId } = useEventDetailsContext();
@@ -13,6 +14,24 @@ export const Details = () => {
     if (!event) {
         return null;
     }
+
+    const url = (() => {
+        if (!event.link) {
+            return undefined;
+        }
+        const url = new URL(event.link);
+        if (url.toString() === 'INVALID_URL') {
+            return undefined;
+        }
+
+        return url;
+    })();
+
+    const handleOpenLink = async () => {
+        if (url && (await Linking.canOpenURL(url.toString()))) {
+            await Linking.openURL(url.toString());
+        }
+    };
 
     return (
         <>
@@ -37,13 +56,18 @@ export const Details = () => {
                 <SizableText>{event.location}</SizableText>
             </PressableRow>
             {event.description && (
-                <PressableRow icon={<MessageSquareText />}>
+                <PressableRow icon={<MessageSquareText />} iconRight={null}>
                     <SizableText>{event.description}</SizableText>
                 </PressableRow>
             )}
-            <PressableRow icon={<Users />} onPress={() => router.push(`/eventDetails/participants`)}>
+            <PressableRow icon={<Users />} onPress={() => router.push(`/eventDetails/participants`)} iconRight={<ChevronRight size="$1" />}>
                 <SizableText>Gäste</SizableText>
             </PressableRow>
+            {url && (
+                <PressableRow icon={<Link2 />} onPress={handleOpenLink} iconRight={<ExternalLink size="$1" />}>
+                    <SizableText>{url.host}</SizableText>
+                </PressableRow>
+            )}
         </>
     );
 };

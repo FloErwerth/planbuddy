@@ -1,13 +1,11 @@
 import { BackButton } from '@/components/BackButton';
 import { Redirect, router } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useParticipantsQuery } from '@/api/events/queries';
-import { useGetUser } from '@/store/user';
 import { RefreshControl } from 'react-native';
-import { XStack } from 'tamagui';
+import { View, XStack } from 'tamagui';
 import { Button } from '@/components/tamagui/Button';
 import { Eye } from '@tamagui/lucide-icons';
-import { ScrollView } from '@/components/tamagui/ScrollView';
 import { Screen } from '@/components/Screen';
 import { ParticipantSkeleton } from '@/screens/Participants/ParticipantSkeleton';
 import { Status, StatusEnum } from '@/api/types';
@@ -15,32 +13,32 @@ import { SearchInput } from '@/components/SearchInput';
 import { Participant } from '@/screens/Participants/Participant';
 import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
 import { PlusButton } from '@/components/PlusButton';
-import { useFriendsByStatus } from '@/api/friends/refiners';
+import { useGetUser } from '@/store/authentication';
+import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
+import { ParticipantQueryResponse } from '@/api/events/types';
 
 export const Participants = () => {
     const { eventId, setEditedGuest } = useEventDetailsContext();
-    const { accepted } = useFriendsByStatus();
     const [activeFilters, setActiveFilters] = useState<Status[]>([]);
     const [search, setSearch] = useState('');
     const [refreshing, setRefreshing] = useState(false);
     const { data: participants, refetch, isLoading } = useParticipantsQuery(eventId, activeFilters, search);
     const user = useGetUser();
 
-    const sortedParticipants = useMemo(() => {
-        return participants?.sort((a, b) => (a.userId === user?.id ? 1 : 0));
-    }, [participants, user?.id]);
+    const sortedParticipants = participants?.sort((a) => (a.userId === user?.id ? 1 : 0));
 
-    const mappedParticipants = useMemo(
-        () =>
-            sortedParticipants?.map((participant) => (
-                <Participant key={participant.id} participant={participant} onOpenOptions={() => setEditedGuest(participant)} />
-            )),
-        [setEditedGuest, sortedParticipants]
-    );
-
-    const sceletons = useMemo(() => {
-        return participants?.map(({ id }) => <ParticipantSkeleton key={id} />);
-    }, [participants]);
+    const render = ({ item: participant }: ListRenderItemInfo<ParticipantQueryResponse>) =>
+        refreshing ? (
+            <ParticipantSkeleton />
+        ) : (
+            <Participant
+                participant={participant}
+                onOpenOptions={() => {
+                    setEditedGuest(participant);
+                    router.push('/eventDetails/editGuest');
+                }}
+            />
+        );
 
     if (!participants && !isLoading) {
         return <Redirect href=".." />;
@@ -92,7 +90,7 @@ export const Participants = () => {
                 </XStack>
                 <SearchInput placeholder="E-Mail oder Name" onChangeText={setSearch} />
             </Screen>
-            <ScrollView
+            <FlashList
                 refreshControl={
                     <RefreshControl
                         onRefresh={async () => {
@@ -103,11 +101,12 @@ export const Participants = () => {
                         refreshing={refreshing}
                     />
                 }
-                withShadow
-                contentContainerStyle={{ padding: '$4', gap: '$2' }}
-            >
-                {refreshing ? sceletons : mappedParticipants}
-            </ScrollView>
+                ItemSeparatorComponent={() => <View height="$1" />}
+                contentContainerStyle={{ padding: 16 }}
+                renderItem={render}
+                data={sortedParticipants}
+                estimatedItemSize={200}
+            />
         </>
     );
 };

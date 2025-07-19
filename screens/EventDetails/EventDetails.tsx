@@ -1,8 +1,7 @@
-import { Redirect } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { ActivityIndicator } from 'react-native';
 import { Image } from 'expo-image';
 import { useSingleEventQuery } from '@/api/events/queries';
-import { useGetUser } from '@/store/user';
 import { useEventImageQuery } from '@/api/images';
 import { useState } from 'react';
 import { Details } from '@/screens/EventDetails/components/Details';
@@ -11,9 +10,15 @@ import { ScrollableScreen } from '@/components/Screen';
 import { View } from 'tamagui';
 import { BackButton } from '@/components/BackButton';
 import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
+import { useGetUser } from '@/store/authentication';
+import { Pencil } from '@tamagui/lucide-icons';
+import { Button } from '@/components/tamagui/Button';
+import { useMe } from '@/api/events/refiners';
+import { Role } from '@/api/events/types';
 
 export const EventDetails = () => {
     const { eventId } = useEventDetailsContext();
+    const me = useMe(eventId);
     const [showShare, setShowShare] = useState(false);
 
     const user = useGetUser();
@@ -31,10 +36,21 @@ export const EventDetails = () => {
     }
 
     return (
-        <ScrollableScreen back={<BackButton href="/(tabs)" />}>
-            <View backgroundColor="$background" overflow="hidden" elevationAndroid="$2" width="100%" borderRadius="$8">
-                <Image source={image} style={{ width: 'auto', height: 200 }} />
-            </View>
+        <ScrollableScreen
+            back={<BackButton href="/(tabs)" />}
+            action={
+                me?.role === Role.enum.GUEST ? null : (
+                    <Button variant="round" width="$2" height="$2" onPress={() => router.push('/eventDetails/editEvent')}>
+                        <Pencil color="$background" scale={0.65} />
+                    </Button>
+                )
+            }
+        >
+            {image && (
+                <View backgroundColor="$background" overflow="hidden" elevationAndroid="$2" width="100%" borderRadius="$8">
+                    <Image source={image} style={{ width: 'auto', height: 200 }} />
+                </View>
+            )}
             {event?.id && <Details />}
             {event?.id && <ShareSheet onOpenChange={setShowShare} open={showShare} />}
         </ScrollableScreen>

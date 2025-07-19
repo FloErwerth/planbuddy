@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { supabase } from '@/api/supabase';
 import { decode } from 'base64-arraybuffer';
-import { useGetUser } from '@/store/user';
 import * as FileSystem from 'expo-file-system';
 import { QUERY_KEYS } from '@/api/queryKeys';
+import { useGetUser } from '@/store/authentication';
 
 export const useUploadProfilePictureMutation = () => {
     const user = useGetUser();

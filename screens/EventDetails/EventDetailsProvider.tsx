@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useState } from 'react';
 import { ParticipantQueryResponse } from '@/api/events/types';
 import { router, useGlobalSearchParams } from 'expo-router';
 import { useCreateParticipationMutation } from '@/api/events/mutations';
@@ -34,51 +34,32 @@ export const EventDetailsProvider = ({ children }: PropsWithChildren) => {
     const [usersToAdd, setUsersToAdd] = useState<Set<string>>(new Set());
     const { mutateAsync } = useCreateParticipationMutation();
 
-    const handleSetEditedGuest = useCallback(
-        (guest: ParticipantQueryResponse | undefined) => {
-            if (!guest) {
-                setEditedGuest(guest);
-            }
-
-            if (guest?.id === editedGuest?.id) {
-                return;
-            }
-
-            setEditedGuest(guest);
-            router.push('./editGuest');
-        },
-        [editedGuest?.id]
-    );
-
-    const addFriendsToEvent = useCallback((id: string) => {
+    const addFriendsToEvent = (id: string) => {
         setUsersToAdd((current) => {
             const newSet = new Set(current.values());
             newSet.add(id);
             return newSet;
         });
-    }, []);
+    };
 
-    const removeUserFromUsersToAdd = useCallback((id: string) => {
+    const removeUserFromUsersToAdd = (id: string) => {
         setUsersToAdd((current) => {
             const newSet = new Set(current.values());
             newSet.delete(id);
             return newSet;
         });
-    }, []);
+    };
 
-    const toggleInviteToEvent = useCallback(
-        (id: string) => {
-            if (usersToAdd.has(id)) {
-                removeUserFromUsersToAdd(id);
-                return;
-            }
+    const toggleInviteToEvent = (id: string) => {
+        if (usersToAdd.has(id)) {
+            removeUserFromUsersToAdd(id);
+            return;
+        }
 
-            addFriendsToEvent(id);
-        },
-        [addFriendsToEvent, removeUserFromUsersToAdd, usersToAdd]
-    );
+        addFriendsToEvent(id);
+    };
 
-    const handleInviteUsers = useCallback(async () => {
+    const handleInviteUsers = async () => {
         await mutateAsync(
             Array.from(usersToAdd).map((user) => ({
                 eventId,
@@ -86,19 +67,16 @@ export const EventDetailsProvider = ({ children }: PropsWithChildren) => {
             }))
         );
         router.replace('/eventDetails/participants');
-    }, [eventId, mutateAsync, usersToAdd]);
+    };
 
-    const contextValue: EventDetailsContextType = useMemo(
-        () => ({
-            eventId,
-            editedGuest,
-            setEditedGuest: handleSetEditedGuest,
-            toggleInviteToEvent,
-            numberOfAddedUsers: usersToAdd.size,
-            usersToAdd,
-        }),
-        [editedGuest, eventId, handleSetEditedGuest, toggleInviteToEvent, usersToAdd]
-    );
+    const contextValue: EventDetailsContextType = {
+        eventId,
+        editedGuest,
+        setEditedGuest,
+        toggleInviteToEvent,
+        numberOfAddedUsers: usersToAdd.size,
+        usersToAdd,
+    };
 
     return (
         <EventDetailsContext.Provider value={contextValue}>

@@ -43,12 +43,12 @@ export const ParticipantEditScreen = () => {
 
     return (
         <>
-            <Screen back={<BackButton />} title={isMe ? 'Einladung verwalten' : 'Gast verwalten'} flex={1}>
-                {isMe ? (
-                    <ParticipantEditMeOptions onRemoveGuest={removeEditedGuest} />
-                ) : (
-                    <EditGuestOptions me={me} guest={editedGuest} setGuest={(guest) => setEditedGuest(guest)} onRemoveGuest={removeEditedGuest} />
-                )}
+            <Screen
+                back={<BackButton onPress={() => setEditedGuest(undefined)} />}
+                title={isMe ? 'Einladung verwalten' : `${editedGuest?.firstName} ${editedGuest?.lastName}`}
+                flex={1}
+            >
+                {isMe ? <ParticipantEditMeOptions onRemoveGuest={removeEditedGuest} /> : <EditGuestOptions onRemoveGuest={removeEditedGuest} />}
             </Screen>
             <Button margin="$4" onPress={saveEditedGuest}>
                 Speichern

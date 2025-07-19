@@ -27,7 +27,7 @@ export const appEventSchema = z
         location: z.string(),
         locationDescription: z.string().optional(),
         imageToUpload: z.string().optional(),
-        link: z.string().url().optional(),
+        link: z.string().url().optional().catch(undefined),
         startTime: z.string(),
         endTime: z.string(),
     })

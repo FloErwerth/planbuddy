@@ -1,13 +1,13 @@
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import { Status, User, userSchema } from '@/api/types';
 import { supabase } from '@/api/supabase';
-import { useGetUser } from '@/store/user';
 import { useQuery } from 'react-query';
 import { array } from 'zod';
 import { debounce } from 'tamagui';
 import { friendsQuerySchema } from '@/api/friends/schema';
 import { QUERY_KEYS } from '@/api/queryKeys';
 import { FRIENDS_QUERY_KEY } from '@/api/friends/constants';
+import { useGetUser } from '@/store/authentication';
 
 export type UserWithStatus = User & {
     status?: Status;

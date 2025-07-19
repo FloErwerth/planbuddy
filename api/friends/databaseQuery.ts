@@ -1,10 +1,10 @@
 import { QueryOptions, useQuery, UseQueryResult } from 'react-query';
 import { FRIENDS_QUERY_KEY } from '@/api/friends/constants';
-import { useGetUser } from '@/store/user';
 import { supabase } from '@/api/supabase';
 import { Status, User } from '@/api/types';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { friendsQuerySchema, SingleFriendQueryResponse, singleFriendSchema } from '@/api/friends/schema';
+import { useGetUser } from '@/store/authentication';
 
 type FriendDatabaseType = {
     id: string;

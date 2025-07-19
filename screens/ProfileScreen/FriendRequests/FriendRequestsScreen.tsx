@@ -1,21 +1,21 @@
 import { useFriendOverview } from '@/api/friends/refiners';
-import { Screen } from '@/components/Screen';
-import { BackButton } from '@/components/BackButton';
+import { useState } from 'react';
+import { extractOtherUser } from '@/utils/extractOtherUser';
+import { useRemoveFriendMutation, useUpdateFriendMutation } from '@/api/friends/addFriendsMutation';
+import { StatusEnum } from '@/api/types';
+import { router } from 'expo-router';
 import { Card } from '@/components/tamagui/Card';
-import { UserAvatar } from '@/components/UserAvatar';
-import { ScrollView } from '@/components/tamagui/ScrollView';
 import { SizableText, View, XStack } from 'tamagui';
+import { UserAvatar } from '@/components/UserAvatar';
 import { formatToDate } from '@/utils/date';
 import { Button } from '@/components/tamagui/Button';
 import { Check, X } from '@tamagui/lucide-icons';
-import { useState } from 'react';
-import { extractOtherUser } from '@/utils/extractOtherUser';
+import { Screen } from '@/components/Screen';
+import { BackButton } from '@/components/BackButton';
+import { ScrollView } from '@/components/tamagui/ScrollView';
 import { Dialog } from '@/components/tamagui/Dialog';
-import { useRemoveFriendMutation, useUpdateFriendMutation } from '@/api/friends/addFriendsMutation';
-import { router } from 'expo-router';
-import { StatusEnum } from '@/api/types';
 
-export default function FriendRequests() {
+export const FriendRequestsScreen = () => {
     const { pendingToAccept } = useFriendOverview();
     const [userToDecline, setUserToDecline] = useState<ReturnType<typeof extractOtherUser> | undefined>(undefined);
     const { mutateAsync: removeFriend } = useRemoveFriendMutation();
@@ -31,7 +31,7 @@ export default function FriendRequests() {
             status: StatusEnum.ACCEPTED,
             acceptedAt: new Date(),
         });
-        router.navigate('/settings');
+        router.navigate('/profile');
     };
 
     const mapped = pendingToAccept.map((pending) => {
@@ -62,12 +62,12 @@ export default function FriendRequests() {
 
     const declineFriendRequest = async () => {
         await removeFriend(userToDecline?.id);
-        router.navigate('/settings');
+        router.navigate('/profile');
     };
 
     return (
         <>
-            <Screen back={<BackButton href="/settings" />} title="Freundschaftsanfragen"></Screen>
+            <Screen back={<BackButton href="/profile" />} title="Freundschaftsanfragen"></Screen>
             <ScrollView contentContainerStyle={{ padding: '$4' }}>{mapped}</ScrollView>
             <Dialog
                 open={!!userToDecline}
@@ -90,4 +90,4 @@ export default function FriendRequests() {
             </Dialog>
         </>
     );
-}
+};

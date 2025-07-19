@@ -1,4 +1,3 @@
-import { ChevronRight } from '@tamagui/lucide-icons';
 import { View, XStack, XStackProps } from 'tamagui';
 import { Pressable } from 'react-native';
 import { PropsWithChildren, ReactNode } from 'react';
@@ -10,10 +9,10 @@ type PressableRowProps = {
 } & XStackProps &
     PropsWithChildren;
 
-export const PressableRow = ({ onPress, icon, iconRight = <ChevronRight />, children, ...wrapperProps }: PressableRowProps) => {
+export const PressableRow = ({ onPress, icon, iconRight, children, ...wrapperProps }: PressableRowProps) => {
     const IconRight = () => {
         if (!iconRight) {
-            return <View padding="$3" />;
+            return null;
         }
 
         return iconRight;

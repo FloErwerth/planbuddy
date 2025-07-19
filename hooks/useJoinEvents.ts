@@ -1,8 +1,8 @@
 import { router, useGlobalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
-import { useGetUser } from '@/store/user';
 import { useCreateParticipationMutation } from '@/api/events/mutations';
 import { writeInviteId } from '@/utils/invite';
+import { useGetUser } from '@/store/authentication';
 
 export const useJoinEvents = () => {
     const { eventId } = useGlobalSearchParams<{
@@ -19,7 +19,7 @@ export const useJoinEvents = () => {
                 await writeInviteId(eventId);
                 if (user === undefined) {
                     // redirect to special login page
-                    router.replace('/login');
+                    router.replace('/authentication');
                     return;
                 }
                 // join the event

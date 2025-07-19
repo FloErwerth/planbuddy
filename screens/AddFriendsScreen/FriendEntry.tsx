@@ -6,8 +6,8 @@ import { Button } from '@/components/tamagui/Button';
 import { UserPlus } from '@tamagui/lucide-icons';
 import { Card } from '@/components/tamagui/Card';
 import { UserAvatar } from '@/components/UserAvatar';
-import { useGetUser } from '@/store/user';
 import { UserWithStatus } from '@/components/UserSearch';
+import { useGetUser } from '@/store/authentication';
 
 type SearchAcceptanceStatusProps = { friend: UserWithStatus };
 const SearchAcceptanceStatus = ({ friend: { status, requester } }: SearchAcceptanceStatusProps) => {

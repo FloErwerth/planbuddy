@@ -12,15 +12,8 @@ import { Button } from '@/components/tamagui/Button';
 import { ScrollableScreen } from '@/components/Screen';
 import { EventCreationImage } from '@/screens/EventCreation/EventCreationImage';
 import { router } from 'expo-router';
-import { PressableRow } from '@/components/PressableRow';
-import { useEventCreationContext } from '@/screens/EventCreation/EventCreationContext';
-import { useFriendsByStatus } from '@/api/friends/refiners';
 
 export const EventCreation = () => {
-    const { accepted } = useFriendsByStatus();
-    const { guests } = useEventCreationContext();
-    const numberOfGuests = guests.size;
-
     const now = new Date();
     const [start, setStart] = useState<Date>(now);
     const [end, setEnd] = useState<Date>(
@@ -63,7 +56,6 @@ export const EventCreation = () => {
             setIsLoading(true);
             const createdEvent = await createEvent({
                 event: data,
-                guests: Array.from(guests.values()),
             });
             if (!createdEvent) {
                 throw new Error('Event creation failed');
@@ -82,25 +74,6 @@ export const EventCreation = () => {
         } catch (e) {
             console.error(e);
         }
-    };
-
-    const AddFriendRow = () => {
-        if (!accepted.length) {
-            return null;
-        }
-
-        return (
-            <PressableRow onPress={() => router.push('/eventCreation/addFriends')}>
-                <XStack justifyContent="space-between" flex={1}>
-                    {numberOfGuests > 0 && (
-                        <SizableText>
-                            {numberOfGuests} {numberOfGuests === 1 ? 'Gast' : 'Gäste'} hinzugefügt
-                        </SizableText>
-                    )}
-                    <SizableText>{numberOfGuests > 0 ? 'Verwalten' : 'Gäste hinzufügen'}</SizableText>
-                </XStack>
-            </PressableRow>
-        );
     };
 
     const hasErrors = Object.values(form.formState.errors).length > 0;
@@ -141,7 +114,7 @@ export const EventCreation = () => {
 
                         <FormInput label="Ort" name="location" />
                         <FormTextArea multiline verticalAlign="top" label="Details" name="description" />
-                        <AddFriendRow />
+                        <FormInput label="Link" name="link" />
                     </FormProvider>
                 </View>
             </ScrollableScreen>

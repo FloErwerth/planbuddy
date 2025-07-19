@@ -1,9 +1,9 @@
-import { useGetUser } from '@/store/user';
 import { useMutation, useQueryClient } from 'react-query';
 import { supabase } from '@/api/supabase';
 import { User } from '@/api/types';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { QUERY_KEYS } from '@/api/queryKeys';
+import { useGetUser } from '@/store/authentication';
 
 export const useUpdateUserMutation = () => {
     const user = useGetUser();

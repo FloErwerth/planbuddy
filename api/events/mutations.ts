@@ -1,16 +1,16 @@
 import { useMutation, useQueryClient } from 'react-query';
-import { useGetUser } from '@/store/user';
 import { supabase } from '@/api/supabase';
 import { BackendEvent, backendEventSchema, Event, Participant, Role } from './types';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { QUERY_KEYS } from '@/api/queryKeys';
 import { StatusEnum } from '@/api/types';
+import { useGetUser } from '@/store/authentication';
 
 export const useCreateEventMutation = () => {
     const user = useGetUser();
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async ({ event, guests }: { event: Event; guests: string[] }): Promise<BackendEvent | undefined> => {
+        mutationFn: async ({ event }: { event: Event }): Promise<BackendEvent | undefined> => {
             if (user === undefined) {
                 return undefined;
             }
@@ -34,15 +34,7 @@ export const useCreateEventMutation = () => {
                     role: 'CREATOR',
                     status: 'ACCEPTED',
                 },
-                ...guests.map((guestId) => ({
-                    userId: guestId,
-                    eventId: insertedEvent.id,
-                    role: 'GUEST',
-                    status: 'PENDING',
-                })),
             ];
-
-            console.log(insertedUsers);
 
             const participantResult = await supabase.from('participants').insert(insertedUsers);
 
@@ -51,6 +43,22 @@ export const useCreateEventMutation = () => {
             }
 
             return insertedEvent;
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries([QUERY_KEYS.EVENTS.QUERY]);
+        },
+        mutationKey: [QUERY_KEYS.EVENTS.CREATE],
+    });
+};
+
+export const useUpdateEventMutation = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ event }: { event: Event }): Promise<boolean> => {
+            const result: PostgrestSingleResponse<Event[]> = await supabase.from('events').update(event).eq('id', event.id).select().throwOnError();
+
+            return result.error === null;
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries([QUERY_KEYS.EVENTS.QUERY]);

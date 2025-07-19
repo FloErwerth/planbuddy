@@ -14,6 +14,8 @@ export default function EventDetailsLayout() {
                 <Stack.Screen name="participants" options={defaultOptions} />
                 <Stack.Screen name="editGuest" options={defaultOptions} />
                 <Stack.Screen name="transferEvent" options={defaultOptions} />
+                <Stack.Screen name="editEvent" options={defaultOptions} />
+                <Stack.Screen name="joinEvent" options={defaultOptions} />
                 <Stack.Screen name="addFriends" options={defaultOptions} />
             </Stack>
         </EventDetailsProvider>

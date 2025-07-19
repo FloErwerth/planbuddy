@@ -11,6 +11,8 @@ type ScreenProps = PropsWithChildren & {
 };
 
 export const ScrollableScreen = ({ children, showBackButton = false, back, title, action }: ScreenProps) => {
+    const hasActionOrBack = !!back || !!action;
+
     return (
         <ScrollView
             contentContainerStyle={{
@@ -21,13 +23,13 @@ export const ScrollableScreen = ({ children, showBackButton = false, back, title
         >
             {(back || title || action) && (
                 <XStack alignItems="center">
-                    <View flex={0.3}>{back}</View>
+                    <View flex={hasActionOrBack ? 0.2 : 0}>{back}</View>
                     <View flex={1}>
-                        <SizableText size="$8" textAlign="center">
+                        <SizableText size="$6" textAlign="center">
                             {title}
                         </SizableText>
                     </View>
-                    <View flex={0.3} alignItems="flex-end">
+                    <View flex={hasActionOrBack ? 0.2 : 0} alignItems="flex-end">
                         {action}
                     </View>
                 </XStack>
