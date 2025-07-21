@@ -3,14 +3,10 @@ import { Card as TamaCard, CardProps, styled } from 'tamagui';
 const StyledCard = styled(TamaCard, {
     elevation: '$1',
     padding: '$2',
-    borderWidth: 0,
-    borderColor: '$borderColor',
+    borderWidth: 1,
+    borderColor: '$color.gray7Light',
 });
 
 export const Card = ({ children, ...props }: CardProps) => {
-    return (
-        <StyledCard elevate {...props}>
-            {children}
-        </StyledCard>
-    );
+    return <StyledCard {...props}>{children}</StyledCard>;
 };
