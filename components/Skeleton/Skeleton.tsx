@@ -1,29 +1,50 @@
-import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withTiming } from 'react-native-reanimated';
-import { PropsWithChildren, useEffect } from 'react';
+import { ComponentProps, useEffect, useState } from 'react';
+import { AnimatePresence, Circle, Square, View } from 'tamagui';
+import { useSetInterval } from '@/hooks/useSetTimeout';
 
-export const Skeleton = ({ children }: PropsWithChildren) => {
-    const opacity = useSharedValue(0);
+type SquareSkeletonProps = {
+    shape: 'square';
+} & ComponentProps<typeof Square>;
+
+type CircleSkeletonProps = {
+    shape: 'circle';
+} & ComponentProps<typeof Circle>;
+type SkeletonProps = SquareSkeletonProps | CircleSkeletonProps;
+
+export const Skeleton = ({ shape, children, ...viewProps }: SkeletonProps) => {
+    const { setInterval, clear } = useSetInterval();
+    const [render, setRender] = useState(true);
+    const randomFactor = Math.random() * 25 * (Math.random() > 0.5 ? -1 : 1);
 
     useEffect(() => {
-        opacity.value = withDelay(
-            Math.random() * 250,
-            withRepeat(
-                withTiming(1, {
-                    duration: 750,
-                }),
-                -1,
-                true
-            )
-        );
-    }, [opacity]);
+        setInterval(() => {
+            setRender((isRendering) => !isRendering);
+        }, 1000 + randomFactor);
 
-    const style = useAnimatedStyle(() => ({
-        opacity: opacity.value,
-    }));
+        return () => {
+            clear();
+        };
+    }, [clear, randomFactor, setInterval]);
 
     return (
-        <Animated.View layout={FadeIn} entering={FadeIn} style={style}>
-            {children}
-        </Animated.View>
+        <AnimatePresence>
+            {render && (
+                <View
+                    animation="medium"
+                    animationDuration={500}
+                    enterStyle={{
+                        opacity: 0,
+                    }}
+                    exitStyle={{ opacity: 0 }}
+                >
+                    {shape === 'circle' ? (
+                        <Circle backgroundColor="$color.gray7Light" {...viewProps} />
+                    ) : (
+                        <Square backgroundColor="$color.gray7Light" borderRadius="$2" {...viewProps} />
+                    )}
+                    {children}
+                </View>
+            )}
+        </AnimatePresence>
     );
 };

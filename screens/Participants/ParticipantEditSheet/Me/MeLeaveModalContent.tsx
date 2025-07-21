@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { ParticipantLeaveEventModalProps } from '@/screens/Participants/ParticipantEditSheet/ParticipantLeaveEventModal';
 import { Dialog } from '@/components/tamagui/Dialog';
 import { StatusEnum } from '@/api/types';
+import { useDeleteEventAndEventImageMutation } from '@/api/events/mutations';
 
 type MeLeaveModalContentProps = {
     me?: ParticipantQueryResponse;
@@ -15,12 +16,17 @@ type MeLeaveModalContentProps = {
 export const MeLeaveModalContent = ({ me, editedGuest, onCancel, onConfirm }: MeLeaveModalContentProps) => {
     const meIsCreator = me?.role === Role.enum.CREATOR;
     const { eventId = '' } = useGlobalSearchParams<{ eventId: string }>();
+    const { mutateAsync: deleteEvent } = useDeleteEventAndEventImageMutation();
     const participants = useParticipantsQuery(eventId);
     const [chooseAdminSheetOpen, setChooseAdminSheetOpen] = useState(false);
     const hasAdmin = participants.data?.some((participant) => participant.role === Role.enum.ADMIN);
     const hasOtherGuests = participants.data?.some((participant) => {
         return participant.userId !== me?.userId && participant.status === StatusEnum.ACCEPTED;
     });
+
+    const handleDeleteEvent = async () => {
+        await deleteEvent(eventId);
+    };
 
     if (meIsCreator) {
         return (
@@ -51,7 +57,9 @@ export const MeLeaveModalContent = ({ me, editedGuest, onCancel, onConfirm }: Me
                         )}
                         <View gap="$2">
                             {hasOtherGuests && <Button onPress={() => router.push('/eventDetails/transferEvent')}>Neuen Verwaltenden aussuchen</Button>}
-                            <Button variant={hasOtherGuests ? 'secondary' : 'primary'}>Event absagen</Button>
+                            <Button onPress={handleDeleteEvent} variant={hasOtherGuests ? 'secondary' : 'primary'}>
+                                Event löschen
+                            </Button>
                             {hasOtherGuests && <SizableText textAlign="center">oder</SizableText>}
                             <Button variant="secondary" onPress={onCancel}>
                                 Abbrechen

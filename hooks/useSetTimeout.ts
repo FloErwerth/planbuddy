@@ -20,3 +20,24 @@ export const useSetTimeout = () => {
         clear,
     };
 };
+
+export const useSetInterval = () => {
+    const timer = useRef<ReturnType<typeof setInterval>>(0);
+
+    const clear = useCallback(() => {
+        clearInterval(timer.current);
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            clear();
+        };
+    }, [clear]);
+
+    return {
+        setInterval: (fn: () => void, timeout: number) => {
+            timer.current = setInterval(fn, timeout);
+        },
+        clear,
+    };
+};

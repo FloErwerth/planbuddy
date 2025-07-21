@@ -14,6 +14,7 @@ import {
     UPDATE_EVENT_MUTATION_KEY,
     UPDATE_PARTICIPANT_MUTATION_KEY,
 } from '@/api/events/constants';
+import { EVENT_IMAGE_QUERY_KEY } from '@/api/images/constants';
 
 export const useCreateEventMutation = () => {
     const user = useGetUser();
@@ -26,7 +27,7 @@ export const useCreateEventMutation = () => {
 
             const result: PostgrestSingleResponse<Event[]> = await supabase
                 .from('events')
-                .insert({ creatorId: user.id, ...event } satisfies Event)
+                .insert({ ...event, creatorId: user.id } satisfies Event)
                 .select()
                 .throwOnError();
 
@@ -80,7 +81,7 @@ export const useUpdateEventMutation = () => {
     });
 };
 
-export const useDeleteEventMutation = () => {
+export const useDeleteEventAndEventImageMutation = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -88,13 +89,20 @@ export const useDeleteEventMutation = () => {
             const result: PostgrestSingleResponse<Event[]> = await supabase.from('events').delete().eq('id', eventId).select();
 
             if (result.error) {
-                throw new Error(`Error in updating event mutation: ${result.error.message}`);
+                throw new Error(`Error in deleting event mutation: deleting event with message ${result.error.message}`);
+            }
+
+            const imageDeletionResult = await supabase.storage.from('event-images').remove([`${eventId}/image.png`]);
+
+            if (imageDeletionResult.error) {
+                throw new Error(`Error in deleting event mutation: deleting event image with message ${imageDeletionResult.error.message}`);
             }
 
             return result.error === null;
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries([EVENTS_QUERY_KEY]);
+            await queryClient.invalidateQueries([EVENT_IMAGE_QUERY_KEY]);
         },
         mutationKey: [DELETE_EVENT_MUTATION_KEY],
     });
@@ -147,7 +155,7 @@ export const useUpdateParticipationMutation = () => {
     return useMutation({
         mutationFn: async ({ id, participant }: ParticipantUpdateMutationArgs) => {
             const result = await supabase.from('participants').update(participant).eq('id', id).select();
-            console.log('update participant', result);
+
             if (result.error) {
                 throw new Error(`Error in update participant mutation: ${result.error.message}`);
             }

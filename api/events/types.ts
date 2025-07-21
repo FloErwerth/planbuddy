@@ -1,9 +1,6 @@
 import { z } from 'zod';
 import { Status, User } from '@/api/types';
-/*
- * street:houseNr:zip:city
- * */
-export type EventLocation = `${string}:${string}:${string}:${string}`;
+import { zodNullToUndefined } from '@/utils/zodNullToUndefined';
 
 export const backendEventSchema = z.object({
     id: z.string(),
@@ -11,8 +8,6 @@ export const backendEventSchema = z.object({
     name: z.string(),
     description: z.string().nullable().optional(),
     location: z.string(),
-    locationDescription: z.string().nullable().optional(),
-    imageToUpload: z.string().nullable().optional(),
     link: z.string().url().nullable().optional(),
     startTime: z.string(),
     endTime: z.string(),
@@ -20,14 +15,12 @@ export const backendEventSchema = z.object({
 
 export const appEventSchema = z
     .object({
-        id: z.string().optional(),
-        creatorId: z.string().optional(),
+        id: zodNullToUndefined(z.string().nullable()),
+        creatorId: zodNullToUndefined(z.string().nullable()),
         name: z.string(),
-        description: z.string().optional(),
+        description: zodNullToUndefined(z.string().nullable()),
         location: z.string(),
-        locationDescription: z.string().optional(),
-        imageToUpload: z.string().optional(),
-        link: z.string().url().optional().catch(undefined),
+        link: zodNullToUndefined(z.string().url().nullable()),
         startTime: z.string(),
         endTime: z.string(),
     })

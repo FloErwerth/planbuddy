@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { appEventSchema, Event } from '@/api/events/types';
-import { useDeleteEventMutation, useUpdateEventMutation } from '@/api/events/mutations';
+import { useDeleteEventAndEventImageMutation, useUpdateEventMutation } from '@/api/events/mutations';
 import { useDeleteEventImageMutation, useEventImageQuery, useRemoveEventImageMutation, useUploadEventImageMutation } from '@/api/images';
 import { router } from 'expo-router';
 import { Separator, SizableText, View, XStack } from 'tamagui';
@@ -26,7 +26,7 @@ export const EditEventScreen = () => {
     const { mutateAsync: updateEvent } = useUpdateEventMutation();
     const { mutateAsync: removeImage } = useRemoveEventImageMutation();
     const { mutateAsync: deleteImage } = useDeleteEventImageMutation();
-    const { mutateAsync: deleteEvent } = useDeleteEventMutation();
+    const { mutateAsync: deleteEvent } = useDeleteEventAndEventImageMutation();
     const { mutateAsync: uploadEventImage } = useUploadEventImageMutation();
     const { data: eventImage } = useEventImageQuery(eventId);
     const [imageToUpload, setImageToUpload] = useState<string | undefined>(eventImage);
