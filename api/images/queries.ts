@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 import { supabase } from '@/api/supabase';
-import { QUERY_KEYS } from '@/api/queryKeys';
+import { EVENT_IMAGE_QUERY_KEY, PROFILE_PICTURE_QUERY_KEY } from '@/api/images/constants';
 
 export const useEventImageQuery = (eventId?: string) => {
     return useQuery({
@@ -9,7 +9,7 @@ export const useEventImageQuery = (eventId?: string) => {
                 return undefined;
             }
 
-            const download = await supabase.storage.from('event-images').download(`${eventId}/image.png`);
+            const download = await supabase.storage.from('event-images').download(`${eventId}/image.png?bust=${Date.now()}`);
 
             if (download.error) {
                 if (download.error.name === 'StorageUnknownError') {
@@ -29,7 +29,7 @@ export const useEventImageQuery = (eventId?: string) => {
                 reader.readAsDataURL(download.data);
             });
         },
-        queryKey: [QUERY_KEYS.IMAGES.EVENTS.QUERY, eventId],
+        queryKey: [EVENT_IMAGE_QUERY_KEY, eventId],
     });
 };
 
@@ -41,7 +41,7 @@ export const useProfileImageQuery = (userId?: string) => {
             }
 
             // get image
-            const download = await supabase.storage.from('profile-images').download(`${userId}/profileImage.png`);
+            const download = await supabase.storage.from('profile-images').download(`${userId}/profileImage.png?bust=${Date.now()}`);
 
             if (download.error) {
                 if (download.error.name === 'StorageUnknownError') {
@@ -51,12 +51,16 @@ export const useProfileImageQuery = (userId?: string) => {
                 throw new Error(download.error.message);
             }
 
+            if (download.data.size === 0) {
+                return undefined;
+            }
+
             return new Promise((resolve, _) => {
                 const reader = new FileReader();
                 reader.onloadend = () => resolve(reader.result as string);
                 reader.readAsDataURL(download.data);
             });
         },
-        queryKey: [QUERY_KEYS.PARTICIPANTS.IMAGE_QUERY, userId],
+        queryKey: [PROFILE_PICTURE_QUERY_KEY, userId],
     });
 };

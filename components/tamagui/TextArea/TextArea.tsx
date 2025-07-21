@@ -5,7 +5,7 @@ export const TextArea = styled(TamaguiTextArea, {
     fontWeight: 400,
     borderWidth: '$1',
     borderColor: 'transparent',
-    backgroundColor: '$inputBackground',
+    backgroundColor: '$accent',
     focusStyle: {
         borderColor: '$primary',
         borderWidth: '$1',

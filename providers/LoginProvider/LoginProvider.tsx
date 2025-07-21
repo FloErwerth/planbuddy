@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useCallback, useContext, useRef, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useRef, useState } from 'react';
 
 type LoginContextType =
     | {
@@ -35,13 +35,13 @@ export const LoginProvider = ({ children }: PropsWithChildren) => {
     const [startedLoginAttempt, setStartedLoginAttempt] = useState(false);
     const timer = useRef<ReturnType<typeof setInterval>>(-1);
 
-    const resetTokenPage = useCallback(() => {
+    const resetTokenPage = () => {
         clearInterval(timer.current);
         setResendTokenTime(RESEND_TIME_SECONDS);
         setStartedLoginAttempt(false);
-    }, []);
+    };
 
-    const startResendTokenTimer = useCallback((time?: number) => {
+    const startResendTokenTimer = (time?: number) => {
         setResendTokenTime(time ?? RESEND_TIME_SECONDS);
         setStartedLoginAttempt(true);
         timer.current = setInterval(() => {
@@ -53,7 +53,7 @@ export const LoginProvider = ({ children }: PropsWithChildren) => {
                 return time - 1;
             });
         }, SECOND_MS);
-    }, []);
+    };
 
     return (
         <LoginContext.Provider

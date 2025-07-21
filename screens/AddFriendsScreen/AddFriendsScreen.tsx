@@ -3,7 +3,6 @@ import { Screen } from '@/components/Screen';
 import { FriendEntry } from '@/screens/AddFriendsScreen/FriendEntry';
 import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
 import { UserSearchInput, UserSearchProvider, UserWithStatus, useUserSearchContext } from '@/components/UserSearch';
-import { useCallback } from 'react';
 import { UserSearch } from '@tamagui/lucide-icons';
 
 const containerStyle = { padding: 16, paddingBottom: 32 } as const;
@@ -11,7 +10,7 @@ const containerStyle = { padding: 16, paddingBottom: 32 } as const;
 const AddFriendsDisplay = () => {
     const { users } = useUserSearchContext();
 
-    const renderItem = useCallback(({ item: user }: ListRenderItemInfo<UserWithStatus>) => <FriendEntry friend={user} />, []);
+    const renderItem = ({ item: user }: ListRenderItemInfo<UserWithStatus>) => <FriendEntry friend={user} />;
 
     if (users !== undefined && users?.length === 0) {
         return (

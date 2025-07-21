@@ -1,6 +1,6 @@
 import { StatusEnum } from '@/api/types';
 import { useAddFriendMutation } from '@/api/friends/addFriendsMutation';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useState } from 'react';
 import { SizableText, Spinner, View, XStack } from 'tamagui';
 import { Button } from '@/components/tamagui/Button';
 import { UserPlus } from '@tamagui/lucide-icons';
@@ -70,16 +70,16 @@ export const FriendEntry = memo(({ friend }: { friend: UserWithStatus }) => {
     const { mutateAsync: addFriend, ...rest } = useAddFriendMutation();
     const { id, status, firstName, lastName, email } = friend;
     const [isRequesting, setIsRequesting] = useState(false);
-    const doAddFriend = useCallback(async () => {
+    const doAddFriend = async () => {
         if (!id) {
             return;
         }
         setIsRequesting(true);
         await addFriend(id);
         setIsRequesting(false);
-    }, [addFriend, id]);
+    };
 
-    const renderedButton = useMemo(() => {
+    const renderedButton = (() => {
         if (status) {
             return <SearchAcceptanceStatus friend={friend} />;
         }
@@ -99,7 +99,7 @@ export const FriendEntry = memo(({ friend }: { friend: UserWithStatus }) => {
                 <UserPlus color="white" scale={0.7} />
             </Button>
         );
-    }, [doAddFriend, friend, isRequesting, status]);
+    })();
 
     return (
         <Card key={id}>

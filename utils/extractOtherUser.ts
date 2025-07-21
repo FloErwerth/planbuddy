@@ -1,11 +1,10 @@
 import { FriendsQueryResponse } from '@/api/friends/schema';
-import { useMemo } from 'react';
 import { SimpleFriend } from '@/api/friends/types';
 import { useGetUser } from '@/store/authentication';
 
 export const useExtractedUser = (friend?: SimpleFriend) => {
     const user = useGetUser();
-    return useMemo(() => extractOtherUser(user?.id!, friend), [friend, user]);
+    return extractOtherUser(user?.id!, friend);
 };
 
 export const extractOtherUser = (userId?: string, friend?: Partial<FriendsQueryResponse[number]>) => {

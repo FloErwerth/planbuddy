@@ -11,10 +11,10 @@ import { View } from 'tamagui';
 import { BackButton } from '@/components/BackButton';
 import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
 import { useGetUser } from '@/store/authentication';
-import { Pencil } from '@tamagui/lucide-icons';
 import { Button } from '@/components/tamagui/Button';
 import { useMe } from '@/api/events/refiners';
 import { Role } from '@/api/events/types';
+import { Pencil } from '@tamagui/lucide-icons';
 
 export const EventDetails = () => {
     const { eventId } = useEventDetailsContext();
@@ -40,8 +40,8 @@ export const EventDetails = () => {
             back={<BackButton href="/(tabs)" />}
             action={
                 me?.role === Role.enum.GUEST ? null : (
-                    <Button variant="round" width="$2" height="$2" onPress={() => router.push('/eventDetails/editEvent')}>
-                        <Pencil color="$background" scale={0.65} />
+                    <Button variant="round" onPress={() => router.push('/eventDetails/editEvent')}>
+                        <Pencil color="$color" size="$1" scale={0.75} />
                     </Button>
                 )
             }

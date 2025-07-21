@@ -6,6 +6,7 @@ import { formatToDate, formatToTime } from '@/utils/date';
 import { PressableRow } from '@/components/PressableRow';
 import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
 import { Linking } from 'react-native';
+import { Card } from '@/components/tamagui/Card';
 
 export const Details = () => {
     const { eventId } = useEventDetailsContext();
@@ -35,22 +36,27 @@ export const Details = () => {
 
     return (
         <>
-            <SizableText color="$primary" size="$8">
+            <SizableText textAlign="center" size="$8">
                 {event.name}
             </SizableText>
             <XStack alignItems="center" gap="$3">
                 <CalendarDays />
-                <XStack flex={1} justifyContent="space-evenly" alignItems="center" backgroundColor="$inputBackground" padding="$3" borderRadius="$4">
-                    <YStack>
-                        <SizableText size="$5">{formatToDate(parseInt(event.startTime))}</SizableText>
-                        <SizableText>{formatToTime(parseInt(event.startTime))} Uhr</SizableText>
-                    </YStack>
-                    <SizableText>bis</SizableText>
-                    <YStack>
-                        <SizableText size="$5">{formatToDate(parseInt(event.endTime))}</SizableText>
-                        <SizableText>{formatToTime(parseInt(event.endTime))} Uhr</SizableText>
-                    </YStack>
-                </XStack>
+                <Card flex={1} justifyContent="space-evenly" flexDirection="row" alignItems="center" paddingVertical="$3" borderRadius="$4">
+                    <XStack gap="$3" alignItems="center">
+                        <SizableText>vom</SizableText>
+                        <YStack>
+                            <SizableText size="$5">{formatToDate(parseInt(event.startTime))}</SizableText>
+                            <SizableText>{formatToTime(parseInt(event.startTime))} Uhr</SizableText>
+                        </YStack>
+                    </XStack>
+                    <XStack gap="$3" alignItems="center">
+                        <SizableText>bis</SizableText>
+                        <YStack>
+                            <SizableText size="$5">{formatToDate(parseInt(event.endTime))}</SizableText>
+                            <SizableText>{formatToTime(parseInt(event.endTime))} Uhr</SizableText>
+                        </YStack>
+                    </XStack>
+                </Card>
             </XStack>
             <PressableRow icon={<MapPin />} iconRight={null}>
                 <SizableText>{event.location}</SizableText>
@@ -64,7 +70,7 @@ export const Details = () => {
                 <SizableText>Gäste</SizableText>
             </PressableRow>
             {url && (
-                <PressableRow icon={<Link2 />} onPress={handleOpenLink} iconRight={<ExternalLink size="$1" />}>
+                <PressableRow icon={<Link2 />} onPress={handleOpenLink} iconRight={<ExternalLink scale={0.75} size="$1" />}>
                     <SizableText>{url.host}</SizableText>
                 </PressableRow>
             )}

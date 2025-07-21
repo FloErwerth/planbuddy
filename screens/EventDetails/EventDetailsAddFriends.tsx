@@ -76,7 +76,7 @@ export const EventDetailsAddFriends = () => {
 
     return (
         <>
-            <Screen back={<BackButton href="/eventDetails/participants" />} title="Gäste hinzufügen">
+            <Screen back={<BackButton />} title="Gäste hinzufügen">
                 <SearchInput placeholder="Name oder E-Mail" onChangeText={setFilter} />
             </Screen>
             <FlashList

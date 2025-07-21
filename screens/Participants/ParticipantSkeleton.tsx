@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/Skeleton';
 export const ParticipantSkeleton = () => {
     return (
         <Skeleton>
-            <Square justifyContent="space-between" padding="$2" borderRadius="$4" backgroundColor="$inputBackground" alignItems="center">
+            <Square justifyContent="space-between" padding="$2" borderRadius="$4" backgroundColor="$accent" alignItems="center">
                 <XStack gap="$4" alignItems="center">
                     <Skeleton>
                         <Circle size="$4" backgroundColor="$color.gray9Light" />

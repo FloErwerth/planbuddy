@@ -1,6 +1,7 @@
-import { View, XStack, XStackProps } from 'tamagui';
+import { XStack, XStackProps } from 'tamagui';
 import { Pressable } from 'react-native';
 import { PropsWithChildren, ReactNode } from 'react';
+import { Card } from '@/components/tamagui/Card';
 
 type PressableRowProps = {
     onPress?: () => void;
@@ -22,19 +23,10 @@ export const PressableRow = ({ onPress, icon, iconRight, children, ...wrapperPro
         <Pressable onPress={onPress}>
             <XStack gap="$3" alignItems="center">
                 {icon}
-                <View
-                    flex={1}
-                    justifyContent="space-between"
-                    alignItems="center"
-                    backgroundColor="$inputBackground"
-                    padding="$3"
-                    borderRadius="$4"
-                    flexDirection="row"
-                    {...wrapperProps}
-                >
+                <Card flex={1} justifyContent="space-between" alignItems="center" padding="$3" borderRadius="$4" flexDirection="row" {...wrapperProps}>
                     {children}
                     <IconRight />
-                </View>
+                </Card>
             </XStack>
         </Pressable>
     );

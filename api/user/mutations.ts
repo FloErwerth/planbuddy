@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from 'react-query';
 import { supabase } from '@/api/supabase';
 import { User } from '@/api/types';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
-import { QUERY_KEYS } from '@/api/queryKeys';
 import { useGetUser } from '@/store/authentication';
+import { INSERT_USERS_MUTATION_KEY, UPDATE_USERS_MUTATION_KEY, USERS_QUERY_KEY } from '@/api/user/constants';
 
 export const useUpdateUserMutation = () => {
     const user = useGetUser();
@@ -12,7 +12,7 @@ export const useUpdateUserMutation = () => {
     return useMutation({
         mutationFn: async ({ updatedUser, onSuccess }: { updatedUser: Partial<User>; onSuccess: (user: User) => void }) => {
             if (!user) {
-                return;
+                throw new Error('Error in update user: user not defined, probably not logged in');
             }
 
             const result = await supabase.from('users').update(updatedUser).eq('id', user.id).select();
@@ -23,9 +23,9 @@ export const useUpdateUserMutation = () => {
 
             onSuccess(result.data[0]);
         },
-        mutationKey: [QUERY_KEYS.USERS.MUTATION],
+        mutationKey: [UPDATE_USERS_MUTATION_KEY],
         onSuccess: async () => {
-            await queryClient.invalidateQueries([QUERY_KEYS.USERS.QUERY]);
+            await queryClient.invalidateQueries([USERS_QUERY_KEY]);
         },
     });
 };
@@ -36,7 +36,7 @@ export const useInsertUserMutation = () => {
     return useMutation({
         mutationFn: async (insertedUser: Omit<User, 'id'>) => {
             if (!user) {
-                return;
+                throw new Error('Error in insert user: user not defined, probably not logged in');
             }
 
             const result: PostgrestSingleResponse<User[]> = await supabase
@@ -50,9 +50,9 @@ export const useInsertUserMutation = () => {
 
             return result.data?.[0];
         },
-        mutationKey: [QUERY_KEYS.USERS.MUTATION],
+        mutationKey: [INSERT_USERS_MUTATION_KEY],
         onSuccess: async () => {
-            await queryClient.invalidateQueries([QUERY_KEYS.USERS.QUERY]);
+            await queryClient.invalidateQueries([USERS_QUERY_KEY]);
         },
     });
 };

@@ -1,23 +1,21 @@
 import { useUserQuery } from '@/api/user';
-import { useProfileImageQuery } from '@/api/images';
 import { Screen } from '@/components/Screen';
-import { Separator, SizableText, Spinner, View, XStack } from 'tamagui';
-import { Pressable } from 'react-native';
+import { SizableText, Spinner, View, XStack } from 'tamagui';
 import { UserAvatar } from '@/components/UserAvatar';
 import { PressableRow } from '@/components/PressableRow';
 import { router } from 'expo-router';
-import { ChevronRight, UserCog, Users } from '@tamagui/lucide-icons';
+import { ChevronRight, Pencil, Users } from '@tamagui/lucide-icons';
 import { FriendRequestRow } from '@/screens/ProfileScreen/FriendRequests';
 import { useLogout } from '@/api/supabase';
 import { Button } from '@/components/tamagui/Button';
 import packageJson from '@/package.json';
+import { Separator } from '@/components/tamagui/Separator';
 
 export const ProfileScreen = () => {
     const { data: user, isLoading: isLoadingProfile } = useUserQuery();
-    const { data: image, isLoading: isLoadingImage } = useProfileImageQuery(user?.id);
     const logout = useLogout();
 
-    if (isLoadingProfile || isLoadingImage) {
+    if (isLoadingProfile) {
         return (
             <Screen alignItems="center" flex={1} justifyContent="center">
                 <Spinner />
@@ -30,9 +28,9 @@ export const ProfileScreen = () => {
             flex={1}
             title="Profil"
             action={
-                <Pressable onPress={() => router.push('/(tabs)/profile/editProfile')}>
-                    <UserCog />
-                </Pressable>
+                <Button variant="round" onPress={() => router.push('/(tabs)/profile/editProfile')}>
+                    <Pencil scale={0.75} size="$1" />
+                </Button>
             }
         >
             <UserAvatar size="$10" alignSelf="center" {...user} />
@@ -47,15 +45,21 @@ export const ProfileScreen = () => {
             <PressableRow onPress={() => router.navigate('/(tabs)/profile/friends')} icon={<Users size="$1" />} iconRight={<ChevronRight size="$1" />}>
                 <SizableText>Freunde</SizableText>
             </PressableRow>
-            <View flex={1} justifyContent="flex-end">
+            <SizableText>
+                Account löschen: Checken ob user ein creator ist, wenn ja Hinweisen, dass dann Events gelöscht werden. Möglichkeit Event an Pariticpant zu
+                übertragen, wenn vorhanden
+            </SizableText>
+            <View flex={1} gap="$4" justifyContent="flex-end">
                 <XStack justifyContent="space-between" alignItems="center">
-                    <Button alignSelf="flex-start" variant="secondary" size="$2" onPress={logout}>
-                        <SizableText>Logout</SizableText>
-                    </Button>
+                    <XStack gap="$2">
+                        <Button variant="secondary" size="$2" onPress={logout}>
+                            Logout
+                        </Button>
+                    </XStack>
+                    <SizableText size="$2" alignSelf="flex-end">
+                        Version {packageJson.version}
+                    </SizableText>
                 </XStack>
-                <SizableText size="$2" alignSelf="flex-end">
-                    Version {packageJson.version}
-                </SizableText>
             </View>
         </Screen>
     );

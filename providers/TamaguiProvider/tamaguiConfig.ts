@@ -4,9 +4,11 @@ import { color } from '@tamagui/themes';
 
 export const colors = {
     ...color,
-    inputBackground: 'rgb(220,220,220)',
-    primary: '#3f4e93',
-    secondary: '#b9b9ff',
+    color: '#171614',
+    background: '#F9F7F7',
+    accent: '#DBE2EF',
+    accent2: '#2c2a26',
+    primary: '#112D4E',
 };
 
 const font = createFont({
@@ -75,28 +77,28 @@ export const tamaguiConfig = createTamagui({
         ...config.tokens,
         color: {
             ...config.tokens.color,
+            color: colors.color,
             primary: colors.primary,
-            secondary: colors.secondary,
-            accent: '#DD7568',
-            lightShade: '#F4F3F7',
-            darkShade: '#354173',
-            inputBackground: colors.inputBackground,
+            background: colors.background,
+            accent: colors.accent,
+            accent2: colors.accent2,
         },
     },
 
     themes: {
         default: {
-            background: '#F4F3F7', // Ein allgemeines helles Grau, oft für Hintergründe verwendet
-            color: color.gray12Light, // Ein typisches dunkles Grau von Airbnb für Text
+            color: colors.color,
             borderColor: '#656565',
             focusColor: '#354173',
             placeholderColor: color.gray10Light,
             primary: colors.primary,
+            background: colors.background,
+            accent: colors.accent,
         },
         error: {
-            darkShade: color.red9Light,
+            focusColor: '#354173',
             primary: color.red9Light,
-            background: color.red4Light,
+            backgroundColor: color.red4Light,
             color: color.red9Light,
             borderColor: color.red10Light,
             fill: color.red9Light,

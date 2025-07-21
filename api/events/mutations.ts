@@ -2,9 +2,18 @@ import { useMutation, useQueryClient } from 'react-query';
 import { supabase } from '@/api/supabase';
 import { BackendEvent, backendEventSchema, Event, Participant, Role } from './types';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
-import { QUERY_KEYS } from '@/api/queryKeys';
 import { StatusEnum } from '@/api/types';
 import { useGetUser } from '@/store/authentication';
+import {
+    CREATE_EVENT_MUTATION_KEY,
+    CREATE_PARTICIPANT_MUTATION_KEY,
+    DELETE_EVENT_MUTATION_KEY,
+    DELETE_PARTICIPANT_MUTATION_KEY,
+    EVENTS_QUERY_KEY,
+    PARTICIPANT_QUERY_KEY,
+    UPDATE_EVENT_MUTATION_KEY,
+    UPDATE_PARTICIPANT_MUTATION_KEY,
+} from '@/api/events/constants';
 
 export const useCreateEventMutation = () => {
     const user = useGetUser();
@@ -45,9 +54,9 @@ export const useCreateEventMutation = () => {
             return insertedEvent;
         },
         onSuccess: async () => {
-            await queryClient.invalidateQueries([QUERY_KEYS.EVENTS.QUERY]);
+            await queryClient.invalidateQueries([EVENTS_QUERY_KEY]);
         },
-        mutationKey: [QUERY_KEYS.EVENTS.CREATE],
+        mutationKey: [CREATE_EVENT_MUTATION_KEY],
     });
 };
 
@@ -55,15 +64,39 @@ export const useUpdateEventMutation = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ event }: { event: Event }): Promise<boolean> => {
-            const result: PostgrestSingleResponse<Event[]> = await supabase.from('events').update(event).eq('id', event.id).select().throwOnError();
+        mutationFn: async (updatedEventFields: Pick<Event, 'id'> & Omit<Partial<Event>, 'id'>): Promise<boolean> => {
+            const result: PostgrestSingleResponse<Event[]> = await supabase.from('events').update(updatedEventFields).eq('id', updatedEventFields.id).select();
+
+            if (result.error) {
+                throw new Error(`Error in updating event mutation: ${result.error.message}`);
+            }
 
             return result.error === null;
         },
         onSuccess: async () => {
-            await queryClient.invalidateQueries([QUERY_KEYS.EVENTS.QUERY]);
+            await queryClient.invalidateQueries([EVENTS_QUERY_KEY]);
         },
-        mutationKey: [QUERY_KEYS.EVENTS.CREATE],
+        mutationKey: [UPDATE_EVENT_MUTATION_KEY],
+    });
+};
+
+export const useDeleteEventMutation = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (eventId: string): Promise<boolean> => {
+            const result: PostgrestSingleResponse<Event[]> = await supabase.from('events').delete().eq('id', eventId).select();
+
+            if (result.error) {
+                throw new Error(`Error in updating event mutation: ${result.error.message}`);
+            }
+
+            return result.error === null;
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries([EVENTS_QUERY_KEY]);
+        },
+        mutationKey: [DELETE_EVENT_MUTATION_KEY],
     });
 };
 
@@ -98,9 +131,9 @@ export const useCreateParticipationMutation = () => {
             }
         },
         onSuccess: async () => {
-            await queryClient.invalidateQueries([QUERY_KEYS.PARTICIPANTS.QUERY]);
+            await queryClient.invalidateQueries([PARTICIPANT_QUERY_KEY]);
         },
-        mutationKey: [QUERY_KEYS.PARTICIPANTS.CREATE],
+        mutationKey: [CREATE_PARTICIPANT_MUTATION_KEY],
     });
 };
 
@@ -114,32 +147,35 @@ export const useUpdateParticipationMutation = () => {
     return useMutation({
         mutationFn: async ({ id, participant }: ParticipantUpdateMutationArgs) => {
             const result = await supabase.from('participants').update(participant).eq('id', id).select();
-
+            console.log('update participant', result);
             if (result.error) {
-                throw new Error(result.error.message);
+                throw new Error(`Error in update participant mutation: ${result.error.message}`);
             }
         },
         onSuccess: async () => {
-            await queryClient.invalidateQueries([QUERY_KEYS.PARTICIPANTS.QUERY]);
+            await queryClient.invalidateQueries([PARTICIPANT_QUERY_KEY]);
         },
-        mutationKey: [QUERY_KEYS.PARTICIPANTS.UPDATE],
+        mutationKey: [UPDATE_PARTICIPANT_MUTATION_KEY],
     });
 };
 
-export const useRemoveParticipantMutation = () => {
+export const useDeleteParticipantMutation = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: async (id: string) => {
+            if (!id) {
+                throw new Error(`Error in remove participant: participant id was undefined or empty`);
+            }
             const result = await supabase.from('participants').delete().eq('id', id).select();
 
             if (result.error) {
-                throw new Error(result.error.message);
+                throw new Error(`Error in remove participant: ${result.error.message}`);
             }
         },
         onSuccess: async () => {
-            await queryClient.invalidateQueries([QUERY_KEYS.PARTICIPANTS.QUERY]);
+            await queryClient.invalidateQueries([PARTICIPANT_QUERY_KEY]);
         },
-        mutationKey: [QUERY_KEYS.PARTICIPANTS.REMOVE],
+        mutationKey: [DELETE_PARTICIPANT_MUTATION_KEY],
     });
 };

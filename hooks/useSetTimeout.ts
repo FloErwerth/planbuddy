@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 export const useSetTimeout = () => {
     const timer = useRef<ReturnType<typeof setTimeout>>(0);
@@ -13,13 +13,10 @@ export const useSetTimeout = () => {
         };
     }, [clear]);
 
-    return useMemo(
-        () => ({
-            setTimeout: (fn: () => void, timeout: number) => {
-                timer.current = setTimeout(fn, timeout);
-            },
-            clear,
-        }),
-        [clear]
-    );
+    return {
+        setTimeout: (fn: () => void, timeout: number) => {
+            timer.current = setTimeout(fn, timeout);
+        },
+        clear,
+    };
 };

@@ -5,9 +5,9 @@ import { useQuery } from 'react-query';
 import { array } from 'zod';
 import { debounce } from 'tamagui';
 import { friendsQuerySchema } from '@/api/friends/schema';
-import { QUERY_KEYS } from '@/api/queryKeys';
 import { FRIENDS_QUERY_KEY } from '@/api/friends/constants';
 import { useGetUser } from '@/store/authentication';
+import { USERS_QUERY_KEY } from '@/api/user/constants';
 
 export type UserWithStatus = User & {
     status?: Status;
@@ -86,7 +86,7 @@ const useUsersWithStatusQuery = (search: string, { showUsersWhenEmpty = false }:
                 };
             }) as UserWithStatus[];
         },
-        queryKey: [FRIENDS_QUERY_KEY, QUERY_KEYS.USERS.QUERY, user?.id, search.toLowerCase()],
+        queryKey: [FRIENDS_QUERY_KEY, USERS_QUERY_KEY, user?.id, search.toLowerCase()],
     });
 };
 

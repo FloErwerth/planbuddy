@@ -1,5 +1,5 @@
 import { supabase } from '@/api/supabase';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { router, SplashScreen } from 'expo-router';
 import { User as SupabaseUser } from '@supabase/auth-js';
 import { AuthUser, PostgrestSingleResponse } from '@supabase/supabase-js';
@@ -11,7 +11,7 @@ export const useCheckLoginState = () => {
     const setUser = useSetUser();
     const queryClient = useQueryClient();
 
-    const getUserFromDB = useCallback(async (user: SupabaseUser) => {
+    const getUserFromDB = async (user: SupabaseUser) => {
         if (!user) {
             return undefined;
         }
@@ -24,38 +24,32 @@ export const useCheckLoginState = () => {
             console.error(e);
             return undefined;
         }
-    }, []);
+    };
 
-    const handleCheckLoginstate = useCallback(
-        async (user: AuthUser | null) => {
-            if (user === null) {
-                await supabase.auth.signOut();
-                setUser(undefined);
-                router.replace('/');
-                return;
-            }
+    const handleCheckLoginstate = async (user: AuthUser | null) => {
+        if (user === null) {
+            await supabase.auth.signOut();
+            setUser(undefined);
+            router.replace('/');
+            return;
+        }
 
-            setUser(user);
+        setUser(user);
 
-            const userFromDb = await getUserFromDB(user);
+        const userFromDb = await getUserFromDB(user);
 
-            if (!userFromDb) {
-                router.replace('/authentication/onboarding');
-                return;
-            }
+        if (!userFromDb) {
+            router.replace('/authentication/onboarding');
+            return;
+        }
 
-            void queryClient.refetchQueries();
-            router.replace('/(tabs)');
-        },
-        [getUserFromDB, queryClient, setUser]
-    );
+        void queryClient.refetchQueries();
+        router.replace('/(tabs)');
+    };
 
-    return useMemo(
-        () => ({
-            handleCheckLoginstate,
-        }),
-        [handleCheckLoginstate]
-    );
+    return {
+        handleCheckLoginstate,
+    };
 };
 
 export const useCheckLoginStateOnAppStart = () => {

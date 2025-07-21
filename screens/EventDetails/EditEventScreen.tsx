@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { appEventSchema, Event } from '@/api/events/types';
-import { useUpdateEventMutation } from '@/api/events/mutations';
-import { useUploadEventImageMutation } from '@/api/images';
+import { useDeleteEventMutation, useUpdateEventMutation } from '@/api/events/mutations';
+import { useDeleteEventImageMutation, useEventImageQuery, useRemoveEventImageMutation, useUploadEventImageMutation } from '@/api/images';
 import { router } from 'expo-router';
 import { Separator, SizableText, View, XStack } from 'tamagui';
 import { EventCreationImage } from '@/screens/EventCreation';
@@ -14,14 +14,23 @@ import { Button } from '@/components/tamagui/Button';
 import { useSingleEventQuery } from '@/api/events/queries';
 import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
 import { BackButton } from '@/components/BackButton';
+import { Trash } from '@tamagui/lucide-icons';
+import { Dialog } from '@/components/tamagui/Dialog';
 
 export const EditEventScreen = () => {
     const { eventId } = useEventDetailsContext();
+
     const { data: event, isLoading } = useSingleEventQuery(eventId);
     const [startDate, setStartDate] = useState<Date>(new Date());
     const [endDate, setEndDate] = useState<Date>(new Date());
     const { mutateAsync: updateEvent } = useUpdateEventMutation();
+    const { mutateAsync: removeImage } = useRemoveEventImageMutation();
+    const { mutateAsync: deleteImage } = useDeleteEventImageMutation();
+    const { mutateAsync: deleteEvent } = useDeleteEventMutation();
     const { mutateAsync: uploadEventImage } = useUploadEventImageMutation();
+    const { data: eventImage } = useEventImageQuery(eventId);
+    const [imageToUpload, setImageToUpload] = useState<string | undefined>(eventImage);
+    const [deleteEventModalOpen, setDeleteEventModalOpen] = useState(false);
 
     const form = useForm({
         resolver: zodResolver(appEventSchema),
@@ -41,8 +50,6 @@ export const EditEventScreen = () => {
 
     const endTimeError = form.formState.errors.endTime;
 
-    const [imageToUpload, setImageToUpload] = useState<string>();
-
     const handleSetStart = (date: Date) => {
         setStartDate(date);
         form.setValue('startTime', date.valueOf().toString());
@@ -54,23 +61,23 @@ export const EditEventScreen = () => {
         form.setValue('endTime', date.valueOf().toString());
     };
 
-    const handleCreateEvent = async (data: Event) => {
+    const handleUpdateEvent = async (data: Event) => {
         try {
             const createdEvent = await updateEvent({
-                event: {
-                    ...data,
-                    startTime: startDate.valueOf().toString(),
-                    endTime: endDate.valueOf().toString(),
-                },
+                ...data,
+                startTime: startDate.valueOf().toString(),
+                endTime: endDate.valueOf().toString(),
             });
             if (!createdEvent) {
                 throw new Error('Event creation failed');
             }
-            if (imageToUpload && createdEvent) {
+            if (imageToUpload) {
                 await uploadEventImage({
                     eventId: data.id!,
                     image: imageToUpload,
                 });
+            } else if (eventImage) {
+                await removeImage({ eventId });
             }
             router.back();
         } catch (e) {
@@ -80,9 +87,23 @@ export const EditEventScreen = () => {
 
     const hasErrors = Object.values(form.formState.errors).length > 0;
 
+    const handleDeleteEvent = async () => {
+        await deleteImage(eventId);
+        await deleteEvent(eventId);
+        router.replace('/(tabs)');
+    };
+
     return (
         <>
-            <ScrollableScreen back={<BackButton />} title={`${event?.name ?? 'Event'} bearbeiten`}>
+            <ScrollableScreen
+                back={<BackButton />}
+                action={
+                    <Button onPress={() => setDeleteEventModalOpen(true)} theme="error" backgroundColor="$backgroundColor" variant="round">
+                        <Trash size="$1" scale={0.75} />
+                    </Button>
+                }
+                title={`${event?.name ?? 'Event'} bearbeiten`}
+            >
                 <View backgroundColor="$background" overflow="hidden" elevationAndroid="$2" width="100%" borderRadius="$8">
                     <EventCreationImage setImage={setImageToUpload} image={imageToUpload} />
                 </View>
@@ -91,7 +112,7 @@ export const EditEventScreen = () => {
                         <FormInput label="Eventname" name="name" />
                         <View gap="$1.5">
                             <SizableText>Start und Ende</SizableText>
-                            <View gap="$2" borderRadius="$4" padding="$2" backgroundColor="$inputBackground">
+                            <View gap="$2" borderRadius="$4" padding="$2" backgroundColor="$accent">
                                 <XStack gap="$4" alignItems="center">
                                     <SizableText>Start</SizableText>
                                     <Calendar
@@ -126,11 +147,21 @@ export const EditEventScreen = () => {
                 marginBottom="$4"
                 disabled={hasErrors}
                 onPress={form.handleSubmit(async (data) => {
-                    await handleCreateEvent(data);
+                    await handleUpdateEvent(data);
                 })}
             >
                 Abschließen
             </Button>
+            <Dialog open={deleteEventModalOpen} onOpenChange={setDeleteEventModalOpen}>
+                <SizableText size="$6">Event löschen?</SizableText>
+                <SizableText>Diese Aktion kann nicht rückgängig gemacht werden. Bist Du Dir sicher, dass Du das Event löschen möchtest?</SizableText>
+                <View gap="$2">
+                    <Button onPress={handleDeleteEvent}>Event löschen</Button>
+                    <Button onPress={() => setDeleteEventModalOpen(false)} variant="secondary">
+                        Abbrechen
+                    </Button>
+                </View>
+            </Dialog>
         </>
     );
 };

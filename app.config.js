@@ -67,6 +67,7 @@ export default {
                 },
             ],
             'expo-build-properties',
+            'react-native-compressor',
         ],
         experiments: {
             reactCompiler: true,

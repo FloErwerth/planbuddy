@@ -1,16 +1,19 @@
 import { useQuery } from 'react-query';
 import { supabase } from '@/api/supabase';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
-import { backendEventSchema, Event, Participant, ParticipantQueryResponse } from '@/api/events/types';
-import { QUERY_KEYS } from '@/api/queryKeys';
+import { appEventSchema, backendEventSchema, Event, Participant, ParticipantQueryResponse } from '@/api/events/types';
 import { Status, StatusEnum } from '@/api/types';
 import { useGetUser } from '@/store/authentication';
+import { EVENTS_QUERY_KEY, PARTICIPANT_QUERY_KEY } from '@/api/events/constants';
 
 export const useEventsQuery = () => {
     const user = useGetUser();
 
     return useQuery({
         queryFn: async () => {
+            if (!user) {
+                return [];
+            }
             const result = await supabase.from('participants').select(`role,events(*)`).eq('userId', user?.id).throwOnError();
 
             return result.data?.map((data) => ({
@@ -18,7 +21,7 @@ export const useEventsQuery = () => {
                 role: data.role,
             }));
         },
-        queryKey: [QUERY_KEYS.EVENTS.QUERY, user?.id],
+        queryKey: [EVENTS_QUERY_KEY, user?.id],
     });
 };
 
@@ -29,9 +32,13 @@ type SingleQueryResponse = {
     numberOfParticipants?: number;
 };
 
-export const useParticipantsQuery = (eventId: string, filters: Status[] = [], search = '') => {
+export const useParticipantsQuery = (eventId?: string, filters: Status[] = [], search = '') => {
     return useQuery({
         queryFn: async (): Promise<ParticipantQueryResponse[]> => {
+            if (!eventId) {
+                return [];
+            }
+
             const participantsAndUsersQuery = supabase.from('participants').select('*, users(*)');
 
             if (search) {
@@ -63,7 +70,7 @@ export const useParticipantsQuery = (eventId: string, filters: Status[] = [], se
                         }) satisfies ParticipantQueryResponse
                 );
         },
-        queryKey: [QUERY_KEYS.PARTICIPANTS.QUERY, eventId, filters, search],
+        queryKey: [PARTICIPANT_QUERY_KEY, eventId, filters, search],
     });
 };
 
@@ -72,7 +79,7 @@ export const useSingleEventQuery = (eventId: string) => {
 
     return useQuery({
         queryFn: async () => {
-            if (!user) {
+            if (!eventId || !user) {
                 return undefined;
             }
 
@@ -93,8 +100,14 @@ export const useSingleEventQuery = (eventId: string) => {
                 throw result.error;
             }
 
+            if (!result.data?.events) {
+                return undefined;
+            }
+
+            const parsedEvent = appEventSchema.parse(result.data?.events);
+
             return {
-                ...result.data.events,
+                ...parsedEvent,
                 participants: {
                     accepted: participants.data?.filter((participant) => participant.status === StatusEnum.ACCEPTED).length,
                     total: participants.data?.length,
@@ -103,6 +116,6 @@ export const useSingleEventQuery = (eventId: string) => {
                 },
             };
         },
-        queryKey: [QUERY_KEYS.EVENTS.QUERY, eventId],
+        queryKey: [EVENTS_QUERY_KEY, eventId],
     });
 };

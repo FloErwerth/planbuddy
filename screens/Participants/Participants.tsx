@@ -58,7 +58,7 @@ export const Participants = () => {
 
     return (
         <>
-            <Screen back={<BackButton href=".." />} title="Teilnehmer" action={<PlusButton onPress={() => router.push('./addFriends')} />}>
+            <Screen back={<BackButton />} title="Teilnehmer" action={<PlusButton onPress={() => router.push('./addFriends')} />}>
                 <XStack gap="$3">
                     <Button
                         size="$2"

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLoginContext } from '@/providers/LoginProvider';
 import { useCheckLoginState } from '@/hooks/useCheckLoginState';
 import { supabase } from '@/api/supabase';
@@ -85,13 +85,13 @@ export const TokenScreen = () => {
         }
     };
 
-    const handleChangeMail = useCallback(() => {
+    const handleChangeMail = () => {
         setStartedLoginAttempt(false);
         setShowSheet(false);
         console.log('change');
 
         router.push('/authentication');
-    }, [setStartedLoginAttempt]);
+    };
 
     useEffect(() => {
         const parsedToken = tokenSchema.safeParse(token);

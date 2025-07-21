@@ -3,7 +3,7 @@ import { Sheet } from '@/components/tamagui/Sheet';
 import { Screen } from '@/components/Screen';
 import { Button } from '@/components/tamagui/Button';
 import { useRemoveFriendMutation } from '@/api/friends/addFriendsMutation';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { Dialog } from '@/components/tamagui/Dialog';
 import { SimpleFriend } from '@/api/friends/types';
 
@@ -16,11 +16,11 @@ export const ManageFriendSheet = ({ friend, onOpenChange, ...props }: ManageFrie
         setWarningModal(true);
     };
 
-    const handleRemoveFriend = useCallback(async () => {
+    const handleRemoveFriend = async () => {
         await mutateAsync(friend?.id);
         setWarningModal(false);
         onOpenChange?.(false);
-    }, [friend, mutateAsync, onOpenChange]);
+    };
 
     return (
         <>

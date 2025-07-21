@@ -10,8 +10,10 @@ import { Card } from '@/components/tamagui/Card';
 type ParticipantProps = {
     onOpenOptions?: () => void;
     participant: ParticipantQueryResponse;
+    showStatus?: boolean;
+    showEllipsis?: boolean;
 };
-export const Participant = ({ participant, onOpenOptions }: ParticipantProps) => {
+export const Participant = ({ participant, onOpenOptions, showStatus = true, showEllipsis = true }: ParticipantProps) => {
     const isMe = useIsMe(participant.userId);
 
     return (
@@ -27,8 +29,14 @@ export const Participant = ({ participant, onOpenOptions }: ParticipantProps) =>
                     </View>
                 </XStack>
                 <XStack alignItems="center" gap="$4">
-                    <View>{isMe ? <SizableText marginRight="$2">Du</SizableText> : <ParticipantsAcceptanceStatus status={participant.status} />}</View>
-                    {onOpenOptions && <Ellipsis />}
+                    <View>
+                        {isMe ? (
+                            <SizableText marginRight="$2">Du</SizableText>
+                        ) : showStatus ? (
+                            <ParticipantsAcceptanceStatus status={participant.status} />
+                        ) : null}
+                    </View>
+                    {showEllipsis && onOpenOptions && <Ellipsis />}
                 </XStack>
             </Card>
         </Pressable>

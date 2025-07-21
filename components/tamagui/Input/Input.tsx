@@ -4,7 +4,7 @@ export const Input = styled(TamaguiInput, {
     color: '$color',
     fontWeight: 400,
     borderWidth: 0,
-    backgroundColor: '$inputBackground',
+    backgroundColor: '$accent',
     focusStyle: {
         borderColor: '$primary',
         borderWidth: '$1',
@@ -16,9 +16,10 @@ export const Input = styled(TamaguiInput, {
     variants: {
         disabled: {
             true: {
-                borderColor: '$color.gray10Light',
+                backgroundColor: '$color.gray6Light',
+                borderColor: '$color.gray8Light',
                 borderWidth: 1,
-                color: '$color.gray10Light',
+                color: '$color.gray9Light',
             },
         },
         variant: {

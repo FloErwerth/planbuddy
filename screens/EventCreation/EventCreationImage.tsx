@@ -4,7 +4,6 @@ import { Pressable } from 'react-native';
 import { SizableText, View, YStack } from 'tamagui';
 import { FileUp, Trash2 } from '@tamagui/lucide-icons';
 import * as ExpoImagePicker from 'expo-image-picker';
-import { MediaTypeOptions } from 'expo-image-picker';
 import { Button } from '@/components/tamagui/Button';
 
 type EventCreationImageProps = {
@@ -22,10 +21,10 @@ export const EventCreationImage = ({ image, setImage }: EventCreationImageProps)
 
     const pickImage = async () => {
         const result = await ExpoImagePicker.launchImageLibraryAsync({
-            mediaTypes: MediaTypeOptions.Images,
+            mediaTypes: ['images'],
             allowsEditing: true,
             aspect: [4, 3],
-            quality: 0.25,
+            quality: 1,
         });
         if (!result.canceled) {
             setImage(result.assets[0].uri);

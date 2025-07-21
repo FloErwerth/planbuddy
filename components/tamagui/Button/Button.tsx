@@ -12,26 +12,32 @@ export const Button = styled(TamaguiButton, {
         variant: {
             primary: {
                 backgroundColor: '$primary',
-                color: 'white',
+                color: '$accent',
                 elevation: '$0.5',
             },
             secondary: {
-                backgroundColor: '$secondary',
-                color: '$color',
+                backgroundColor: '$accent',
+                color: '$primary',
             },
             transparent: {
                 elevation: 0,
                 padding: 0,
             },
             round: {
-                backgroundColor: '$primary',
+                backgroundColor: '$accent',
                 borderRadius: '$12',
+                width: '$3',
+                height: '$3',
                 padding: 0,
             },
         },
         disabled: {
             true: {
-                backgroundColor: 'grey',
+                backgroundColor: '$color.gray6Light',
+                borderColor: '$color.gray8Light',
+                borderWidth: 1,
+                color: '$color.gray9Light',
+                elevation: 0,
             },
         },
     },

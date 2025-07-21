@@ -1,7 +1,7 @@
 import { Screen } from '@/components/Screen';
 import { Button } from '@/components/tamagui/Button';
-import { useCallback, useState } from 'react';
-import { useRemoveParticipantMutation, useUpdateParticipationMutation } from '@/api/events/mutations';
+import { useState } from 'react';
+import { useDeleteParticipantMutation, useUpdateParticipationMutation } from '@/api/events/mutations';
 import { useMe } from '@/api/events/refiners';
 import { EditGuestOptions } from '@/screens/Participants/ParticipantEditSheet/Guest/EditGuestOptions';
 import { ParticipantEditMeOptions } from './Me/ParticipantEditMeOptions';
@@ -13,12 +13,12 @@ export const ParticipantEditScreen = () => {
     const { eventId, editedGuest, setEditedGuest } = useEventDetailsContext();
 
     const { mutateAsync } = useUpdateParticipationMutation();
-    const { mutateAsync: remove } = useRemoveParticipantMutation();
+    const { mutateAsync: remove } = useDeleteParticipantMutation();
     const me = useMe(eventId);
     const isMe = editedGuest?.userId === me?.userId;
     const [leaveEventModalOpen, setLeaveEventModalOpen] = useState(false);
 
-    const saveEditedGuest = useCallback(async () => {
+    const saveEditedGuest = async () => {
         if (!editedGuest) {
             return;
         }
@@ -27,19 +27,19 @@ export const ParticipantEditScreen = () => {
             participant: { role: editedGuest.role },
         });
         setEditedGuest(undefined);
-    }, [editedGuest, mutateAsync, setEditedGuest]);
+    };
 
-    const removeEditedGuest = useCallback(async () => {
+    const removeEditedGuest = async () => {
         setLeaveEventModalOpen(true);
-    }, []);
+    };
 
-    const onConfirmRemove = useCallback(async () => {
+    const onConfirmRemove = async () => {
         if (!editedGuest || !editedGuest.id) {
             return;
         }
         await remove(editedGuest.id!);
         setEditedGuest(undefined);
-    }, [editedGuest, remove, setEditedGuest]);
+    };
 
     return (
         <>

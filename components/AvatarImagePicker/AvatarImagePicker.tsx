@@ -1,11 +1,12 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import * as ExpoImagePicker from 'expo-image-picker';
-import { MediaTypeOptions } from 'expo-image-picker';
 import { Avatar, Spinner, View } from 'tamagui';
 import Animated, { BounceIn, FadeIn, ZoomOut } from 'react-native-reanimated';
 import { Check, Edit3, Trash2 } from '@tamagui/lucide-icons';
 import { color } from '@tamagui/themes';
 import { Button } from '@/components/tamagui/Button';
+import { useProfileImageQuery } from '@/api/images';
+import { useGetUser } from '@/store/authentication';
 
 type AvatarImagePickerProps = {
     editable?: boolean;
@@ -14,23 +15,30 @@ type AvatarImagePickerProps = {
     onImageDeleted?: () => void;
 };
 
-export const AvatarImagePicker = ({ editable = false, image, onImageSelected, onImageDeleted }: AvatarImagePickerProps) => {
+export const AvatarImagePicker = ({ editable = false, onImageSelected, onImageDeleted }: AvatarImagePickerProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const user = useGetUser();
+    const { data: image } = useProfileImageQuery(user?.id);
 
-    const pickImage = useCallback(async () => {
+    const pickImage = async () => {
         const result = await ExpoImagePicker.launchImageLibraryAsync({
-            mediaTypes: MediaTypeOptions.Images,
+            mediaTypes: ['images'],
             allowsEditing: true,
-            aspect: [4, 3],
-            quality: 0.25,
+            aspect: [1, 1],
+            quality: 1,
+            selectionLimit: 1,
         });
+        if (!result || !result.assets || result.assets?.length === 0) {
+            return;
+        }
+
         if (!result.canceled) {
             onImageSelected?.(result.assets[0].uri);
         }
-    }, [onImageSelected]);
+    };
 
-    const RenderedButtonIcon = useCallback(() => {
+    const RenderedButtonIcon = () => {
         if (showSuccess) {
             return null;
         }
@@ -48,9 +56,9 @@ export const AvatarImagePicker = ({ editable = false, image, onImageSelected, on
                 </Animated.View>
             </View>
         );
-    }, [image, isLoading, onImageDeleted, pickImage, showSuccess]);
+    };
 
-    const SuccessAnimation = useCallback(() => {
+    const SuccessAnimation = () => {
         if (!showSuccess) {
             return null;
         }
@@ -61,7 +69,7 @@ export const AvatarImagePicker = ({ editable = false, image, onImageSelected, on
                 </Animated.View>
             </View>
         );
-    }, [showSuccess]);
+    };
 
     return (
         <View>

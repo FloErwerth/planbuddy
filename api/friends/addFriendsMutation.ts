@@ -3,7 +3,6 @@ import { FRIENDS_MUTATION_KEY, FRIENDS_QUERY_KEY } from '@/api/friends/constants
 import { supabase } from '@/api/supabase';
 import { FriendsQueryResponse, SingleFriendQueryResponse } from '@/api/friends/schema';
 import { StatusEnum } from '@/api/types';
-import { QUERY_KEYS } from '@/api/queryKeys';
 import { useFriendOverview } from '@/api/friends/refiners';
 import { useGetUser } from '@/store/authentication';
 
@@ -16,6 +15,9 @@ export const useAddFriendMutation = () => {
         mutationFn: async (friendId: string) => {
             if (!user) {
                 throw new Error('Probably not logged in.');
+            }
+            if (!friendId) {
+                throw new Error('friend id was not defined or empty');
             }
 
             const isAlreadyFriend = data.find((friend) => friend.requester?.id === friendId || friend.receiver?.id === friendId);
@@ -39,7 +41,6 @@ export const useAddFriendMutation = () => {
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries([FRIENDS_QUERY_KEY]);
-            await queryClient.invalidateQueries([QUERY_KEYS.USERS.QUERY]);
         },
         mutationKey: [FRIENDS_MUTATION_KEY],
     });

@@ -4,7 +4,7 @@ import { Card } from '@/components/tamagui/Card';
 import { SizableText, View, XStack } from 'tamagui';
 import { UserAvatar } from '@/components/UserAvatar';
 import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
-import { FC, useCallback, useState } from 'react';
+import { FC, useState } from 'react';
 import { SimpleFriend } from '@/api/friends/types';
 import { SearchInput } from '@/components/SearchInput';
 import { formatToDate } from '@/utils/date';
@@ -20,36 +20,33 @@ export const FriendsList = ({ onFriendPressed, Action }: FriendsListProps) => {
     const [refreshing, setRefreshing] = useState(false);
     const [filter, setFilter] = useState<string | null>(null);
 
-    const render = useCallback(
-        ({ item: friend }: ListRenderItemInfo<ReturnType<typeof useFriendOverview>['others'][number]>) => {
-            const { id, firstName, lastName, requesterWasMe } = friend;
+    const render = ({ item: friend }: ListRenderItemInfo<ReturnType<typeof useFriendOverview>['others'][number]>) => {
+        const { id, firstName, lastName, requesterWasMe } = friend;
 
-            return (
-                <Pressable onPress={() => onFriendPressed(friend)}>
-                    <Card>
-                        <XStack justifyContent="space-between" paddingRight="$2" alignItems="center">
-                            <XStack alignItems="center" gap="$4">
-                                <UserAvatar id={id} />
-                                <View>
-                                    <SizableText>{`${firstName} ${lastName}`}</SizableText>
-                                    {friend.status === StatusEnum.ACCEPTED && friend.acceptedAt && (
-                                        <SizableText size="$2">Befreundet seit {formatToDate(friend.acceptedAt)}</SizableText>
-                                    )}
-                                    {friend.status === StatusEnum.PENDING && friend.sendAt && (
-                                        <SizableText size="$2">
-                                            {requesterWasMe ? 'Gesendet' : 'Empfangen'} am {formatToDate(friend.sendAt)}
-                                        </SizableText>
-                                    )}
-                                </View>
-                            </XStack>
-                            <Action friend={friend} />
+        return (
+            <Pressable onPress={() => onFriendPressed(friend)}>
+                <Card>
+                    <XStack justifyContent="space-between" paddingRight="$2" alignItems="center">
+                        <XStack alignItems="center" gap="$4">
+                            <UserAvatar id={id} />
+                            <View>
+                                <SizableText>{`${firstName} ${lastName}`}</SizableText>
+                                {friend.status === StatusEnum.ACCEPTED && friend.acceptedAt && (
+                                    <SizableText size="$2">Befreundet seit {formatToDate(friend.acceptedAt)}</SizableText>
+                                )}
+                                {friend.status === StatusEnum.PENDING && friend.sendAt && (
+                                    <SizableText size="$2">
+                                        {requesterWasMe ? 'Gesendet' : 'Empfangen'} am {formatToDate(friend.sendAt)}
+                                    </SizableText>
+                                )}
+                            </View>
                         </XStack>
-                    </Card>
-                </Pressable>
-            );
-        },
-        [Action, onFriendPressed]
-    );
+                        <Action friend={friend} />
+                    </XStack>
+                </Card>
+            </Pressable>
+        );
+    };
 
     const applyFilter = (other: SimpleFriend | undefined) => {
         if (!filter || !other) {

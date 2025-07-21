@@ -88,7 +88,7 @@ export const EventCreation = () => {
                         <FormInput label="Eventname" name="name" />
                         <View gap="$1.5">
                             <SizableText>Start und Ende</SizableText>
-                            <View gap="$2" borderRadius="$4" padding="$2" backgroundColor="$inputBackground">
+                            <View gap="$2" borderRadius="$4" padding="$2" backgroundColor="$accent">
                                 <XStack gap="$4" alignItems="center">
                                     <SizableText>Start</SizableText>
                                     <Calendar
