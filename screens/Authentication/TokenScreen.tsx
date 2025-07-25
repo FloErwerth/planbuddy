@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
-import { useLoginContext } from '@/providers/LoginProvider';
-import { useCheckLoginState } from '@/hooks/useCheckLoginState';
 import { supabase } from '@/api/supabase';
-import { router } from 'expo-router';
 import { BackButton } from '@/components/BackButton';
-import { tokenSchema } from '@/screens/Authentication/types';
-import { AnimatePresence, debounce, SizableText, View } from 'tamagui';
+import { Screen } from '@/components/Screen';
 import { TokenInput } from '@/components/TokenInput/TokenInput';
 import { Button } from '@/components/tamagui/Button';
 import { Sheet } from '@/components/tamagui/Sheet';
-import { Screen } from '@/components/Screen';
+import { useCheckLoginState } from '@/hooks/useCheckLoginState';
+import { useLoginContext } from '@/providers/LoginProvider';
+import { tokenSchema } from '@/screens/Authentication/types';
 import { useSetUser } from '@/store/authentication';
+import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, debounce, SizableText, View } from 'tamagui';
 
 export const TokenScreen = () => {
     const { email, resendTokenTime, startedLoginAttempt, setStartedLoginAttempt, startResendTokenTimer, setLoginError, resetTokenPage } = useLoginContext();

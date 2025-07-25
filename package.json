@@ -8,8 +8,7 @@
         "ios": "expo run:ios",
         "web": "expo start --web",
         "test": "jest --watchAll",
-        "migrate": "npx prisma@latest migrate dev --schema=database/schema.prisma",
-        "generate": "npx prisma@latest generate --schema=database/schema.prisma"
+        "format": "bun run prettier . --write"
     },
     "jest": {
         "preset": "jest-expo"

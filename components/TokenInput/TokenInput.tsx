@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { Animated, NativeSyntheticEvent, TextInputKeyPressEventData } from 'react-native';
+import { useRef } from 'react';
+import { NativeSyntheticEvent, TextInputKeyPressEventData } from 'react-native';
 import { Input, XStack } from 'tamagui';
 
 type OTPInputProps = {
@@ -7,37 +7,13 @@ type OTPInputProps = {
     onChange: (value: string[]) => void;
     length?: number;
     disabled?: boolean;
-    onResendOTP?: () => void;
 };
 
 export const TokenInput = ({ value, onChange, length = 6, disabled = false }: OTPInputProps) => {
     const inputRefs = useRef<Input[]>([]);
-    const animatedValues = useRef<Animated.Value[]>([]);
-
-    // Initialize animation values
-    useEffect(() => {
-        animatedValues.current = Array(length)
-            .fill(0)
-            .map(() => new Animated.Value(0));
-    }, [length]);
-
     const focusInput = (index: number) => {
         if (inputRefs.current[index]) {
             inputRefs.current[index].focus();
-
-            // Trigger animation
-            Animated.sequence([
-                Animated.timing(animatedValues.current[index], {
-                    toValue: 1,
-                    duration: 100,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(animatedValues.current[index], {
-                    toValue: 0,
-                    duration: 100,
-                    useNativeDriver: true,
-                }),
-            ]).start();
         }
     };
 
@@ -58,36 +34,37 @@ export const TokenInput = ({ value, onChange, length = 6, disabled = false }: OT
         }
     };
 
-    const mappedInputs = (() =>
-        Array(length)
-            .fill(0)
-            .map((_, index) => {
-                return (
-                    <Input
-                        key={index}
-                        ref={(ref) => {
-                            if (!ref) {
-                                return;
-                            }
-                            inputRefs.current[index] = ref;
-                        }}
-                        autoFocus={index === 0}
-                        onPress={() => inputRefs.current[index].setSelection(0, 1)}
-                        onFocus={() => inputRefs.current[index].setSelection(0, 1)}
-                        textAlign="center"
-                        maxLength={1}
-                        size="$4"
-                        fontSize="$6"
-                        fontWeight="bold"
-                        keyboardType="number-pad"
-                        onChangeText={(text) => handleChange(text, index)}
-                        onKeyPress={(event) => handleKeyPress(event, index)}
-                        value={value[index]}
-                        editable={!disabled}
-                        selectTextOnFocus
-                    />
-                );
-            }))();
-
-    return <XStack justifyContent="space-between">{mappedInputs}</XStack>;
+    return (
+        <XStack justifyContent="flex-start" gap="$2">
+            {Array(length)
+                .fill(0)
+                .map((_, index) => {
+                    return (
+                        <Input
+                            key={index}
+                            ref={(ref) => {
+                                if (!ref) {
+                                    return;
+                                }
+                                inputRefs.current[index] = ref;
+                            }}
+                            autoFocus={index === 0}
+                            onPress={() => inputRefs.current[index].setSelection(0, 1)}
+                            onFocus={() => inputRefs.current[index].setSelection(0, 1)}
+                            textAlign="center"
+                            maxLength={1}
+                            size="$5"
+                            fontSize="$6"
+                            fontWeight="bold"
+                            keyboardType="number-pad"
+                            onChangeText={(text) => handleChange(text, index)}
+                            onKeyPress={(event) => handleKeyPress(event, index)}
+                            value={value[index]}
+                            editable={!disabled}
+                            selectTextOnFocus
+                        />
+                    );
+                })}
+        </XStack>
+    );
 };
