@@ -1,21 +1,21 @@
-import { BackButton } from '@/components/BackButton';
-import { Redirect, router } from 'expo-router';
-import { useState } from 'react';
 import { useParticipantsQuery } from '@/api/events/queries';
-import { RefreshControl } from 'react-native';
-import { View, XStack } from 'tamagui';
-import { Button } from '@/components/tamagui/Button';
-import { Eye } from '@tamagui/lucide-icons';
-import { Screen } from '@/components/Screen';
-import { ParticipantSkeleton } from '@/screens/Participants/ParticipantSkeleton';
+import { ParticipantQueryResponse } from '@/api/events/types';
 import { Status, StatusEnum } from '@/api/types';
-import { SearchInput } from '@/components/SearchInput';
-import { Participant } from '@/screens/Participants/Participant';
-import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
+import { BackButton } from '@/components/BackButton';
 import { PlusButton } from '@/components/PlusButton';
+import { Screen } from '@/components/Screen';
+import { SearchInput } from '@/components/SearchInput';
+import { TogglePillButton } from '@/components/TogglePillButton';
+import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
+import { Participant } from '@/screens/Participants/Participant';
+import { ParticipantSkeleton } from '@/screens/Participants/ParticipantSkeleton';
 import { useGetUser } from '@/store/authentication';
 import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
-import { ParticipantQueryResponse } from '@/api/events/types';
+import { Eye } from '@tamagui/lucide-icons';
+import { Redirect, router } from 'expo-router';
+import { useState } from 'react';
+import { RefreshControl } from 'react-native';
+import { View, XStack } from 'tamagui';
 
 export const Participants = () => {
     const { eventId, setEditedGuest } = useEventDetailsContext();
@@ -60,33 +60,27 @@ export const Participants = () => {
         <>
             <Screen back={<BackButton />} title="Teilnehmer" action={<PlusButton onPress={() => router.push('./addFriends')} />}>
                 <XStack gap="$3">
-                    <Button
-                        size="$2"
-                        variant={acceptedFilterActive ? 'primary' : 'secondary'}
-                        borderRadius="$12"
+                    <TogglePillButton
                         onPress={() => toggleFilter(StatusEnum.ACCEPTED)}
+                        active={acceptedFilterActive}
+                        icon={<Eye color="$background" size="$1" />}
                     >
                         Zugesagt
-                        {acceptedFilterActive && <Eye color="$background" size="$1" />}
-                    </Button>
-                    <Button
-                        onPress={() => toggleFilter(StatusEnum.DECLINED)}
-                        size="$2"
-                        variant={declinedFilterActive ? 'primary' : 'secondary'}
-                        borderRadius="$12"
-                    >
-                        Abgesagt
-                        {declinedFilterActive && <Eye color="$background" size="$1" />}
-                    </Button>
-                    <Button
-                        size="$2"
+                    </TogglePillButton>
+                    <TogglePillButton
+                        active={pendingFilterActive}
                         onPress={() => toggleFilter(StatusEnum.PENDING)}
-                        variant={pendingFilterActive ? 'primary' : 'secondary'}
-                        borderRadius="$12"
+                        icon={<Eye color="$background" size="$1" />}
                     >
                         Ausstehend
-                        {pendingFilterActive && <Eye color="$background" size="$1" />}
-                    </Button>
+                    </TogglePillButton>
+                    <TogglePillButton
+                        onPress={() => toggleFilter(StatusEnum.DECLINED)}
+                        active={declinedFilterActive}
+                        icon={<Eye color="$background" size="$1" />}
+                    >
+                        Abgesagt
+                    </TogglePillButton>
                 </XStack>
                 <SearchInput placeholder="E-Mail oder Name" onChangeText={setSearch} />
             </Screen>

@@ -1,10 +1,10 @@
-import { useQuery } from 'react-query';
-import { supabase } from '@/api/supabase';
-import { PostgrestSingleResponse } from '@supabase/supabase-js';
+import { EVENTS_QUERY_KEY, PARTICIPANT_QUERY_KEY } from '@/api/events/constants';
 import { appEventSchema, backendEventSchema, Event, Participant, ParticipantQueryResponse } from '@/api/events/types';
+import { supabase } from '@/api/supabase';
 import { Status, StatusEnum } from '@/api/types';
 import { useGetUser } from '@/store/authentication';
-import { EVENTS_QUERY_KEY, PARTICIPANT_QUERY_KEY } from '@/api/events/constants';
+import { PostgrestSingleResponse } from '@supabase/supabase-js';
+import { useQuery } from 'react-query';
 
 export const useEventsQuery = () => {
     const user = useGetUser();

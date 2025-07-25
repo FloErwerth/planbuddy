@@ -1,8 +1,8 @@
-export function getRelativeDate(timestamp: number): string {
+export function getRelativeDate(date: Date): string {
     // Get the current date and time
     const now = new Date();
     // Create a Date object from the provided timestamp
-    const targetDate = new Date(timestamp);
+    const targetDate = new Date(date.valueOf());
 
     // Create new Date objects for comparison, setting time to 00:00:00 for accurate day-based calculations
     const today = new Date(now);

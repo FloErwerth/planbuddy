@@ -5,6 +5,7 @@ import { z } from 'zod';
 export const backendEventSchema = z.object({
     id: z.string(),
     creatorId: z.string(),
+    created_at: z.string(),
     name: z.string(),
     description: z.string().nullable().optional(),
     location: z.string(),
