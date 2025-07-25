@@ -3,8 +3,7 @@ import { Card as TamaCard, CardProps, styled } from 'tamagui';
 const StyledCard = styled(TamaCard, {
     elevation: '$1',
     padding: '$2',
-    borderWidth: 1,
-    borderColor: '$color.gray7Light',
+    borderWidth: 0,
 });
 
 export const Card = ({ children, ...props }: CardProps) => {

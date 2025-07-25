@@ -5,12 +5,18 @@ import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
 import { Screen } from '@/components/Screen';
 import { BackButton } from '@/components/BackButton';
 import { SearchInput } from '@/components/SearchInput';
-import { AnimatePresence, getTokenValue, useWindowDimensions, View } from 'tamagui';
+import { AnimatePresence, getTokenValue, Spinner, useWindowDimensions, View } from 'tamagui';
 import { Card } from '@/components/tamagui/Card';
 import { Pressable } from 'react-native';
 import { FriendDisplay } from '@/components/FriendDisplay';
 import { Checkbox } from '@/components/tamagui/Checkbox';
 import { Button } from '@/components/tamagui/Button';
+import { useCreateParticipationMutation } from '@/api/events/mutations';
+import { Participant, Role } from '@/api/events/types';
+import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
+import { StatusEnum } from '@/api/types';
+import { router } from 'expo-router';
+import { useParticipantsQuery } from '@/api/events/queries';
 
 const Guest = ({ id, onPress, checked, ...friend }: SimpleFriend & { checked: boolean; onPress: (id: string) => void }) => {
     return (
@@ -26,9 +32,13 @@ const Guest = ({ id, onPress, checked, ...friend }: SimpleFriend & { checked: bo
 
 export const EventDetailsAddFriends = () => {
     const [addedGuests, setAddedGuests] = useState<Set<string>>(new Set());
+    const [isLoading, setIsLoading] = useState(false);
     const { accepted: friends } = useFriendsByStatus();
     const [filter, setFilter] = useState<string>();
     const { width } = useWindowDimensions();
+    const { mutateAsync } = useCreateParticipationMutation();
+    const { eventId } = useEventDetailsContext();
+    const { data: participants } = useParticipantsQuery(eventId);
 
     const applyFilter = (other: SimpleFriend | undefined) => {
         if (!filter || !other) {
@@ -58,7 +68,8 @@ export const EventDetailsAddFriends = () => {
             ...friend,
             checked: addedGuests.has(friend.userId!),
         }))
-        .filter(applyFilter);
+        .filter(applyFilter)
+        .filter((friend) => !participants?.find((participant) => participant.userId === friend.userId));
 
     const toggleGuest = (userId: string, isGuest: boolean) => {
         const newGuests = new Set(addedGuests.values());
@@ -72,6 +83,20 @@ export const EventDetailsAddFriends = () => {
 
     const render = ({ item: friend }: ListRenderItemInfo<SimpleFriend & { checked: boolean }>) => {
         return <Guest {...friend} onPress={() => toggleGuest(friend.userId!, friend.checked)} />;
+    };
+
+    const handleAddParticipants = async () => {
+        setIsLoading(true);
+        try {
+            await mutateAsync(
+                Array.from(addedGuests.values()).map(
+                    (guestId) => ({ userId: guestId, eventId, role: Role.enum.GUEST, status: StatusEnum.PENDING }) satisfies Participant
+                )
+            );
+            router.back();
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -96,9 +121,9 @@ export const EventDetailsAddFriends = () => {
                         position="absolute"
                         bottom={0}
                         width={width - 2 * getTokenValue('$4', 'space')}
-                        onPress={() => undefined}
+                        onPress={handleAddParticipants}
                     >
-                        Gäste hinzufügen
+                        {isLoading ? <Spinner /> : 'Gäste hinzufügen'}
                     </Button>
                 )}
             </AnimatePresence>

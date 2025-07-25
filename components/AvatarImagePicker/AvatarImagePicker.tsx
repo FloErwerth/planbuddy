@@ -22,19 +22,25 @@ export const AvatarImagePicker = ({ editable = false, onImageSelected, onImageDe
     const { data: image } = useProfileImageQuery(user?.id);
 
     const pickImage = async () => {
-        const result = await ExpoImagePicker.launchImageLibraryAsync({
-            mediaTypes: ['images'],
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-            selectionLimit: 1,
-        });
-        if (!result || !result.assets || result.assets?.length === 0) {
-            return;
-        }
+        try {
+            setIsLoading(true);
+            const result = await ExpoImagePicker.launchImageLibraryAsync({
+                mediaTypes: ['images'],
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 1,
+                selectionLimit: 1,
+            });
+            setShowSuccess(true);
+            if (!result || !result.assets || result.assets?.length === 0) {
+                return;
+            }
 
-        if (!result.canceled) {
-            onImageSelected?.(result.assets[0].uri);
+            if (!result.canceled) {
+                onImageSelected?.(result.assets[0].uri);
+            }
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -62,6 +68,11 @@ export const AvatarImagePicker = ({ editable = false, onImageSelected, onImageDe
         if (!showSuccess) {
             return null;
         }
+
+        setTimeout(() => {
+            setShowSuccess(false);
+        }, 500);
+
         return (
             <View top="$1" position="absolute">
                 <Animated.View entering={BounceIn} exiting={ZoomOut}>

@@ -67,7 +67,7 @@ const SearchAcceptanceStatus = ({ friend: { status, requester } }: SearchAccepta
 };
 
 export const FriendEntry = memo(({ friend }: { friend: UserWithStatus }) => {
-    const { mutateAsync: addFriend, ...rest } = useAddFriendMutation();
+    const { mutateAsync: addFriend } = useAddFriendMutation();
     const { id, status, firstName, lastName, email } = friend;
     const [isRequesting, setIsRequesting] = useState(false);
     const doAddFriend = async () => {

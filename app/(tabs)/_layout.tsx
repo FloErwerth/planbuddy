@@ -14,6 +14,13 @@ const screenOptions: BottomTabNavigationOptions = {
     tabBarLabelStyle: { height: 0 },
     tabBarActiveTintColor: colors.primary,
     headerShown: false,
+    animation: 'shift',
+    transitionSpec: {
+        config: {
+            duration: 100,
+        },
+        animation: 'timing',
+    },
 };
 
 export default function TabsLayout() {
@@ -23,6 +30,7 @@ export default function TabsLayout() {
                 <Tabs.Screen
                     name="index"
                     options={{
+                        animation: 'none',
                         title: undefined,
                         tabBarIcon: ({ focused }) => <Home top="$2" scale={1.1} color={focused ? '$primary' : undefined} />,
                         ...screenOptions,
@@ -31,6 +39,8 @@ export default function TabsLayout() {
                 <Tabs.Screen
                     name="eventCreation"
                     options={{
+                        animation: 'none',
+
                         title: '',
                         popToTopOnBlur: true,
                         tabBarIcon: ({ focused }) => <Plus top="$2" scale={1.5} color={focused ? '$primary' : undefined} />,
@@ -40,6 +50,7 @@ export default function TabsLayout() {
                 <Tabs.Screen
                     name="profile"
                     options={{
+                        animation: 'none',
                         title: '',
                         popToTopOnBlur: true,
                         tabBarIcon: ({ focused }) => (

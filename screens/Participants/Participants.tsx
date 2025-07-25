@@ -91,6 +91,7 @@ export const Participants = () => {
                 <SearchInput placeholder="E-Mail oder Name" onChangeText={setSearch} />
             </Screen>
             <FlashList
+                key={sortedParticipants?.length}
                 refreshControl={
                     <RefreshControl
                         onRefresh={async () => {

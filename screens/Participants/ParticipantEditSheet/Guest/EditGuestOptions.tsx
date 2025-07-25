@@ -31,6 +31,13 @@ export const EditGuestOptions = ({ onRemoveGuest }: ParticipantEditGuestOptionsP
     return (
         <>
             <YStack gap="$2">
+                <SizableText>Teilnehmerschaft verwalten</SizableText>
+                {me?.role === Role.enum.CREATOR && (
+                    <Button onPress={onRemoveGuest}>
+                        <SizableText color="$background">{guest?.firstName} aus Event ausladen</SizableText>
+                    </Button>
+                )}
+                <YStack gap="$2"></YStack>
                 <SizableText>Rolle</SizableText>
                 <PressableRow
                     onPress={toggleRole}
@@ -39,14 +46,6 @@ export const EditGuestOptions = ({ onRemoveGuest }: ParticipantEditGuestOptionsP
                 >
                     <SizableText>Ist Admin</SizableText>
                 </PressableRow>
-            </YStack>
-            <YStack gap="$2">
-                <SizableText>Ausladen</SizableText>
-                {me?.role === Role.enum.CREATOR && (
-                    <Button onPress={onRemoveGuest}>
-                        <SizableText color="$background">{guest?.firstName} aus Event ausladen</SizableText>
-                    </Button>
-                )}
             </YStack>
         </>
     );

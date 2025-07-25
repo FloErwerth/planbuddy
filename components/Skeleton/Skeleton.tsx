@@ -29,14 +29,7 @@ export const Skeleton = ({ shape, children, ...viewProps }: SkeletonProps) => {
     return (
         <AnimatePresence>
             {render && (
-                <View
-                    animation="medium"
-                    animationDuration={500}
-                    enterStyle={{
-                        opacity: 0,
-                    }}
-                    exitStyle={{ opacity: 0 }}
-                >
+                <View animation="medium" animationDuration={500} enterStyle={{ scale: 0.95, opacity: 0.6 }} exitStyle={{ scale: 0.8, opacity: 0.8 }}>
                     {shape === 'circle' ? (
                         <Circle backgroundColor="$color.gray7Light" {...viewProps} />
                     ) : (

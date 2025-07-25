@@ -108,7 +108,7 @@ export const useDeleteEventAndEventImageMutation = () => {
     });
 };
 
-type ParticipantMutationArgs = Pick<Participant, 'userId' | 'eventId' | 'id'>;
+type ParticipantMutationArgs = Pick<Participant, 'userId' | 'eventId'>;
 export const useCreateParticipationMutation = () => {
     const user = useGetUser();
     const queryClient = useQueryClient();

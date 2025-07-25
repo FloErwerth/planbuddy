@@ -66,13 +66,14 @@ export const EventCreation = () => {
                     image: imageToUpload,
                 });
             }
-            setIsLoading(false);
             router.replace({
                 pathname: '/eventDetails',
                 params: { eventId: createdEvent.id },
             });
         } catch (e) {
             console.error(e);
+        } finally {
+            setIsLoading(false);
         }
     };
 

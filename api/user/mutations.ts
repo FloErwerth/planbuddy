@@ -3,7 +3,7 @@ import { supabase } from '@/api/supabase';
 import { User } from '@/api/types';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { useGetUser } from '@/store/authentication';
-import { INSERT_USERS_MUTATION_KEY, UPDATE_USERS_MUTATION_KEY, USERS_QUERY_KEY } from '@/api/user/constants';
+import { DELETE_USER_MUTATION, INSERT_USERS_MUTATION_KEY, UPDATE_USERS_MUTATION_KEY, USERS_QUERY_KEY } from '@/api/user/constants';
 
 export const useUpdateUserMutation = () => {
     const user = useGetUser();
@@ -53,6 +53,30 @@ export const useInsertUserMutation = () => {
         mutationKey: [INSERT_USERS_MUTATION_KEY],
         onSuccess: async () => {
             await queryClient.invalidateQueries([USERS_QUERY_KEY]);
+        },
+    });
+};
+
+export const useDeleteUserMutation = () => {
+    const queryClient = useQueryClient();
+    const user = useGetUser();
+    return useMutation({
+        mutationFn: async () => {
+            if (!user) {
+                throw new Error('Error in insert user: user not defined, probably not logged in');
+            }
+
+            const result = await supabase.from('users').delete().eq('id', user.id).select().single();
+
+            if (result.error) {
+                throw new Error(result.error.message);
+            }
+
+            return !!result.data;
+        },
+        mutationKey: [DELETE_USER_MUTATION],
+        onSuccess: async () => {
+            await queryClient.invalidateQueries();
         },
     });
 };

@@ -6,18 +6,6 @@ import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import * as Sentry from '@sentry/react-native';
 import { useCheckLoginStateOnAppStart } from '@/hooks/useCheckLoginState';
 
-Sentry.init({
-    dsn: 'https://468683226bfb2668906c6fee1941aa74@o4509455416229888.ingest.de.sentry.io/4509455421800528',
-
-    enabled: false,
-    // Adds more context data to events (IP address, cookies, user, etc.)
-    // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
-    sendDefaultPii: true,
-
-    // uncomment the line below to enable Spotlight (https://spotlightjs.com)
-    // spotlight: __DEV__,
-});
-
 SplashScreen.preventAutoHideAsync();
 SplashScreen.setOptions({
     duration: 1000,

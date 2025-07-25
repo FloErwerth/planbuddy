@@ -20,7 +20,7 @@ import { Dialog } from '@/components/tamagui/Dialog';
 export const EditEventScreen = () => {
     const { eventId } = useEventDetailsContext();
 
-    const { data: event, isLoading } = useSingleEventQuery(eventId);
+    const { data: event } = useSingleEventQuery(eventId);
     const [startDate, setStartDate] = useState<Date>(new Date());
     const [endDate, setEndDate] = useState<Date>(new Date());
     const { mutateAsync: updateEvent } = useUpdateEventMutation();

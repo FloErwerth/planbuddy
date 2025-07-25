@@ -6,9 +6,9 @@ export const ParticipantEditMeOptions = ({ onRemoveGuest }: ParticipantEditGuest
     return (
         <>
             <YStack gap="$2">
-                <SizableText>Absagen</SizableText>
+                <SizableText>Teilnehmerschaft verwalten</SizableText>
                 <Button onPress={onRemoveGuest}>
-                    <SizableText color="$background">Dem Event absagen</SizableText>
+                    <SizableText color="$background">Das Event verlassen</SizableText>
                 </Button>
             </YStack>
         </>

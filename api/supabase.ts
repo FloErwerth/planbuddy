@@ -42,7 +42,7 @@ export const useLogout = () => {
             return;
         }
 
-        router.replace('/');
+        router.dismiss(1000000);
         setUser(undefined);
         await queryClient.invalidateQueries();
     };
