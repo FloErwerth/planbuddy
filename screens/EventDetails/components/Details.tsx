@@ -1,12 +1,12 @@
-import { SizableText, XStack, YStack } from 'tamagui';
+import { useSingleEventQuery } from '@/api/events/queries';
+import { PressableRow } from '@/components/PressableRow';
+import { Card } from '@/components/tamagui/Card';
+import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
+import { formatToDate, formatToTime } from '@/utils/date';
 import { CalendarDays, ChevronRight, ExternalLink, Link2, MapPin, MessageSquareText, Users } from '@tamagui/lucide-icons';
 import { router } from 'expo-router';
-import { useSingleEventQuery } from '@/api/events/queries';
-import { formatToDate, formatToTime } from '@/utils/date';
-import { PressableRow } from '@/components/PressableRow';
-import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
 import { Linking } from 'react-native';
-import { Card } from '@/components/tamagui/Card';
+import { SizableText, XStack } from 'tamagui';
 
 export const Details = () => {
     const { eventId } = useEventDetailsContext();
@@ -41,21 +41,14 @@ export const Details = () => {
             </SizableText>
             <XStack alignItems="center" gap="$3">
                 <CalendarDays />
-                <Card flex={1} justifyContent="space-evenly" flexDirection="row" alignItems="center" paddingVertical="$3" borderRadius="$4">
-                    <XStack gap="$3" alignItems="center">
-                        <SizableText>vom</SizableText>
-                        <YStack>
-                            <SizableText size="$5">{formatToDate(parseInt(event.startTime))}</SizableText>
-                            <SizableText>{formatToTime(parseInt(event.startTime))} Uhr</SizableText>
-                        </YStack>
-                    </XStack>
-                    <XStack gap="$3" alignItems="center">
-                        <SizableText>bis</SizableText>
-                        <YStack>
-                            <SizableText size="$5">{formatToDate(parseInt(event.endTime))}</SizableText>
-                            <SizableText>{formatToTime(parseInt(event.endTime))} Uhr</SizableText>
-                        </YStack>
-                    </XStack>
+                <Card flex={1} alignItems="center" padding="$3" borderRadius="$4">
+                    <SizableText size="$5">{formatToDate(event.startTime)}</SizableText>
+                    <SizableText>{formatToTime(event.startTime)} Uhr</SizableText>
+                </Card>
+                <SizableText>bis</SizableText>
+                <Card flex={1} alignItems="center" padding="$3" borderRadius="$4">
+                    <SizableText size="$5">{formatToDate(event.endTime)}</SizableText>
+                    <SizableText>{formatToTime(event.endTime)} Uhr</SizableText>
                 </Card>
             </XStack>
             <PressableRow icon={<MapPin />} iconRight={null}>

@@ -1,21 +1,21 @@
+import { useDeleteEventAndEventImageMutation, useUpdateEventMutation } from '@/api/events/mutations';
+import { useSingleEventQuery } from '@/api/events/queries';
+import { appEventSchema, Event } from '@/api/events/types';
+import { useDeleteEventImageMutation, useEventImageQuery, useRemoveEventImageMutation, useUploadEventImageMutation } from '@/api/images';
+import { BackButton } from '@/components/BackButton';
+import { Calendar } from '@/components/Calendar';
+import { FormInput, FormTextArea } from '@/components/FormFields';
 import { ScrollableScreen } from '@/components/Screen';
+import { Button } from '@/components/tamagui/Button';
+import { Dialog } from '@/components/tamagui/Dialog';
+import { EventCreationImage } from '@/screens/EventCreation';
+import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Trash } from '@tamagui/lucide-icons';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { appEventSchema, Event } from '@/api/events/types';
-import { useDeleteEventAndEventImageMutation, useUpdateEventMutation } from '@/api/events/mutations';
-import { useDeleteEventImageMutation, useEventImageQuery, useRemoveEventImageMutation, useUploadEventImageMutation } from '@/api/images';
-import { router } from 'expo-router';
 import { Separator, SizableText, View, XStack } from 'tamagui';
-import { EventCreationImage } from '@/screens/EventCreation';
-import { FormInput, FormTextArea } from '@/components/FormFields';
-import { Calendar } from '@/components/Calendar';
-import { Button } from '@/components/tamagui/Button';
-import { useSingleEventQuery } from '@/api/events/queries';
-import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
-import { BackButton } from '@/components/BackButton';
-import { Trash } from '@tamagui/lucide-icons';
-import { Dialog } from '@/components/tamagui/Dialog';
 
 export const EditEventScreen = () => {
     const { eventId } = useEventDetailsContext();
@@ -38,10 +38,10 @@ export const EditEventScreen = () => {
 
     useEffect(() => {
         if (event?.startTime) {
-            setStartDate(new Date(parseInt(event?.startTime)));
+            setStartDate(new Date(event?.startTime));
         }
         if (event?.endTime) {
-            setEndDate(new Date(parseInt(event?.endTime)));
+            setEndDate(new Date(event?.endTime));
         }
         form.reset({
             ...event,
@@ -52,21 +52,21 @@ export const EditEventScreen = () => {
 
     const handleSetStart = (date: Date) => {
         setStartDate(date);
-        form.setValue('startTime', date.valueOf().toString());
+        form.setValue('startTime', date.toISOString());
     };
 
     const handleSetEnd = (date: Date) => {
         setEndDate(date);
         form.clearErrors('endTime');
-        form.setValue('endTime', date.valueOf().toString());
+        form.setValue('endTime', date.toISOString());
     };
 
     const handleUpdateEvent = async (data: Event) => {
         try {
             const createdEvent = await updateEvent({
                 ...data,
-                startTime: startDate.valueOf().toString(),
-                endTime: endDate.valueOf().toString(),
+                startTime: startDate.toISOString(),
+                endTime: endDate.toISOString(),
             });
             if (!createdEvent) {
                 throw new Error('Event creation failed');

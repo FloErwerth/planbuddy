@@ -1,14 +1,14 @@
-import { useFriendOverview, useFriendsByStatus } from '@/api/friends/refiners';
-import { Pressable, RefreshControl } from 'react-native';
+import { useFriendOverview } from '@/api/friends/refiners';
+import { SimpleFriend } from '@/api/friends/types';
+import { StatusEnum } from '@/api/types';
+import { SearchInput } from '@/components/SearchInput';
 import { Card } from '@/components/tamagui/Card';
-import { SizableText, View, XStack } from 'tamagui';
 import { UserAvatar } from '@/components/UserAvatar';
+import { formatToDate } from '@/utils/date';
 import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
 import { FC, useState } from 'react';
-import { SimpleFriend } from '@/api/friends/types';
-import { SearchInput } from '@/components/SearchInput';
-import { formatToDate } from '@/utils/date';
-import { StatusEnum } from '@/api/types';
+import { Pressable, RefreshControl } from 'react-native';
+import { SizableText, View, XStack } from 'tamagui';
 
 type FriendsListProps = {
     onFriendPressed: (friend: SimpleFriend) => void;
@@ -16,7 +16,7 @@ type FriendsListProps = {
 };
 
 export const FriendsList = ({ onFriendPressed, Action }: FriendsListProps) => {
-    const { accepted = [], refetch } = useFriendsByStatus();
+    const { others, refetch } = useFriendOverview();
     const [refreshing, setRefreshing] = useState(false);
     const [filter, setFilter] = useState<string | null>(null);
 
@@ -71,7 +71,7 @@ export const FriendsList = ({ onFriendPressed, Action }: FriendsListProps) => {
         return foundMatch;
     };
 
-    const searchedOthers = accepted.filter(applyFilter);
+    const searchedOthers = others.filter(applyFilter);
 
     return (
         <>

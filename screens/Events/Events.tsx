@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { Screen } from '@/components/Screen';
-import { ScrollView } from '@/components/tamagui/ScrollView';
 import { useEventsQuery } from '@/api/events/queries';
 import { EventSmall } from '@/components/Events/EventSmall';
-import { SizableText, View } from 'tamagui';
+import { Screen } from '@/components/Screen';
 import { Button } from '@/components/tamagui/Button';
+import { ScrollView } from '@/components/tamagui/ScrollView';
 import { CalendarX } from '@tamagui/lucide-icons';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { RefreshControl } from 'react-native';
+import { SizableText, View } from 'tamagui';
 
 const contentContainerStyle = { gap: '$3', paddingVertical: '$4', flex: 1 };
 
