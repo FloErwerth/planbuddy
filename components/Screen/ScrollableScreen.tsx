@@ -1,8 +1,8 @@
+import { ScrollView } from '@/components/tamagui/ScrollView';
 import { PropsWithChildren, ReactNode } from 'react';
 import { SizableText, View, XStack } from 'tamagui';
-import { ScrollView } from '@/components/tamagui/ScrollView';
 
-type ScreenProps = PropsWithChildren & {
+export type ScrollableScreenProps = PropsWithChildren & {
     showBackButton?: boolean;
     title?: string;
     back?: ReactNode;
@@ -10,7 +10,7 @@ type ScreenProps = PropsWithChildren & {
     submit?: ReactNode;
 };
 
-export const ScrollableScreen = ({ children, showBackButton = false, back, title, action }: ScreenProps) => {
+export const ScrollableScreen = ({ children, showBackButton = false, back, title, action }: ScrollableScreenProps) => {
     const hasActionOrBack = !!back || !!action;
 
     return (
