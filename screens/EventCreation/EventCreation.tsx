@@ -132,10 +132,10 @@ export const EventCreation = () => {
                                             </ToggleButton>
                                         </XStack>
                                     </XStack>
-                                    <HeightTransition paddingVertical="$6" open={showStartCalendar}>
+                                    <HeightTransition paddingBottom="$4" paddingTop="$2" open={showStartCalendar}>
                                         <Calendar date={start} onDateSelected={setStart} minimumDate={new Date()} />
                                     </HeightTransition>
-                                    <HeightTransition alignSelf="center" open={showStartTime}>
+                                    <HeightTransition paddingTop="$2" alignSelf="center" open={showStartTime}>
                                         <EventTimerPicker />
                                     </HeightTransition>
                                 </View>
@@ -172,10 +172,10 @@ export const EventCreation = () => {
                                             </ToggleButton>
                                         </XStack>
                                     </XStack>
-                                    <HeightTransition paddingVertical="$6" open={showEndCalendar}>
+                                    <HeightTransition paddingBottom="$4" paddingTop="$2" open={showEndCalendar}>
                                         <Calendar date={end} onDateSelected={setStart} minimumDate={new Date()} />
                                     </HeightTransition>
-                                    <HeightTransition paddingTop="$4" alignSelf="center" open={showEndTime}>
+                                    <HeightTransition paddingTop="$2" alignSelf="center" open={showEndTime}>
                                         <EventTimerPicker />
                                     </HeightTransition>
                                 </View>
