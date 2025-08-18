@@ -5,7 +5,7 @@ import { SearchInput } from '@/components/SearchInput';
 import { Button } from '@/components/tamagui/Button';
 import { ScrollView } from '@/components/tamagui/ScrollView';
 import { SizeableText } from '@/components/tamagui/SizeableText';
-import { TogglePillButton } from '@/components/TogglePillButton';
+import { ToggleButton } from '@/components/TogglePillButton';
 import { CalendarX } from '@tamagui/lucide-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -75,14 +75,14 @@ export const Events = () => {
                 <SearchInput placeholder="Eventname" onChangeText={setSearch} />
                 <XStack gap="$2">
                     <View flex={0.5}>
-                        <TogglePillButton onPress={toggleShowEvents} active={!showPastEvents}>
+                        <ToggleButton borderRadius="$12" onPress={toggleShowEvents} active={!showPastEvents}>
                             <SizeableText color={!showPastEvents ? '$background' : '$color'}>Ausstehend</SizeableText>
-                        </TogglePillButton>
+                        </ToggleButton>
                     </View>
                     <View flex={0.5}>
-                        <TogglePillButton onPress={toggleShowEvents} active={showPastEvents}>
+                        <ToggleButton borderRadius="$12" onPress={toggleShowEvents} active={showPastEvents}>
                             <SizeableText color={showPastEvents ? '$background' : '$color'}>Vergangen</SizeableText>
-                        </TogglePillButton>
+                        </ToggleButton>
                     </View>
                 </XStack>
             </Screen>

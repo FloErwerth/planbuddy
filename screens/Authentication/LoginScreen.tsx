@@ -1,17 +1,17 @@
-import { router, useNavigation } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
-import { useLoginContext } from '@/providers/LoginProvider';
-import { FormProvider, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { supabase } from '@/api/supabase';
 import { BackButton } from '@/components/BackButton';
-import { debounce, SizableText, View } from 'tamagui';
 import { FormInput } from '@/components/FormFields';
-import { Button } from '@/components/tamagui/Button';
-import { Sheet } from '@/components/tamagui/Sheet';
-import { Separator } from '@/components/tamagui/Separator';
 import { Screen } from '@/components/Screen';
+import { Button } from '@/components/tamagui/Button';
+import { Separator } from '@/components/tamagui/Separator';
+import { Sheet } from '@/components/tamagui/Sheet';
+import { useLoginContext } from '@/providers/LoginProvider';
 import { LoginSchema, loginSchema } from '@/screens/Authentication/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { router, useNavigation } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { debounce, SizableText, View } from 'tamagui';
 
 export const LoginScreen = () => {
     const navigation = useNavigation();

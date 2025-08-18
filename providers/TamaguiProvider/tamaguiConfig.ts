@@ -1,10 +1,11 @@
-import { createFont, createTamagui } from 'tamagui';
 import { config } from '@tamagui/config';
 import { color } from '@tamagui/themes';
+import { createFont, createTamagui } from 'tamagui';
 
 export const colors = {
     ...color,
     color: '#171614',
+    disabled: color.gray8Light,
     background: '#F9F7F7',
     accent: '#DBE2EF',
     accent2: '#2c2a26',
@@ -87,6 +88,7 @@ export const tamaguiConfig = createTamagui({
 
     themes: {
         default: {
+            disabled: colors.disabled,
             color: colors.color,
             borderColor: '#656565',
             focusColor: '#354173',

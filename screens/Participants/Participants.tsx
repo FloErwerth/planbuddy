@@ -5,7 +5,7 @@ import { BackButton } from '@/components/BackButton';
 import { PlusButton } from '@/components/PlusButton';
 import { Screen } from '@/components/Screen';
 import { SearchInput } from '@/components/SearchInput';
-import { TogglePillButton } from '@/components/TogglePillButton';
+import { ToggleButton } from '@/components/TogglePillButton';
 import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
 import { Participant } from '@/screens/Participants/Participant';
 import { ParticipantSkeleton } from '@/screens/Participants/ParticipantSkeleton';
@@ -60,27 +60,30 @@ export const Participants = () => {
         <>
             <Screen back={<BackButton />} title="Teilnehmer" action={<PlusButton onPress={() => router.push('./addFriends')} />}>
                 <XStack gap="$3">
-                    <TogglePillButton
+                    <ToggleButton
+                        borderRadius="$12"
                         onPress={() => toggleFilter(StatusEnum.ACCEPTED)}
                         active={acceptedFilterActive}
                         icon={<Eye color="$background" size="$1" />}
                     >
                         Zugesagt
-                    </TogglePillButton>
-                    <TogglePillButton
+                    </ToggleButton>
+                    <ToggleButton
+                        borderRadius="$12"
                         active={pendingFilterActive}
                         onPress={() => toggleFilter(StatusEnum.PENDING)}
                         icon={<Eye color="$background" size="$1" />}
                     >
                         Ausstehend
-                    </TogglePillButton>
-                    <TogglePillButton
+                    </ToggleButton>
+                    <ToggleButton
+                        borderRadius="$12"
                         onPress={() => toggleFilter(StatusEnum.DECLINED)}
                         active={declinedFilterActive}
                         icon={<Eye color="$background" size="$1" />}
                     >
                         Abgesagt
-                    </TogglePillButton>
+                    </ToggleButton>
                 </XStack>
                 <SearchInput placeholder="E-Mail oder Name" onChangeText={setSearch} />
             </Screen>

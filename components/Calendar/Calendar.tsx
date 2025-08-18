@@ -1,59 +1,37 @@
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { useState } from 'react';
+import { colors } from '@/providers/TamaguiProvider/tamaguiConfig';
+import React from 'react';
+import { LocaleConfig, Calendar as ReactNativeCalendar } from 'react-native-calendars';
+import { CalendarProps } from './types';
 
-import { Button } from '@/components/tamagui/Button';
-import { SizableText, View, XStack } from 'tamagui';
-import { formatToDate, formatToTime } from '@/utils/date';
-
-type CalendarProps = {
-    onDateSelected: (date: Date) => void;
-    date: Date;
-    minimumDate?: Date;
-    maximumDate?: Date;
+LocaleConfig.locales['de'] = {
+    monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+    monthNamesShort: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+    dayNames: ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'],
+    dayNamesShort: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+    today: 'heute',
 };
+LocaleConfig.defaultLocale = 'de';
 
 export const Calendar = ({ date, onDateSelected, minimumDate, maximumDate }: CalendarProps) => {
-    const [calendarMode, setCalendarMode] = useState<'date' | 'time'>('date');
-    const [showCalendar, setShowCalendar] = useState(false);
-
-    const handleShowCalendar = () => {
-        setCalendarMode('date');
-        setShowCalendar(true);
-    };
-
-    const handleShowTime = () => {
-        setCalendarMode('time');
-        setShowCalendar(true);
-    };
-
-    const handleSelectDate = (event: DateTimePickerEvent, date?: Date) => {
-        setShowCalendar(false);
-        if (event.type === 'set' && date !== undefined) {
-            onDateSelected(date);
-        }
-    };
+    const calendarTheme = {
+        backgroundColor: 'transparent',
+        calendarBackground: 'transparent',
+        textSectionTitleColor: '#b6c1cd',
+        selectedDayBackgroundColor: '#00adf5',
+        selectedDayTextColor: '#ffffff',
+        todayTextColor: colors.accent2,
+        dayTextColor: '#2d4150',
+        textDisabledColor: colors.disabled,
+    } as const;
 
     return (
-        <View flex={1}>
-            <XStack gap="$2">
-                <Button flex={1} size="$2" variant="transparent" onPress={handleShowCalendar}>
-                    <SizableText>{formatToDate(date) ?? 'Zeitpunkt auswählen'}</SizableText>
-                </Button>
-                <Button flex={1} size="$2" variant="transparent" onPress={handleShowTime}>
-                    <SizableText>{formatToTime(date)}</SizableText>
-                </Button>
-            </XStack>
-            {showCalendar && (
-                <DateTimePicker
-                    locale="de-DE"
-                    onChange={handleSelectDate}
-                    is24Hour
-                    mode={calendarMode}
-                    value={date}
-                    minimumDate={minimumDate}
-                    maximumDate={maximumDate}
-                />
-            )}
-        </View>
+        <ReactNativeCalendar
+            date={date?.toISOString()}
+            minDate={minimumDate?.toISOString()}
+            maxDate={maximumDate?.toISOString()}
+            onDayPress={(data) => onDateSelected(new Date(data.dateString))}
+            current={date?.toISOString()}
+            theme={calendarTheme}
+        />
     );
 };

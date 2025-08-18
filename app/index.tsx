@@ -1,7 +1,7 @@
-import { router } from 'expo-router';
 import { Screen } from '@/components/Screen';
-import { debounce, SizableText } from 'tamagui';
 import { Button } from '@/components/tamagui/Button';
+import { router } from 'expo-router';
+import { debounce, SizableText } from 'tamagui';
 
 export default function InitialAppScreen() {
     return (
@@ -12,7 +12,7 @@ export default function InitialAppScreen() {
             <SizableText size="$8" textAlign="center">
                 Events erstellen, Freunde einladen und gemeinsam feiern
             </SizableText>
-            <Button onPress={debounce(() => router.push('/authentication/token'), 200, true)}>Anmelden</Button>
+            <Button onPress={debounce(() => router.push('/authentication'), 200, true)}>Anmelden</Button>
         </Screen>
     );
 }
