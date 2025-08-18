@@ -1,9 +1,9 @@
-import { Tabs } from 'expo-router';
+import { PendingFriendRequestsDot } from '@/components/PendingFriendRequestsDot/PendingFriendRequestsDot';
+import { colors } from '@/providers/TamaguiProvider/tamaguiConfig';
 import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
 import { Home, Plus, User } from '@tamagui/lucide-icons';
-import { colors } from '@/providers/TamaguiProvider/tamaguiConfig';
+import { Tabs } from 'expo-router';
 import { View } from 'tamagui';
-import { PendingFriendRequestsDot } from '@/components/PendingFriendRequestsDot/PendingFriendRequestsDot';
 
 const screenOptions: BottomTabNavigationOptions = {
     tabBarStyle: {

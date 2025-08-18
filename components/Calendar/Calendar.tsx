@@ -31,7 +31,6 @@ export const Calendar = ({ date, onDateSelected, minimumDate, maximumDate }: Cal
             maxDate={maximumDate?.toISOString()}
             onDayPress={(data) => onDateSelected(new Date(data.dateString))}
             current={date?.toISOString()}
-            theme={calendarTheme}
         />
     );
 };

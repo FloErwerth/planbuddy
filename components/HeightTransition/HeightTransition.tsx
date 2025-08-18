@@ -9,6 +9,7 @@ type HeightTransitionProps = {
 
 export const HeightTransition = ({ children, open, ...viewProps }: HeightTransitionProps) => {
     const [containerHeight, setContainerHeight] = useState<number>();
+    const [renderChildren, setRenderChildren] = useState(false);
 
     const measureContainer = (measurement: LayoutChangeEvent) => {
         if (containerHeight) {
@@ -18,8 +19,13 @@ export const HeightTransition = ({ children, open, ...viewProps }: HeightTransit
     };
 
     useEffect(() => {
-        if (!open) {
-            setTimeout(() => setContainerHeight(undefined), 200);
+        if (open) {
+            setRenderChildren(true);
+        } else {
+            setTimeout(() => {
+                setRenderChildren(false);
+                setContainerHeight(undefined);
+            }, 200);
         }
     }, [open]);
 
@@ -27,6 +33,10 @@ export const HeightTransition = ({ children, open, ...viewProps }: HeightTransit
         height: withTiming(containerHeight && open ? containerHeight : 0, { duration: 200 }),
         overflow: 'hidden',
     }));
+
+    if (!renderChildren) {
+        return null;
+    }
 
     return (
         <Animated.View style={heightTransitionStyle}>
