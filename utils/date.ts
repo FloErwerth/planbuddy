@@ -133,3 +133,12 @@ export const formatToTime = (date?: Date | number | string) => {
         minute: '2-digit',
     });
 };
+
+export const timePartialsWithoutTimeZone = (date: Date) => {
+    const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+    const dateWithoutTimeZone = new Date(date.getTime() + userTimezoneOffset);
+
+    const splitt = dateWithoutTimeZone.toISOString().split('T');
+
+    return { date: splitt[0], time: splitt[1] };
+};

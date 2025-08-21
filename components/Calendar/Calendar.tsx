@@ -1,5 +1,6 @@
 import { colors } from '@/providers/TamaguiProvider/tamaguiConfig';
-import React from 'react';
+import { timePartialsWithoutTimeZone } from '@/utils/date';
+import React, { ComponentProps } from 'react';
 import { LocaleConfig, Calendar as ReactNativeCalendar } from 'react-native-calendars';
 import { CalendarProps } from './types';
 
@@ -13,25 +14,36 @@ LocaleConfig.locales['de'] = {
 LocaleConfig.defaultLocale = 'de';
 
 export const Calendar = ({ date, onDateSelected, minimumDate, maximumDate }: CalendarProps) => {
-    const calendarTheme = {
+    const isoDate = date.toISOString();
+    const minimumIsoDate = minimumDate?.toISOString();
+    const maximumIsoDate = maximumDate?.toISOString();
+
+    const markedDates: ComponentProps<typeof ReactNativeCalendar>['markedDates'] = {
+        [timePartialsWithoutTimeZone(date).date]: { selected: true },
+    };
+
+    const theme: ComponentProps<typeof ReactNativeCalendar>['theme'] = {
         backgroundColor: 'transparent',
         calendarBackground: 'transparent',
-        textSectionTitleColor: '#b6c1cd',
-        selectedDayBackgroundColor: '#00adf5',
-        selectedDayTextColor: '#ffffff',
-        todayTextColor: colors.accent2,
-        dayTextColor: '#2d4150',
+        textSectionTitleColor: colors.accent2,
+        selectedDayBackgroundColor: colors.primary,
+        selectedDayTextColor: colors.background,
+        todayTextColor: '#00adf5',
+        dayTextColor: colors.color,
         textDisabledColor: colors.disabled.toString(),
-    } as const;
+        arrowColor: colors.primary,
+    };
 
     return (
         <ReactNativeCalendar
-            date={date?.toISOString()}
-            minDate={minimumDate?.toISOString()}
-            maxDate={maximumDate?.toISOString()}
-            onDayPress={(data) => onDateSelected(new Date(data.dateString))}
-            current={date?.toISOString()}
-            theme={calendarTheme}
+            minDate={minimumIsoDate}
+            maxDate={maximumIsoDate}
+            initialDate={isoDate}
+            onDayPress={(data) => {
+                onDateSelected(new Date(data.dateString));
+            }}
+            markedDates={markedDates}
+            theme={theme}
         />
     );
 };

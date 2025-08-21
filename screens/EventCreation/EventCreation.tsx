@@ -1,10 +1,8 @@
 import { useCreateEventMutation } from '@/api/events/mutations';
 import { appEventSchema, Event } from '@/api/events/types';
 import { useUploadEventImageMutation } from '@/api/images';
-import { Calendar } from '@/components/Calendar';
 import { FormTextArea } from '@/components/FormFields';
 import { FormInput } from '@/components/FormFields/FormInput';
-import { HeightTransition } from '@/components/HeightTransition';
 import { ScrollableScreen } from '@/components/Screen';
 import { Button } from '@/components/tamagui/Button';
 import { ToggleButton } from '@/components/TogglePillButton';
@@ -15,23 +13,23 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Separator, SizableText, View, XStack } from 'tamagui';
-import { EventTimerPicker } from '../Events/EventTimerPicker';
+import { EventSelectStartEnd } from '../Events/EventSelectStartEnd';
+import { useStartEndTimePickers } from '../Events/hooks/useStartEndTime';
 
 export const EventCreation = () => {
     const now = new Date();
-    const [start, setStart] = useState<Date>(now);
-    const [end, setEnd] = useState<Date>(
-        (() => {
-            const newEnd = new Date(now);
-            newEnd.setHours(now.getHours() + 3);
-            return newEnd;
-        })()
-    );
-
-    const [showStartCalendar, setShowStartCalendar] = useState(false);
-    const [showStartTime, setShowStartTime] = useState(false);
-    const [showEndCalendar, setShowEndCalendar] = useState(false);
-    const [showEndTime, setShowEndTime] = useState(false);
+    const {
+        startDate,
+        endDate,
+        startPicker: {
+            date: { setStartDate, showStartCalendar, isStartCalendarOpen },
+            time: { setStartTime, showStartTime, isStartTimeOpen },
+        },
+        endPicker: {
+            date: { setEndDate, showEndCalendar, isEndCalendarOpen },
+            time: { setEndTime, showEndTime, isEndTimeOpen },
+        },
+    } = useStartEndTimePickers();
 
     const form = useForm({
         resolver: zodResolver(appEventSchema),
@@ -45,17 +43,6 @@ export const EventCreation = () => {
 
     const [imageToUpload, setImageToUpload] = useState<string>();
     const [isLoading, setIsLoading] = useState(false);
-
-    const handleSetStart = (date: Date) => {
-        setStart(date);
-        form.setValue('startTime', date.valueOf().toString());
-    };
-
-    const handleSetEnd = (date: Date) => {
-        setEnd(date);
-        form.clearErrors('endTime');
-        form.setValue('endTime', date.valueOf().toString());
-    };
 
     const { mutateAsync: createEvent } = useCreateEventMutation();
     const { mutateAsync: uploadEventImage } = useUploadEventImageMutation();
@@ -98,86 +85,52 @@ export const EventCreation = () => {
                     <FormProvider {...form}>
                         <FormInput label="Eventname" name="name" />
                         <View gap="$1.5">
-                            <SizableText>Start und Ende</SizableText>
+                            <SizableText>Zeitraum</SizableText>
                             <View gap="$2" borderRadius="$4" padding="$2" backgroundColor="$accent">
                                 <View>
                                     <XStack gap="$4" alignItems="center" justifyContent="space-between">
                                         <SizableText>Start</SizableText>
                                         <XStack gap="$2">
-                                            <ToggleButton
-                                                inactiveBackgroundColor="$white"
-                                                active={showStartCalendar}
-                                                onPress={() => {
-                                                    setShowStartTime(false);
-                                                    setShowEndCalendar(false);
-                                                    setShowEndTime(false);
-                                                    setShowStartCalendar((open) => !open);
-                                                }}
-                                                size="$2"
-                                            >
-                                                <SizableText color={showStartCalendar ? '$background' : '$color'}>{formatToDate(start)}</SizableText>
+                                            <ToggleButton inactiveBackgroundColor="$white" active={isStartCalendarOpen} onPress={showStartCalendar} size="$2">
+                                                <SizableText color={isStartCalendarOpen ? '$background' : '$color'}>{formatToDate(startDate)}</SizableText>
                                             </ToggleButton>
-                                            <ToggleButton
-                                                inactiveBackgroundColor="$white"
-                                                active={showStartTime}
-                                                onPress={() => {
-                                                    setShowStartCalendar(false);
-                                                    setShowEndCalendar(false);
-                                                    setShowEndTime(false);
-                                                    setShowStartTime((open) => !open);
-                                                }}
-                                                size="$2"
-                                            >
-                                                <SizableText color={showStartTime ? '$background' : '$color'}>{formatToTime(start)}</SizableText>
+                                            <ToggleButton inactiveBackgroundColor="$white" active={isStartTimeOpen} onPress={showStartTime} size="$2">
+                                                <SizableText color={isStartTimeOpen ? '$background' : '$color'}>{formatToTime(startDate)}</SizableText>
                                             </ToggleButton>
                                         </XStack>
                                     </XStack>
-                                    <HeightTransition paddingBottom="$4" paddingTop="$2" open={showStartCalendar}>
-                                        <Calendar date={start} onDateSelected={setStart} minimumDate={new Date()} />
-                                    </HeightTransition>
-                                    <HeightTransition paddingTop="$2" alignSelf="center" open={showStartTime}>
-                                        <EventTimerPicker />
-                                    </HeightTransition>
+                                    <EventSelectStartEnd
+                                        showCalendar={isStartCalendarOpen}
+                                        showTimePicker={isStartTimeOpen}
+                                        setTime={setStartTime}
+                                        date={startDate}
+                                        setDate={setStartDate}
+                                    />
                                 </View>
                                 <Separator borderColor="$background" />
                                 <View>
                                     <XStack gap="$4" width="100%" alignItems="center" justifyContent="space-between">
                                         <SizableText>Ende</SizableText>
                                         <XStack gap="$2" alignSelf="center">
-                                            <ToggleButton
-                                                inactiveBackgroundColor="$white"
-                                                active={showEndCalendar}
-                                                onPress={() => {
-                                                    setShowStartCalendar(false);
-                                                    setShowStartTime(false);
-                                                    setShowEndTime(false);
-                                                    setShowEndCalendar((open) => !open);
-                                                }}
-                                                size="$2"
-                                            >
-                                                <SizableText color={showEndCalendar ? '$background' : '$color'}>{formatToDate(start)}</SizableText>
+                                            <ToggleButton inactiveBackgroundColor="$white" active={isEndCalendarOpen} onPress={showEndCalendar} size="$2">
+                                                <SizableText color={isEndCalendarOpen ? '$background' : '$color'}>{formatToDate(endDate)}</SizableText>
                                             </ToggleButton>
-                                            <ToggleButton
-                                                inactiveBackgroundColor="$white"
-                                                active={showEndTime}
-                                                onPress={() => {
-                                                    setShowStartCalendar(false);
-                                                    setShowStartTime(false);
-                                                    setShowEndCalendar(false);
-                                                    setShowEndTime((open) => !open);
-                                                }}
-                                                size="$2"
-                                            >
-                                                <SizableText color={showEndTime ? '$background' : '$color'}>{formatToTime(start)}</SizableText>
+                                            <ToggleButton inactiveBackgroundColor="$white" active={isEndTimeOpen} onPress={showEndTime} size="$2">
+                                                <SizableText color={isEndTimeOpen ? '$background' : '$color'}>{formatToTime(endDate)}</SizableText>
                                             </ToggleButton>
                                         </XStack>
                                     </XStack>
-                                    <HeightTransition paddingBottom="$4" paddingTop="$2" open={showEndCalendar}>
-                                        <Calendar date={end} onDateSelected={setStart} minimumDate={new Date()} />
-                                    </HeightTransition>
-                                    <HeightTransition paddingTop="$2" alignSelf="center" open={showEndTime}>
-                                        <EventTimerPicker />
-                                    </HeightTransition>
+                                    <EventSelectStartEnd
+                                        setTime={setEndTime}
+                                        showCalendar={isEndCalendarOpen}
+                                        showTimePicker={isEndTimeOpen}
+                                        date={endDate}
+                                        minimumDate={startDate}
+                                        setDate={(date) => {
+                                            setEndDate(date);
+                                            form.clearErrors('endTime');
+                                        }}
+                                    />
                                 </View>
                             </View>
                             {endTimeError && <SizableText theme="error">{endTimeError.message}</SizableText>}
@@ -196,8 +149,8 @@ export const EventCreation = () => {
                 onPress={form.handleSubmit((data) =>
                     handleCreateEvent({
                         ...data,
-                        startTime: start.valueOf().toString(),
-                        endTime: end.valueOf().toString(),
+                        startTime: startDate.valueOf().toString(),
+                        endTime: endDate.valueOf().toString(),
                     })
                 )}
             >

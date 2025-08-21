@@ -31,6 +31,7 @@ export const HeightTransition = ({ children, open, ...viewProps }: HeightTransit
 
     const heightTransitionStyle = useAnimatedStyle(() => ({
         height: withTiming(containerHeight && open ? containerHeight : 0, { duration: 200 }),
+        opacity: withTiming(containerHeight && open ? 1 : 0, { duration: 200 }),
         overflow: 'hidden',
     }));
 
