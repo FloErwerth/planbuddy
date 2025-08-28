@@ -1,9 +1,8 @@
-import { Stack } from 'expo-router';
-import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
+import { Stack } from "expo-router";
+import { NativeStackNavigationOptions } from "@react-navigation/native-stack";
 
 const defaultOptions: NativeStackNavigationOptions = {
     headerShown: false,
-    animation: 'fade',
 };
 
 export default function ProfileStack() {
@@ -13,6 +12,7 @@ export default function ProfileStack() {
             <Stack.Screen options={defaultOptions} name="friendRequests" />
             <Stack.Screen options={defaultOptions} name="editProfile" />
             <Stack.Screen options={defaultOptions} name="friends" />
+            <Stack.Screen options={defaultOptions} name="notifications" />
         </Stack>
     );
 }

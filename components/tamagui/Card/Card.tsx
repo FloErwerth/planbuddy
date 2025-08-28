@@ -1,9 +1,11 @@
 import { Card as TamaCard, CardProps, styled } from 'tamagui';
+import * as Device from 'expo-device';
+
+const isIos = Device.osName !== 'Android';
 
 const StyledCard = styled(TamaCard, {
-    elevation: '$1',
-    padding: '$2',
-    borderWidth: 0,
+    padding: '$2.5',
+    backgroundColor: 'white',
 });
 
 export const Card = ({ children, ...props }: CardProps) => {

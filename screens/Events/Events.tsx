@@ -71,7 +71,7 @@ export const Events = () => {
 
     return (
         <>
-            <Screen>
+            <Screen backgroundColor="white">
                 <SearchInput placeholder="Eventname" onChangeText={setSearch} />
                 <XStack gap="$2">
                     <View flex={0.5}>
@@ -97,7 +97,6 @@ export const Events = () => {
                         }}
                     />
                 }
-                withShadow
                 contentContainerStyle={contentContainerStyle}
             >
                 <MappedEvents showPastEvents={showPastEvents} search={search?.toLowerCase()} />

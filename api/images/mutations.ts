@@ -92,8 +92,8 @@ export const useUploadEventImageMutation = () => {
 
             const compressedImage = await Image.compress(image, {
                 compressionMethod: 'manual',
-                maxWidth: 240,
-                maxHeight: 240,
+                maxWidth: 1024,
+                maxHeight: 1024,
                 quality: 1,
             });
 

@@ -6,6 +6,17 @@ import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import * as Sentry from '@sentry/react-native';
 import { useCheckLoginStateOnAppStart } from '@/hooks/useCheckLoginState';
 
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+        shouldShowBanner: true,
+        shouldShowList: true,
+    }),
+});
+
 SplashScreen.preventAutoHideAsync();
 SplashScreen.setOptions({
     duration: 1000,
@@ -23,14 +34,7 @@ const AppStack = () => {
         <Stack>
             <Stack.Screen name="index" options={defaultOptions} />
             <Stack.Screen name="(tabs)" options={defaultOptions} />
-            <Stack.Screen
-                name="eventDetails"
-                options={{
-                    ...defaultOptions,
-                    presentation: 'modal',
-                    animation: 'fade',
-                }}
-            />
+            <Stack.Screen name="eventDetails" options={defaultOptions} />
             <Stack.Screen name="authentication" options={defaultOptions} />
         </Stack>
     );

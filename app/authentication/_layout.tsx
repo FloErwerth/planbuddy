@@ -1,10 +1,9 @@
-import { Stack } from 'expo-router';
-import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
-import { useGetUser, useWasOnboarded } from '@/store/authentication';
+import { Stack } from "expo-router";
+import { NativeStackNavigationOptions } from "@react-navigation/native-stack";
+import { useGetUser, useWasOnboarded } from "@/store/authentication";
 
 const defaultOptions: NativeStackNavigationOptions = {
     headerShown: false,
-    animation: 'fade',
 };
 
 export default function LoginLayout() {

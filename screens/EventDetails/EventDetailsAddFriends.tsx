@@ -16,7 +16,10 @@ import { Participant, Role } from '@/api/events/types';
 import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
 import { StatusEnum } from '@/api/types';
 import { router } from 'expo-router';
-import { useParticipantsQuery } from '@/api/events/queries';
+import { useParticipantsQuery, useSingleEventQuery } from '@/api/events/queries';
+import { useMe } from '@/api/events/refiners';
+import { NotificationChannelEnum } from '@/providers/NotificationsProvider';
+import { sendGuestInviteNotification } from '@/utils/notifications';
 
 const Guest = ({ id, onPress, checked, ...friend }: SimpleFriend & { checked: boolean; onPress: (id: string) => void }) => {
     return (
@@ -38,7 +41,10 @@ export const EventDetailsAddFriends = () => {
     const { width } = useWindowDimensions();
     const { mutateAsync } = useCreateParticipationMutation();
     const { eventId } = useEventDetailsContext();
+
+    const { data: event } = useSingleEventQuery(eventId);
     const { data: participants } = useParticipantsQuery(eventId);
+    const me = useMe(eventId);
 
     const applyFilter = (other: SimpleFriend | undefined) => {
         if (!filter || !other) {
@@ -88,11 +94,18 @@ export const EventDetailsAddFriends = () => {
     const handleAddParticipants = async () => {
         setIsLoading(true);
         try {
+            const addedGuestsList = friendsWithChecked.filter(({ checked }) => checked);
             await mutateAsync(
-                Array.from(addedGuests.values()).map(
-                    (guestId) => ({ userId: guestId, eventId, role: Role.enum.GUEST, status: StatusEnum.PENDING }) satisfies Participant
-                )
+                addedGuestsList.map(({ userId }) => ({ userId, eventId, role: Role.enum.GUEST, status: StatusEnum.PENDING }) satisfies Participant)
             );
+            await Promise.all(
+                addedGuestsList.map(async ({ other, me }) => {
+                    if (other && other.pushToken && other.pushChannels?.includes(NotificationChannelEnum.GUEST_INVITE)) {
+                        return await sendGuestInviteNotification(other.pushToken, me?.firstName, event?.name);
+                    }
+                })
+            );
+
             router.back();
         } finally {
             setIsLoading(false);

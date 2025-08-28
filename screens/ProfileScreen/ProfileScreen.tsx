@@ -4,7 +4,7 @@ import { SizableText, Spinner, View, XStack } from 'tamagui';
 import { UserAvatar } from '@/components/UserAvatar';
 import { PressableRow } from '@/components/PressableRow';
 import { router } from 'expo-router';
-import { ChevronRight, Pencil, Users } from '@tamagui/lucide-icons';
+import { Bell, ChevronRight, Pencil, Users } from '@tamagui/lucide-icons';
 import { FriendRequestRow } from '@/screens/ProfileScreen/FriendRequests';
 import { useLogout } from '@/api/supabase';
 import { Button } from '@/components/tamagui/Button';
@@ -49,6 +49,9 @@ export const ProfileScreen = () => {
                 <FriendRequestRow />
                 <PressableRow onPress={() => router.navigate('/(tabs)/profile/friends')} icon={<Users size="$1" />} iconRight={<ChevronRight size="$1" />}>
                     <SizableText>Freunde</SizableText>
+                </PressableRow>
+                <PressableRow onPress={() => router.navigate('/(tabs)/profile/notifications')} icon={<Bell size="$1" />} iconRight={<ChevronRight size="$1" />}>
+                    <SizableText>Benachrichtigungen</SizableText>
                 </PressableRow>
                 <SizableText>
                     Account löschen: Checken ob user ein creator ist, wenn ja Hinweisen, dass dann Events gelöscht werden. Möglichkeit Event an Pariticpant zu

@@ -1,12 +1,49 @@
 {
-    "build": {
-        "development": {
-            "developmentClient": true,
-            "distribution": "internal"
-        },
-        "preview": {
-            "distribution": "internal"
-        },
-        "production": {}
+  "build": {
+    "development": {
+      "ios": {
+        "distribution": "internal",
+        "developmentClient": true,
+        "autoIncrement": true
+      },
+      "android": {
+        "distribution": "internal",
+        "developmentClient": true,
+        "autoIncrement": true
+      }
+    },
+    "production": {
+      "ios": {
+        "autoIncrement": true
+      },
+      "android": {
+        "autoIncrement": true
+      }
     }
+  },
+  "submit": {
+    "development": {
+      "ios": {
+        "appleTeamId": "4A8D75P83C",
+        "ascAppId": "6751587095"
+      },
+      "android": {
+        "track": "internal",
+        "releaseStatus": "draft"
+      }
+    },
+    "production": {
+      "ios": {
+        "appleTeamId": "4A8D75P83C",
+        "ascAppId": "6751587095"
+      },
+      "android": {
+        "track": "internal",
+        "releaseStatus": "draft"
+      }
+    }
+  },
+  "cli": {
+    "appVersionSource": "remote"
+  }
 }

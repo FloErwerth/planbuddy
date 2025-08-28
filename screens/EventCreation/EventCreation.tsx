@@ -1,6 +1,6 @@
-import { useCreateEventMutation } from '@/api/events/mutations';
+import { useCreateEventMutation, useUpdateEventMutation } from '@/api/events/mutations';
 import { appEventSchema, Event } from '@/api/events/types';
-import { useUploadEventImageMutation } from '@/api/images';
+import { useEventImageQuery, useRemoveEventImageMutation, useUploadEventImageMutation } from '@/api/images';
 import { FormTextArea } from '@/components/FormFields';
 import { FormInput } from '@/components/FormFields/FormInput';
 import { ScrollableScreen } from '@/components/Screen';
@@ -15,8 +15,13 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { Separator, SizableText, View, XStack } from 'tamagui';
 import { EventSelectStartEnd } from '../Events/EventSelectStartEnd';
 import { useStartEndTimePickers } from '../Events/hooks/useStartEndTime';
+import { BackButton } from '@/components/BackButton';
 
-export const EventCreation = () => {
+type EventCreationProps = {
+    event?: Event;
+};
+
+export const EventCreation = ({ event }: EventCreationProps) => {
     const now = new Date();
     const {
         startDate,
@@ -29,42 +34,71 @@ export const EventCreation = () => {
             date: { setEndDate, showEndCalendar, isEndCalendarOpen },
             time: { setEndTime, showEndTime, isEndTimeOpen },
         },
-    } = useStartEndTimePickers();
+    } = useStartEndTimePickers(event && { startDate: new Date(event.startTime), endDate: new Date(event.endTime) });
 
     const form = useForm({
         resolver: zodResolver(appEventSchema),
         defaultValues: {
-            startTime: now.valueOf().toString(),
-            endTime: now.valueOf().toString(),
+            id: event?.id,
+            creatorId: event?.creatorId,
+            description: event?.description,
+            link: event?.link,
+            location: event?.location,
+            name: event?.name,
+            startTime: event?.startTime ?? now.valueOf().toString(),
+            endTime: event?.endTime ?? now.valueOf().toString(),
         },
     });
 
     const endTimeError = form.formState.errors.endTime;
 
-    const [imageToUpload, setImageToUpload] = useState<string>();
     const [isLoading, setIsLoading] = useState(false);
 
     const { mutateAsync: createEvent } = useCreateEventMutation();
     const { mutateAsync: uploadEventImage } = useUploadEventImageMutation();
+    const { mutateAsync: updateEvent } = useUpdateEventMutation();
+    const { data: eventImage } = useEventImageQuery(event?.id);
+    const { mutateAsync: removeImage } = useRemoveEventImageMutation();
+    const [imageToUpload, setImageToUpload] = useState<string | undefined>(eventImage);
 
     const handleCreateEvent = async (data: Event) => {
         try {
             setIsLoading(true);
-            const createdEvent = await createEvent({
-                event: data,
-            });
-            if (!createdEvent) {
-                throw new Error('Event creation failed');
-            }
-            if (imageToUpload && createdEvent) {
-                await uploadEventImage({
-                    eventId: createdEvent.id,
-                    image: imageToUpload,
+            let createdEvent: Awaited<ReturnType<typeof createEvent>>;
+            if (event) {
+                await updateEvent({
+                    ...data,
+                    startTime: startDate.toISOString(),
+                    endTime: endDate.toISOString(),
                 });
+                const isSameImage = imageToUpload === eventImage;
+                if (!isSameImage) {
+                    if (imageToUpload) {
+                        await uploadEventImage({
+                            eventId: data.id!,
+                            image: imageToUpload,
+                        });
+                    } else if (eventImage) {
+                        await removeImage({ eventId: event.id });
+                    }
+                }
+            } else {
+                createdEvent = await createEvent({
+                    event: data,
+                });
+                if (!createdEvent) {
+                    throw new Error('Event creation failed');
+                }
+                if (imageToUpload) {
+                    await uploadEventImage({
+                        eventId: createdEvent.id,
+                        image: imageToUpload,
+                    });
+                }
             }
             router.replace({
                 pathname: '/eventDetails',
-                params: { eventId: createdEvent.id },
+                params: { eventId: event ? event.id : createdEvent?.id },
             });
         } catch (e) {
             console.error(e);
@@ -77,7 +111,7 @@ export const EventCreation = () => {
 
     return (
         <>
-            <ScrollableScreen>
+            <ScrollableScreen back={event && <BackButton />} title={event && 'Event bearbeiten'}>
                 <View backgroundColor="$background" overflow="hidden" elevationAndroid="$2" width="100%" borderRadius="$8">
                     <EventCreationImage setImage={setImageToUpload} image={imageToUpload} />
                 </View>
@@ -154,7 +188,7 @@ export const EventCreation = () => {
                     })
                 )}
             >
-                Event erstellen
+                {event ? 'Event aktualisieren' : 'Event erstellen'}
             </Button>
         </>
     );

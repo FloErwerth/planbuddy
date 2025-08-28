@@ -1,17 +1,20 @@
 import { useState } from 'react';
-
-export const useStartEndTimePickers = () => {
+type TimePickerProps = {
+    startDate?: Date;
+    endDate?: Date;
+};
+export const useStartEndTimePickers = ({ startDate, endDate }: TimePickerProps = {}) => {
     const now = new Date();
     const [showStartCalendar, setShowStartCalendar] = useState(false);
     const [showStartTime, setShowStartTime] = useState(false);
     const [showEndCalendar, setShowEndCalendar] = useState(false);
     const [showEndTime, setShowEndTime] = useState(false);
-    const [start, setStart] = useState<Date>(now);
+    const [start, setStart] = useState<Date>(startDate ?? now);
     const [end, setEnd] = useState<Date>(
         (() => {
             const newEnd = new Date(now);
             newEnd.setHours(now.getHours() + 3);
-            return newEnd;
+            return endDate ?? newEnd;
         })()
     );
 

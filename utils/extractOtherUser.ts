@@ -24,6 +24,8 @@ export const extractOtherUser = (userId?: string, friend?: Partial<FriendsQueryR
         email: other?.email,
         sendAt: friend?.sendAt,
         acceptedAt: friend?.acceptedAt,
+        pushToken: other?.pushToken,
+        pushChannels: other?.pushChannels,
     };
 
     return {

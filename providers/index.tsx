@@ -6,6 +6,7 @@ import { ErrorBoundary } from '@sentry/react';
 import { ErrorScreen } from '@/screens/ErrorScreen';
 import { LoginProvider } from '@/providers/LoginProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { NotificationsProvider } from '@/providers/NotificationsProvider';
 
 export const Providers = ({ children }: PropsWithChildren) => {
     return (
@@ -13,10 +14,12 @@ export const Providers = ({ children }: PropsWithChildren) => {
             <ErrorBoundary fallback={ErrorScreen}>
                 <QueryProvider>
                     <LoginProvider>
-                        <TamaguiProvider>
-                            <StatusBar hidden />
-                            <SafeAreaView style={{ flex: 1 }}>{children}</SafeAreaView>
-                        </TamaguiProvider>
+                        <NotificationsProvider>
+                            <TamaguiProvider>
+                                <StatusBar hidden />
+                                <SafeAreaView style={{ flex: 1 }}>{children}</SafeAreaView>
+                            </TamaguiProvider>
+                        </NotificationsProvider>
                     </LoginProvider>
                 </QueryProvider>
             </ErrorBoundary>

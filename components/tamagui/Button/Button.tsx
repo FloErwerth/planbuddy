@@ -9,14 +9,12 @@ export const Button = styled(TamaguiButton, {
             primary: {
                 backgroundColor: '$primary',
                 color: '$accent',
-                elevation: '$1',
             },
             secondary: {
                 backgroundColor: '$accent',
                 color: '$primary',
             },
             transparent: {
-                elevation: 0,
                 padding: 0,
             },
             round: {
