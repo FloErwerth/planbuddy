@@ -110,7 +110,7 @@ export const NotificationsProvider = ({ children }: PropsWithChildren) => {
         <NotificationContext.Provider
             value={{
                 channels: { add: addNotificationChannel, toggle: toggleNotificationChannel, remove: removeNotificationChannel, isChannelActive },
-                token: user?.pushToken,
+                token: user?.pushToken ?? undefined,
                 register: registerForPushNotifications,
                 notification,
             }}
