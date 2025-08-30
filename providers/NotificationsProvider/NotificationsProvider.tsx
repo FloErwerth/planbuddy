@@ -65,6 +65,7 @@ export const NotificationsProvider = ({ children }: PropsWithChildren) => {
         });
 
         const responseListener = Notifications.addNotificationResponseReceivedListener((response) => {
+            // todo: wenn deep link vorhanden dahin leiten
             console.log(response);
         });
 

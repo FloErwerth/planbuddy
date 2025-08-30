@@ -34,7 +34,7 @@ export const useInsertUserMutation = () => {
     const queryClient = useQueryClient();
     const user = useGetUser();
     return useMutation({
-        mutationFn: async (insertedUser: Omit<User, "id">) => {
+        mutationFn: async (insertedUser: Omit<User, "id" | "pushToken" | "pushChannels">) => {
             if (!user) {
                 throw new Error("Error in insert user: user not defined, probably not logged in");
             }

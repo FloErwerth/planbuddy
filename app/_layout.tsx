@@ -1,12 +1,12 @@
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useFonts } from 'expo-font';
-import { Providers } from '@/providers';
-import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
-import * as Sentry from '@sentry/react-native';
-import { useCheckLoginStateOnAppStart } from '@/hooks/useCheckLoginState';
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useFonts } from "expo-font";
+import { Providers } from "@/providers";
+import { NativeStackNavigationOptions } from "@react-navigation/native-stack";
+import * as Sentry from "@sentry/react-native";
+import { useCheckLoginStateOnAppStart } from "@/hooks/useCheckLoginState";
 
-import * as Notifications from 'expo-notifications';
+import * as Notifications from "expo-notifications";
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -25,6 +25,7 @@ SplashScreen.setOptions({
 
 const defaultOptions: NativeStackNavigationOptions = {
     headerShown: false,
+    navigationBarHidden: true,
 };
 
 const AppStack = () => {
@@ -42,12 +43,12 @@ const AppStack = () => {
 
 export default Sentry.wrap(function RootLayout() {
     const [fontsLoaded] = useFonts({
-        Normal: require('../assets/fonts/Roboto-Regular.ttf'),
-        Italic: require('../assets/fonts/Roboto-MediumItalic.ttf'),
-        SemiBold: require('../assets/fonts/Roboto-SemiBold.ttf'),
-        SemiBoldItalic: require('../assets/fonts/Roboto-SemiBoldItalic.ttf'),
-        Bold: require('../assets/fonts/Roboto-Bold.ttf'),
-        BoldItalic: require('../assets/fonts/Roboto-BoldItalic.ttf'),
+        Normal: require("../assets/fonts/Roboto-Regular.ttf"),
+        Italic: require("../assets/fonts/Roboto-MediumItalic.ttf"),
+        SemiBold: require("../assets/fonts/Roboto-SemiBold.ttf"),
+        SemiBoldItalic: require("../assets/fonts/Roboto-SemiBoldItalic.ttf"),
+        Bold: require("../assets/fonts/Roboto-Bold.ttf"),
+        BoldItalic: require("../assets/fonts/Roboto-BoldItalic.ttf"),
     });
 
     if (!fontsLoaded) {

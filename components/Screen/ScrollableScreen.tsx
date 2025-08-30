@@ -1,6 +1,6 @@
-import { ScrollView } from '@/components/tamagui/ScrollView';
-import { PropsWithChildren, ReactNode } from 'react';
-import { SizableText, View, XStack } from 'tamagui';
+import { PropsWithChildren, ReactNode } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ScrollView, SizableText, View, XStack } from "tamagui";
 
 export type ScrollableScreenProps = PropsWithChildren & {
     showBackButton?: boolean;
@@ -12,13 +12,15 @@ export type ScrollableScreenProps = PropsWithChildren & {
 
 export const ScrollableScreen = ({ children, showBackButton = false, back, title, action }: ScrollableScreenProps) => {
     const hasActionOrBack = !!back || !!action;
+    const { top } = useSafeAreaInsets();
 
     return (
         <ScrollView
             contentContainerStyle={{
-                padding: '$4',
-                gap: '$4',
-                backgroundColor: '$background',
+                padding: "$4",
+                gap: "$4",
+                paddingTop: top || "$4",
+                backgroundColor: "$background",
             }}
         >
             {(back || title || action) && (

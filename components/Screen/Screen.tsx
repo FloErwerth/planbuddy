@@ -1,5 +1,6 @@
-import { PropsWithChildren, ReactNode } from 'react';
-import { SizableText, View, ViewProps, XStack } from 'tamagui';
+import { PropsWithChildren, ReactNode } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SizableText, View, ViewProps, XStack } from "tamagui";
 
 type ScreenProps = PropsWithChildren &
     ViewProps & {
@@ -10,9 +11,10 @@ type ScreenProps = PropsWithChildren &
 
 export const Screen = ({ children, back = false, title, action, ...props }: ScreenProps) => {
     const hasActionOrBack = !!back || !!action;
+    const { top } = useSafeAreaInsets();
 
     return (
-        <View padding="$4" gap="$4" backgroundColor="$background" {...props}>
+        <View padding="$4" paddingTop={top || "$4"} gap="$4" backgroundColor="$background" {...props}>
             {(back || title || action) && (
                 <XStack alignItems="center">
                     <View flex={hasActionOrBack ? 0.2 : 0}>{back}</View>

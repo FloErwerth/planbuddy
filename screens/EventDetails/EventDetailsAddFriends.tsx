@@ -1,25 +1,25 @@
-import { useFriendsByStatus } from '@/api/friends/refiners';
-import { useState } from 'react';
-import { SimpleFriend } from '@/api/friends/types';
-import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
-import { Screen } from '@/components/Screen';
-import { BackButton } from '@/components/BackButton';
-import { SearchInput } from '@/components/SearchInput';
-import { AnimatePresence, getTokenValue, Spinner, useWindowDimensions, View } from 'tamagui';
-import { Card } from '@/components/tamagui/Card';
-import { Pressable } from 'react-native';
-import { FriendDisplay } from '@/components/FriendDisplay';
-import { Checkbox } from '@/components/tamagui/Checkbox';
-import { Button } from '@/components/tamagui/Button';
-import { useCreateParticipationMutation } from '@/api/events/mutations';
-import { Participant, Role } from '@/api/events/types';
-import { useEventDetailsContext } from '@/screens/EventDetails/EventDetailsProvider';
-import { StatusEnum } from '@/api/types';
-import { router } from 'expo-router';
-import { useParticipantsQuery, useSingleEventQuery } from '@/api/events/queries';
-import { useMe } from '@/api/events/refiners';
-import { NotificationChannelEnum } from '@/providers/NotificationsProvider';
-import { sendGuestInviteNotification } from '@/utils/notifications';
+import { useFriendsByStatus } from "@/api/friends/refiners";
+import { useState } from "react";
+import { SimpleFriend } from "@/api/friends/types";
+import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
+import { Screen } from "@/components/Screen";
+import { BackButton } from "@/components/BackButton";
+import { SearchInput } from "@/components/SearchInput";
+import { AnimatePresence, getTokenValue, Spinner, useWindowDimensions, View } from "tamagui";
+import { Card } from "@/components/tamagui/Card";
+import { Pressable } from "react-native";
+import { FriendDisplay } from "@/components/FriendDisplay";
+import { Checkbox } from "@/components/tamagui/Checkbox";
+import { Button } from "@/components/tamagui/Button";
+import { useCreateParticipationMutation } from "@/api/events/mutations";
+import { Participant, Role } from "@/api/events/types";
+import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
+import { StatusEnum } from "@/api/types";
+import { router } from "expo-router";
+import { useParticipantsQuery, useSingleEventQuery } from "@/api/events/queries";
+import { useMe } from "@/api/events/refiners";
+import { NotificationChannelEnum } from "@/providers/NotificationsProvider";
+import { sendGuestInviteNotification } from "@/utils/notifications";
 
 const Guest = ({ id, onPress, checked, ...friend }: SimpleFriend & { checked: boolean; onPress: (id: string) => void }) => {
     return (
@@ -51,7 +51,7 @@ export const EventDetailsAddFriends = () => {
             return true;
         }
 
-        const terms = filter.split(' ');
+        const terms = filter.split(" ");
 
         if (terms.length === 0) {
             return true;
@@ -133,10 +133,10 @@ export const EventDetailsAddFriends = () => {
                         margin="$4"
                         position="absolute"
                         bottom={0}
-                        width={width - 2 * getTokenValue('$4', 'space')}
+                        width={width - 2 * getTokenValue("$4", "space")}
                         onPress={handleAddParticipants}
                     >
-                        {isLoading ? <Spinner /> : 'Gäste hinzufügen'}
+                        {isLoading ? <Spinner /> : "Gäste hinzufügen"}
                     </Button>
                 )}
             </AnimatePresence>

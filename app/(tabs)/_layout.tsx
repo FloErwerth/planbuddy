@@ -7,9 +7,7 @@ import { View } from "tamagui";
 
 const screenOptions: BottomTabNavigationOptions = {
     tabBarStyle: {
-        borderTopLeftRadius: 6,
         height: 60,
-        borderTopRightRadius: 6,
     },
     tabBarLabelStyle: { height: 0 },
     tabBarActiveTintColor: colors.primary,

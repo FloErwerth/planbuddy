@@ -1,9 +1,9 @@
-import { SizableText, View } from 'tamagui';
-import { Screen } from '@/components/Screen';
-import { FriendEntry } from '@/screens/AddFriendsScreen/FriendEntry';
-import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
-import { UserSearchInput, UserSearchProvider, UserWithStatus, useUserSearchContext } from '@/components/UserSearch';
-import { UserSearch } from '@tamagui/lucide-icons';
+import { SizableText, View } from "tamagui";
+import { Screen } from "@/components/Screen";
+import { FriendEntry } from "@/screens/AddFriendsScreen/FriendEntry";
+import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
+import { UserSearchInput, UserWithStatus, useUserSearchContext } from "@/components/UserSearch";
+import { UserSearch } from "@tamagui/lucide-icons";
 
 const containerStyle = { padding: 16, paddingBottom: 32 } as const;
 
@@ -37,11 +37,11 @@ const AddFriendsDisplay = () => {
 
 export const AddFriendsScreen = () => {
     return (
-        <UserSearchProvider>
+        <>
             <Screen title="Freunde hinzufügen">
                 <UserSearchInput />
             </Screen>
             <AddFriendsDisplay />
-        </UserSearchProvider>
+        </>
     );
 };
