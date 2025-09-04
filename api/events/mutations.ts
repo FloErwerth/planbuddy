@@ -9,31 +9,10 @@ import {
 	DELETE_PARTICIPANT_MUTATION_KEY,
 	EVENTS_QUERY_KEY,
 	PARTICIPANT_QUERY_KEY,
-	UPDATE_EVENT_MUTATION_KEY,
 	UPDATE_PARTICIPANT_MUTATION_KEY,
 } from "@/api/events/constants";
 import { EVENT_IMAGE_QUERY_KEY } from "@/api/images/constants";
 import { ParticipantStatusEnum } from "@/api/types";
-
-export const useUpdateEventMutation = () => {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: async (updatedEventFields: Pick<AppEvent, "id"> & Omit<Partial<AppEvent>, "id">): Promise<boolean> => {
-			const result: PostgrestSingleResponse<AppEvent[]> = await supabase.from("events").update(updatedEventFields).eq("id", updatedEventFields.id).select();
-
-			if (result.error) {
-				throw new Error(`Error in updating event mutation: ${result.error.message}`);
-			}
-
-			return result.error === null;
-		},
-		onSuccess: async () => {
-			await queryClient.invalidateQueries([EVENTS_QUERY_KEY]);
-		},
-		mutationKey: [UPDATE_EVENT_MUTATION_KEY],
-	});
-};
 
 export const useDeleteEventAndEventImageMutation = () => {
 	const queryClient = useQueryClient();

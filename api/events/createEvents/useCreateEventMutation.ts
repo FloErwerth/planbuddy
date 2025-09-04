@@ -15,16 +15,15 @@ export const useCreateEventMutation = () => {
 	return useMutation({
 		mutationFn: async ({ event }: CreateEventMutationArgs): Promise<AppEvent | undefined> => {
 			const queryResult = await createEventSupabaseQuery(event, user.id);
-			const createdEvent = queryResult.data;
 
-			if (createdEvent === null) {
-				throw new Error("Error in useCreateEventMutation: Data is null.");
+			if (queryResult.error) {
+				throw new Error(`Error in useCreateEventMutation: ${queryResult.error.message}`);
 			}
 
 			const insertedUsers: Participant[] = [
 				{
 					userId: user.id,
-					eventId: createdEvent.id,
+					eventId: queryResult.data.id,
 					role: ParticipantRoleEnum.CREATOR,
 					status: ParticipantStatusEnum.ACCEPTED,
 				},
@@ -36,7 +35,7 @@ export const useCreateEventMutation = () => {
 				throw new Error(participantResult.error.message);
 			}
 
-			return createdEvent;
+			return queryResult.data;
 		},
 		onSuccess: async () => {
 			await queryClient.invalidateQueries({ queryKey: [EVENTS_QUERY_KEY] });
