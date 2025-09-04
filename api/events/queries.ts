@@ -1,30 +1,9 @@
 import { EVENTS_QUERY_KEY, PARTICIPANT_QUERY_KEY } from "@/api/events/constants";
-import { appEventSchema, backendEventSchema, AppEvent, Participant, ParticipantQueryResponse } from "@/api/events/types";
+import { appEventSchema, AppEvent, Participant, ParticipantQueryResponse } from "@/api/events/types";
 import { supabase } from "@/api/supabase";
-import { ParticipantStatus, StatusEnum } from "@/api/types";
 import { useGetUser } from "@/store/authentication";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
 import { useQuery } from "@tanstack/react-query";
-
-export const useEventsQuery = () => {
-	const user = useGetUser();
-
-	return useQuery({
-		queryFn: async () => {
-			if (!user) {
-				return [];
-			}
-			const result = await supabase.from("participants").select(`role,status,events(*)`).eq("userId", user?.id).throwOnError();
-
-			return result.data?.map((data) => ({
-				...backendEventSchema.parse(data.events),
-				role: data.role,
-				status: data.status,
-			}));
-		},
-		queryKey: [EVENTS_QUERY_KEY, user?.id],
-	});
-};
 
 type SingleQueryResponse = {
 	events: AppEvent;
