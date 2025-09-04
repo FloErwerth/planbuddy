@@ -1,5 +1,5 @@
-import { createEventSupabaseQuery } from "@/api/events/createEvents/query";
 import { EVENTS_QUERY_KEY, CREATE_EVENT_MUTATION_KEY } from "@/api/events/constants";
+import { createEventSupabaseQuery } from "@/api/events/createEvents/query";
 import { AppEvent, Participant, ParticipantRoleEnum } from "@/api/events/types";
 import { supabase } from "@/api/supabase";
 import { ParticipantStatusEnum } from "@/api/types";
