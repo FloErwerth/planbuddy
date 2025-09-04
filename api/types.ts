@@ -10,9 +10,8 @@ export const userSchema = z.object({
 	pushChannels: z.array(NotificationChannelEnumDefinition).nullable().default([]),
 });
 
-export const statusSchema = z.enum(["ACCEPTED", "PENDING", "DECLINED"]);
-export const StatusEnum = statusSchema.enum;
-export type Status = z.infer<typeof statusSchema>;
+export const ParticipantStatusEnum = { ACCEPTED: "ACCEPTED", PENDING: "PENDING", DECLINED: "DECLINED" } as const;
+export type ParticipantStatus = (typeof ParticipantStatusEnum)[keyof typeof ParticipantStatusEnum];
 
 export type User = z.infer<typeof userSchema>;
 

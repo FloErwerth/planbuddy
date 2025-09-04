@@ -9,7 +9,7 @@ import { StatusEnum } from "@/api/types";
 import { useMe } from "@/api/events/refiners";
 import { SizableText, View } from "tamagui";
 import { useDeleteParticipantMutation, useUpdateEventMutation, useUpdateParticipationMutation } from "@/api/events/mutations";
-import { ParticipantQueryResponse, Role } from "@/api/events/types";
+import { ParticipantQueryResponse, ParticipantRoleEnum } from "@/api/events/types";
 import { router } from "expo-router";
 import { Dialog } from "@/components/tamagui/Dialog";
 import { Button } from "@/components/tamagui/Button";
@@ -37,7 +37,7 @@ export default function TransferEvent() {
 			await updateGuest({
 				id: guestToTransferTo?.id,
 				participant: {
-					role: Role.enum.CREATOR,
+					role: ParticipantRoleEnum.enum.CREATOR,
 				},
 			});
 			await removeGuest(me?.id);

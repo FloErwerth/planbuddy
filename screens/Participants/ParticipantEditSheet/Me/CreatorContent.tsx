@@ -3,7 +3,7 @@ import { Button } from "@/components/tamagui/Button";
 import { router } from "expo-router";
 import { Dialog } from "@/components/tamagui/Dialog";
 import { useParticipantsQuery } from "@/api/events/queries";
-import { Role } from "@/api/events/types";
+import { ParticipantRoleEnum } from "@/api/events/types";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 import { StatusEnum } from "@/api/types";
 import { useMe } from "@/api/events/refiners";
@@ -16,7 +16,7 @@ export const CreatorContent = ({ onOpenChange }: CreatorContentProps) => {
 	const { eventId } = useEventDetailsContext();
 	const me = useMe(eventId);
 	const participants = useParticipantsQuery(eventId);
-	const hasAdmin = participants.data?.some((participant) => participant.role === Role.enum.ADMIN);
+	const hasAdmin = participants.data?.some((participant) => participant.role === ParticipantRoleEnum.enum.ADMIN);
 	const hasOtherGuests = participants.data?.some((participant) => {
 		return participant.userId !== me?.userId && participant.status === StatusEnum.ACCEPTED;
 	});

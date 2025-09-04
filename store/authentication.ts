@@ -20,7 +20,12 @@ export const useSetUser = () => {
 };
 
 export const useGetUser = () => {
-	return useAtomValue(userAtom);
+	const user = useAtomValue(userAtom);
+	if (user === undefined) {
+		throw new Error("Error in useGetUser: User is undefined.");
+	}
+
+	return user;
 };
 
 export const useUser = () => {

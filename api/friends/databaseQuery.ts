@@ -1,7 +1,7 @@
 import { QueryOptions, useQuery, UseQueryResult } from "@tanstack/react-query";
 import { FRIENDS_QUERY_KEY } from "@/api/friends/constants";
 import { supabase } from "@/api/supabase";
-import { Status, User } from "@/api/types";
+import { ParticipantStatus, User } from "@/api/types";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
 import { friendsQuerySchema, SingleFriendQueryResponse, singleFriendSchema } from "@/api/friends/schema";
 import { useGetUser } from "@/store/authentication";
@@ -12,7 +12,7 @@ type FriendDatabaseType = {
 	sendAt: string;
 	fromUserId: User;
 	toUserId: User;
-	status: Status;
+	status: ParticipantStatus;
 };
 
 export const useDatabaseFriendsQuery = () => {

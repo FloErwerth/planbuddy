@@ -1,10 +1,10 @@
 import { SizableText, View } from "tamagui";
-import { Status, StatusEnum } from "@/api/types";
+import { ParticipantStatus, StatusEnum } from "@/api/types";
 import { Ellipsis } from "@tamagui/lucide-icons";
 import { Pressable } from "react-native";
 
 type AcceptanceStatusProps = {
-	status: Status | undefined;
+	status: ParticipantStatus | undefined;
 	openOptions: () => void;
 };
 

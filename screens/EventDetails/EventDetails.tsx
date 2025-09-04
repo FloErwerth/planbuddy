@@ -12,7 +12,7 @@ import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvi
 import { useGetUser } from "@/store/authentication";
 import { Button } from "@/components/tamagui/Button";
 import { useMe } from "@/api/events/refiners";
-import { Role } from "@/api/events/types";
+import { ParticipantRoleEnum } from "@/api/events/types";
 import { Pencil } from "@tamagui/lucide-icons";
 
 export const EventDetails = () => {
@@ -43,7 +43,7 @@ export const EventDetails = () => {
 			<ScrollableScreen
 				back={<BackButton href="/(tabs)" />}
 				action={
-					me?.role === Role.enum.GUEST ? null : (
+					me?.role === ParticipantRoleEnum.enum.GUEST ? null : (
 						<Button variant="round" onPress={() => router.push("/eventDetails/editEvent")}>
 							<Pencil color="$color" size="$1" scale={0.75} />
 						</Button>

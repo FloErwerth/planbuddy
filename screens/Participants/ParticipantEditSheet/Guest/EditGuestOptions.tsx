@@ -1,7 +1,7 @@
 import { SizableText, YStack } from "tamagui";
 import { PressableRow } from "@/components/PressableRow";
 import { Checkbox } from "@/components/tamagui/Checkbox";
-import { ParticipantQueryResponse, Role } from "@/api/events/types";
+import { ParticipantQueryResponse, ParticipantRoleEnum } from "@/api/events/types";
 import { Button } from "@/components/tamagui/Button";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 import { useMe } from "@/api/events/refiners";
@@ -18,7 +18,7 @@ export const EditGuestOptions = ({ onRemoveGuest }: ParticipantEditGuestOptionsP
 			return;
 		}
 
-		const newRole = guest.role !== Role.enum.ADMIN ? Role.enum.ADMIN : Role.enum.GUEST;
+		const newRole = guest.role !== ParticipantRoleEnum.enum.ADMIN ? ParticipantRoleEnum.enum.ADMIN : ParticipantRoleEnum.enum.GUEST;
 
 		const newGuest: ParticipantQueryResponse = {
 			...guest,
@@ -32,7 +32,7 @@ export const EditGuestOptions = ({ onRemoveGuest }: ParticipantEditGuestOptionsP
 		<>
 			<YStack gap="$2">
 				<SizableText>Teilnehmerschaft verwalten</SizableText>
-				{me?.role === Role.enum.CREATOR && (
+				{me?.role === ParticipantRoleEnum.enum.CREATOR && (
 					<Button onPress={onRemoveGuest}>
 						<SizableText color="$background">{guest?.firstName} aus Event ausladen</SizableText>
 					</Button>
@@ -41,7 +41,7 @@ export const EditGuestOptions = ({ onRemoveGuest }: ParticipantEditGuestOptionsP
 				<SizableText>Rolle</SizableText>
 				<PressableRow
 					onPress={toggleRole}
-					iconRight={<Checkbox onPress={toggleRole} checked={guest?.role === Role.enum.ADMIN} />}
+					iconRight={<Checkbox onPress={toggleRole} checked={guest?.role === ParticipantRoleEnum.enum.ADMIN} />}
 					justifyContent="space-between"
 				>
 					<SizableText>Ist Admin</SizableText>

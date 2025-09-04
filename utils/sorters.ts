@@ -1,7 +1,7 @@
-import { Status, StatusEnum } from "@/api/types";
+import { ParticipantStatus, StatusEnum } from "@/api/types";
 import { SingleFriendQueryResponse } from "@/api/friends/schema";
 
-export const sortFriendsToTop = (a: { status?: Status }, b: { status?: Status }) => {
+export const sortFriendsToTop = (a: { status?: ParticipantStatus }, b: { status?: ParticipantStatus }) => {
 	if (a.status === StatusEnum.ACCEPTED && b.status === StatusEnum.ACCEPTED) {
 		return 0;
 	}
@@ -11,7 +11,7 @@ export const sortFriendsToTop = (a: { status?: Status }, b: { status?: Status })
 	return 1;
 };
 
-export const sortRelationshipToTop = (a: { status?: Status }, b: { status?: Status }) => {
+export const sortRelationshipToTop = (a: { status?: ParticipantStatus }, b: { status?: ParticipantStatus }) => {
 	if (a.status !== undefined && b.status !== undefined) {
 		return sortFriendsToTop(a, b);
 	}

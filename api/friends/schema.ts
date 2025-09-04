@@ -1,5 +1,5 @@
 import { array, object, string, z } from "zod";
-import { statusSchema, userSchema } from "@/api/types";
+import { ParticipantStatusEnum, userSchema } from "@/api/types";
 import { NotificationChannelEnumDefinition } from "@/providers/NotificationsProvider";
 
 export const friendSchema = z
@@ -7,7 +7,7 @@ export const friendSchema = z
 		id: string(),
 		acceptedAt: string().nullable(),
 		sendAt: string(),
-		status: statusSchema,
+		status: ParticipantStatusEnum,
 	})
 	.transform(({ acceptedAt, sendAt, ...rest }) => ({
 		sendAt: new Date(sendAt),

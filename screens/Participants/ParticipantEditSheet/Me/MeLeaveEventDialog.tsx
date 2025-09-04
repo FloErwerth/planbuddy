@@ -1,4 +1,4 @@
-import { Role } from "@/api/events/types";
+import { ParticipantRoleEnum } from "@/api/events/types";
 import { CreatorContent } from "@/screens/Participants/ParticipantEditSheet/Me/CreatorContent";
 import { GuestContent } from "@/screens/Participants/ParticipantEditSheet/Me/GuestContent";
 import { useMe } from "@/api/events/refiners";
@@ -9,7 +9,7 @@ import { DialogProps } from "tamagui";
 export const MeLeaveEventDialog = (dialogProps: DialogProps) => {
 	const { eventId } = useEventDetailsContext();
 	const me = useMe(eventId);
-	const meIsCreator = me?.role === Role.enum.CREATOR;
+	const meIsCreator = me?.role === ParticipantRoleEnum.enum.CREATOR;
 
 	return (
 		<Dialog modal={false} {...dialogProps}>

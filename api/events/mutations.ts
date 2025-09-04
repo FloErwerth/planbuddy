@@ -1,11 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/api/supabase";
-import { BackendEvent, backendEventSchema, Event, Participant, Role } from "./types";
+import { AppEvent, Participant, ParticipantRoleEnum } from "./types";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
-import { StatusEnum } from "@/api/types";
 import { useGetUser } from "@/store/authentication";
 import {
-	CREATE_EVENT_MUTATION_KEY,
 	CREATE_PARTICIPANT_MUTATION_KEY,
 	DELETE_EVENT_MUTATION_KEY,
 	DELETE_PARTICIPANT_MUTATION_KEY,
@@ -15,58 +13,14 @@ import {
 	UPDATE_PARTICIPANT_MUTATION_KEY,
 } from "@/api/events/constants";
 import { EVENT_IMAGE_QUERY_KEY } from "@/api/images/constants";
-
-export const useCreateEventMutation = () => {
-	const user = useGetUser();
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: async ({ event }: { event: Event }): Promise<BackendEvent | undefined> => {
-			if (user === undefined) {
-				return undefined;
-			}
-
-			const result: PostgrestSingleResponse<Event[]> = await supabase
-				.from("events")
-				.insert({ ...event, creatorId: user.id } satisfies Event)
-				.select()
-				.throwOnError();
-
-			if (result.data.length > 1) {
-				throw new Error("Something went wrong with the event creation in the database");
-			}
-
-			const insertedEvent = backendEventSchema.parse(result.data[0]);
-
-			const insertedUsers = [
-				{
-					userId: user.id,
-					eventId: insertedEvent.id,
-					role: "CREATOR",
-					status: "ACCEPTED",
-				},
-			];
-
-			const participantResult = await supabase.from("participants").insert(insertedUsers);
-
-			if (participantResult.error) {
-				throw new Error(participantResult.error.message);
-			}
-
-			return insertedEvent;
-		},
-		onSuccess: async () => {
-			await queryClient.invalidateQueries([EVENTS_QUERY_KEY]);
-		},
-		mutationKey: [CREATE_EVENT_MUTATION_KEY],
-	});
-};
+import { ParticipantStatusEnum } from "@/api/types";
 
 export const useUpdateEventMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (updatedEventFields: Pick<Event, "id"> & Omit<Partial<Event>, "id">): Promise<boolean> => {
-			const result: PostgrestSingleResponse<Event[]> = await supabase.from("events").update(updatedEventFields).eq("id", updatedEventFields.id).select();
+		mutationFn: async (updatedEventFields: Pick<AppEvent, "id"> & Omit<Partial<AppEvent>, "id">): Promise<boolean> => {
+			const result: PostgrestSingleResponse<AppEvent[]> = await supabase.from("events").update(updatedEventFields).eq("id", updatedEventFields.id).select();
 
 			if (result.error) {
 				throw new Error(`Error in updating event mutation: ${result.error.message}`);
@@ -86,7 +40,7 @@ export const useDeleteEventAndEventImageMutation = () => {
 
 	return useMutation({
 		mutationFn: async (eventId: string): Promise<boolean> => {
-			const result: PostgrestSingleResponse<Event[]> = await supabase.from("events").delete().eq("id", eventId).select();
+			const result: PostgrestSingleResponse<AppEvent[]> = await supabase.from("events").delete().eq("id", eventId).select();
 
 			if (result.error) {
 				throw new Error(`Error in deleting event mutation: deleting event with message ${result.error.message}`);
@@ -123,13 +77,13 @@ export const useCreateParticipationMutation = () => {
 				Array.isArray(participant)
 					? participant.map((singleParticipant) => ({
 							...singleParticipant,
-							role: Role.enum.GUEST,
-							status: StatusEnum.PENDING,
+							role: ParticipantRoleEnum.GUEST,
+							status: ParticipantStatusEnum.PENDING,
 						}))
 					: {
 							...participant,
-							role: Role.enum.GUEST,
-							status: StatusEnum.PENDING,
+							role: ParticipantRoleEnum.GUEST,
+							status: ParticipantStatusEnum.PENDING,
 						},
 				{ ignoreDuplicates: true }
 			);

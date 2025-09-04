@@ -1,5 +1,5 @@
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from "react";
-import { Status, User, userSchema } from "@/api/types";
+import { ParticipantStatus, User, userSchema } from "@/api/types";
 import { supabase } from "@/api/supabase";
 import { useQuery } from "@tanstack/react-query";
 import { array } from "zod";
@@ -10,7 +10,7 @@ import { useGetUser } from "@/store/authentication";
 import { USERS_QUERY_KEY } from "@/api/user/constants";
 
 export type UserWithStatus = User & {
-	status?: Status;
+	status?: ParticipantStatus;
 	receiver?: User;
 	requester?: User;
 };

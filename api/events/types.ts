@@ -1,22 +1,11 @@
-import { Status, User } from "@/api/types";
+import { ParticipantStatus, User } from "@/api/types";
 import { zodNullToUndefined } from "@/utils/zodNullToUndefined";
 import { z } from "zod";
 
-export const backendEventSchema = z.object({
-	id: z.string(),
-	creatorId: z.string(),
-	created_at: z.string(),
-	name: z.string(),
-	description: z.string().nullable().optional(),
-	location: z.string(),
-	link: z.string().url().nullable().optional(),
-	startTime: z.string(),
-	endTime: z.string(),
-});
-
 export const appEventSchema = z.object({
-	id: zodNullToUndefined(z.string().nullable()),
+	id: z.string(),
 	creatorId: zodNullToUndefined(z.string().nullable()),
+	createdAt: z.string(),
 	name: z.string(),
 	description: zodNullToUndefined(z.string().nullable()),
 	location: z.string(),
@@ -25,18 +14,17 @@ export const appEventSchema = z.object({
 	endTime: z.string(),
 });
 
-export const Role = z.enum(["GUEST", "ADMIN", "CREATOR"]);
-export type RoleType = z.infer<typeof Role>;
+export const ParticipantRoleEnum = { GUEST: "GUEST", ADMIN: "ADMIN", CREATOR: "CREATOR" } as const;
+export type ParticipantRole = (typeof ParticipantRoleEnum)[keyof typeof ParticipantRoleEnum];
 
 export type Participant = {
 	id?: string;
 	eventId?: string;
 	userId?: string;
-	role: RoleType;
-	status: Status;
+	role: ParticipantRole;
+	status: ParticipantStatus;
 };
 
-export type Event = z.infer<typeof appEventSchema>;
-export type BackendEvent = z.infer<typeof backendEventSchema>;
+export type AppEvent = z.infer<typeof appEventSchema>;
 
 export type ParticipantQueryResponse = Participant & User;

@@ -1,5 +1,5 @@
 import { useCreateEventMutation, useUpdateEventMutation } from "@/api/events/mutations";
-import { appEventSchema, Event } from "@/api/events/types";
+import { appEventSchema, AppEvent } from "@/api/events/types";
 import { useEventImageQuery, useRemoveEventImageMutation, useUploadEventImageMutation } from "@/api/images";
 import { FormTextArea } from "@/components/FormFields";
 import { FormInput } from "@/components/FormFields/FormInput";
@@ -18,7 +18,7 @@ import { useStartEndTimePickers } from "../Events/hooks/useStartEndTime";
 import { BackButton } from "@/components/BackButton";
 
 type EventCreationProps = {
-	event?: Event;
+	event?: AppEvent;
 };
 
 export const EventCreation = ({ event }: EventCreationProps) => {
@@ -61,7 +61,7 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 	const { mutateAsync: removeImage } = useRemoveEventImageMutation();
 	const [imageToUpload, setImageToUpload] = useState<string | undefined>(eventImage);
 
-	const handleCreateEvent = async (data: Event) => {
+	const handleCreateEvent = async (data: AppEvent) => {
 		try {
 			setIsLoading(true);
 			let createdEvent: Awaited<ReturnType<typeof createEvent>>;

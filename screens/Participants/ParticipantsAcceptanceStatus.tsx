@@ -1,8 +1,8 @@
 import { SizableText, View } from "tamagui";
-import { Status, StatusEnum } from "@/api/types";
+import { ParticipantStatus, StatusEnum } from "@/api/types";
 
 type AcceptanceStatusProps = {
-	status: Status;
+	status: ParticipantStatus;
 };
 
 export const ParticipantsAcceptanceStatus = ({ status }: AcceptanceStatusProps) => {

@@ -12,7 +12,7 @@ import { FriendDisplay } from "@/components/FriendDisplay";
 import { Checkbox } from "@/components/tamagui/Checkbox";
 import { Button } from "@/components/tamagui/Button";
 import { useCreateParticipationMutation } from "@/api/events/mutations";
-import { Participant, Role } from "@/api/events/types";
+import { Participant, ParticipantRoleEnum } from "@/api/events/types";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 import { StatusEnum } from "@/api/types";
 import { router } from "expo-router";
@@ -95,7 +95,9 @@ export const EventDetailsAddFriends = () => {
 		setIsLoading(true);
 		try {
 			const addedGuestsList = friendsWithChecked.filter(({ checked }) => checked);
-			await mutateAsync(addedGuestsList.map(({ userId }) => ({ userId, eventId, role: Role.enum.GUEST, status: StatusEnum.PENDING }) satisfies Participant));
+			await mutateAsync(
+				addedGuestsList.map(({ userId }) => ({ userId, eventId, role: ParticipantRoleEnum.enum.GUEST, status: StatusEnum.PENDING }) satisfies Participant)
+			);
 			await Promise.all(
 				addedGuestsList.map(async ({ other, me }) => {
 					if (other && other.pushToken && other.pushChannels?.includes(NotificationChannelEnum.GUEST_INVITE)) {

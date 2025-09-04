@@ -1,6 +1,6 @@
 import { useParticipantsQuery } from "@/api/events/queries";
 import { ParticipantQueryResponse } from "@/api/events/types";
-import { Status, StatusEnum } from "@/api/types";
+import { ParticipantStatus, StatusEnum } from "@/api/types";
 import { BackButton } from "@/components/BackButton";
 import { PlusButton } from "@/components/PlusButton";
 import { Screen } from "@/components/Screen";
@@ -19,7 +19,7 @@ import { View, XStack } from "tamagui";
 
 export const Participants = () => {
 	const { eventId, setEditedGuest } = useEventDetailsContext();
-	const [activeFilters, setActiveFilters] = useState<Status[]>([]);
+	const [activeFilters, setActiveFilters] = useState<ParticipantStatus[]>([]);
 	const [search, setSearch] = useState("");
 	const [refreshing, setRefreshing] = useState(false);
 	const { data: participants, refetch, isLoading } = useParticipantsQuery(eventId, activeFilters, search);
@@ -44,7 +44,7 @@ export const Participants = () => {
 		return <Redirect href=".." />;
 	}
 
-	const toggleFilter = (toggledFilter: Status) => {
+	const toggleFilter = (toggledFilter: ParticipantStatus) => {
 		if (activeFilters.includes(toggledFilter)) {
 			setActiveFilters((filters) => filters.filter((filter) => filter !== toggledFilter));
 		} else {

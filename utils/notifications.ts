@@ -2,7 +2,7 @@ import { Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
-import { type Status } from "@/api/types";
+import { type ParticipantStatus } from "@/api/types";
 
 export const registerForPushNotificationsAsync = async () => {
 	if (Platform.OS === "android") {
@@ -76,7 +76,7 @@ export const sendGuestInviteNotification = async (expoPushToken: string, inviter
 	await sendPushNotification(expoPushToken, data);
 };
 
-export const sendGuestHasAnsweredInviteNotification = async (expoPushToken: string, newStatus: Status, guestName?: string, eventName?: string) => {
+export const sendGuestHasAnsweredInviteNotification = async (expoPushToken: string, newStatus: ParticipantStatus, guestName?: string, eventName?: string) => {
 	if (newStatus === "PENDING") {
 		return;
 	}
