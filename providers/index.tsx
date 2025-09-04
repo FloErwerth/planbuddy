@@ -10,24 +10,24 @@ import { SafeAreaProvider } from "@/providers/SafeAreaProvider";
 import { UserSearchProvider } from "@/components/UserSearch";
 
 export const Providers = ({ children }: PropsWithChildren) => {
-    return (
-        <StrictMode>
-            <QueryProvider>
-                <UserSearchProvider>
-                    <TamaguiProvider>
-                        <SafeAreaProvider>
-                            <ErrorBoundary fallback={ErrorScreen}>
-                                <LoginProvider>
-                                    <NotificationsProvider>
-                                        <StatusBar hidden />
-                                        {children}
-                                    </NotificationsProvider>
-                                </LoginProvider>
-                            </ErrorBoundary>
-                        </SafeAreaProvider>
-                    </TamaguiProvider>
-                </UserSearchProvider>
-            </QueryProvider>
-        </StrictMode>
-    );
+	return (
+		<StrictMode>
+			<QueryProvider>
+				<UserSearchProvider>
+					<TamaguiProvider>
+						<SafeAreaProvider>
+							<ErrorBoundary fallback={ErrorScreen}>
+								<LoginProvider>
+									<NotificationsProvider>
+										<StatusBar hidden />
+										{children}
+									</NotificationsProvider>
+								</LoginProvider>
+							</ErrorBoundary>
+						</SafeAreaProvider>
+					</TamaguiProvider>
+				</UserSearchProvider>
+			</QueryProvider>
+		</StrictMode>
+	);
 };

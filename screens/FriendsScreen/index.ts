@@ -1,1 +1,1 @@
-export * from './FriendsScreen';
+export * from "./FriendsScreen";

@@ -1,1 +1,1 @@
-export * from './QueryClient';
+export * from "./QueryClient";

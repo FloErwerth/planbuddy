@@ -1,11 +1,11 @@
-import { useGetUser } from '@/store/authentication';
+import { useGetUser } from "@/store/authentication";
 
 export const useIsMe = (participantUserId?: string) => {
-    const user = useGetUser();
+	const user = useGetUser();
 
-    if (!user) {
-        return false;
-    }
+	if (!user) {
+		return false;
+	}
 
-    return participantUserId === user.id;
+	return participantUserId === user.id;
 };

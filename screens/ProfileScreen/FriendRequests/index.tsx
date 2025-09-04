@@ -1,2 +1,2 @@
-export * from './FriendRequestsScreen';
-export * from './FriendRequestRow';
+export * from "./FriendRequestsScreen";
+export * from "./FriendRequestRow";

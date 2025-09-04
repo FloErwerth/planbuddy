@@ -1,5 +1,5 @@
-import { FriendsScreen } from '@/screens/FriendsScreen';
+import { FriendsScreen } from "@/screens/FriendsScreen";
 
 export default function Friends() {
-    return <FriendsScreen />;
+	return <FriendsScreen />;
 }

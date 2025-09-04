@@ -1,1 +1,1 @@
-export * from './ShareEvent';
+export * from "./ShareEvent";

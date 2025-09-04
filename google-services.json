@@ -1,55 +1,55 @@
 {
-  "project_info": {
-    "project_number": "347982419209",
-    "firebase_url": "https://events-with-friends-9e33b-default-rtdb.europe-west1.firebasedatabase.app",
-    "project_id": "events-with-friends-9e33b",
-    "storage_bucket": "events-with-friends-9e33b.firebasestorage.app"
-  },
-  "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:347982419209:android:42804eac0ad6004e4b2fd8",
-        "android_client_info": {
-          "package_name": "de.florian.erwerth.planbuddy"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "347982419209-vio2lv8juvj8khb0a60nvgvuuat09fio.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "de.florian.erwerth.planbuddy",
-            "certificate_hash": "bee70d8610ee4b95404f1e7dcb4898930b09f4ae"
-          }
-        },
-        {
-          "client_id": "347982419209-2r67911jfl7vdd04dcb9dtga80p0au7h.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAS1jb1aW-CBWLgEa3ESDaWwg4lC4Y-8wQ"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "347982419209-2r67911jfl7vdd04dcb9dtga80p0au7h.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "347982419209-rnab57dn0nqqqt6tsdr6oqar0svehrls.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "de.florian.erwerth.planbuddy"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
-  "configuration_version": "1"
+	"project_info": {
+		"project_number": "347982419209",
+		"firebase_url": "https://events-with-friends-9e33b-default-rtdb.europe-west1.firebasedatabase.app",
+		"project_id": "events-with-friends-9e33b",
+		"storage_bucket": "events-with-friends-9e33b.firebasestorage.app"
+	},
+	"client": [
+		{
+			"client_info": {
+				"mobilesdk_app_id": "1:347982419209:android:42804eac0ad6004e4b2fd8",
+				"android_client_info": {
+					"package_name": "de.florian.erwerth.planbuddy"
+				}
+			},
+			"oauth_client": [
+				{
+					"client_id": "347982419209-vio2lv8juvj8khb0a60nvgvuuat09fio.apps.googleusercontent.com",
+					"client_type": 1,
+					"android_info": {
+						"package_name": "de.florian.erwerth.planbuddy",
+						"certificate_hash": "bee70d8610ee4b95404f1e7dcb4898930b09f4ae"
+					}
+				},
+				{
+					"client_id": "347982419209-2r67911jfl7vdd04dcb9dtga80p0au7h.apps.googleusercontent.com",
+					"client_type": 3
+				}
+			],
+			"api_key": [
+				{
+					"current_key": "AIzaSyAS1jb1aW-CBWLgEa3ESDaWwg4lC4Y-8wQ"
+				}
+			],
+			"services": {
+				"appinvite_service": {
+					"other_platform_oauth_client": [
+						{
+							"client_id": "347982419209-2r67911jfl7vdd04dcb9dtga80p0au7h.apps.googleusercontent.com",
+							"client_type": 3
+						},
+						{
+							"client_id": "347982419209-rnab57dn0nqqqt6tsdr6oqar0svehrls.apps.googleusercontent.com",
+							"client_type": 2,
+							"ios_info": {
+								"bundle_id": "de.florian.erwerth.planbuddy"
+							}
+						}
+					]
+				}
+			}
+		}
+	],
+	"configuration_version": "1"
 }

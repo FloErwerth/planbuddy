@@ -1,2 +1,2 @@
-export * from './EventDetails';
-export * from './JoinEventScreen';
+export * from "./EventDetails";
+export * from "./JoinEventScreen";

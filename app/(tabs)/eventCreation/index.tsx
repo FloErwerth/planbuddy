@@ -1,12 +1,12 @@
-import { EventCreation } from '@/screens/EventCreation';
-import { useIsFocused } from '@react-navigation/core';
+import { EventCreation } from "@/screens/EventCreation";
+import { useIsFocused } from "@react-navigation/core";
 
 export default function EventCreationScreen() {
-    const isFocused = useIsFocused();
+	const isFocused = useIsFocused();
 
-    if (!isFocused) {
-        return null;
-    }
+	if (!isFocused) {
+		return null;
+	}
 
-    return <EventCreation />;
+	return <EventCreation />;
 }

@@ -1,5 +1,5 @@
-import { TokenScreen } from '@/screens/Authentication/TokenScreen';
+import { TokenScreen } from "@/screens/Authentication/TokenScreen";
 
 export default function Token() {
-    return <TokenScreen />;
+	return <TokenScreen />;
 }

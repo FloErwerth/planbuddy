@@ -1,1 +1,1 @@
-export * from './LoginProvider';
+export * from "./LoginProvider";

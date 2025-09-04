@@ -1,5 +1,5 @@
-import { FriendRequestsScreen } from '@/screens/ProfileScreen/FriendRequests';
+import { FriendRequestsScreen } from "@/screens/ProfileScreen/FriendRequests";
 
 export default function FriendRequests() {
-    return <FriendRequestsScreen />;
+	return <FriendRequestsScreen />;
 }

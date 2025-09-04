@@ -1,1 +1,1 @@
-export * from './SizeableText';
+export * from "./SizeableText";

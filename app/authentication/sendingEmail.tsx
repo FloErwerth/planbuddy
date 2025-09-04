@@ -1,5 +1,5 @@
-import { SendingEmailScreen } from '@/screens/Authentication';
+import { SendingEmailScreen } from "@/screens/Authentication";
 
 export default function SendingEmail() {
-    return <SendingEmailScreen />;
+	return <SendingEmailScreen />;
 }

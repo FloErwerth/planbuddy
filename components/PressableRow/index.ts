@@ -1,1 +1,1 @@
-export * from './PressableRow';
+export * from "./PressableRow";

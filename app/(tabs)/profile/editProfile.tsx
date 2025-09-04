@@ -1,5 +1,5 @@
-import { EditProfileScreen } from '@/screens/ProfileScreen';
+import { EditProfileScreen } from "@/screens/ProfileScreen";
 
 export default function EditProfile() {
-    return <EditProfileScreen />;
+	return <EditProfileScreen />;
 }

@@ -1,1 +1,1 @@
-export * from './AvatarImagePicker';
+export * from "./AvatarImagePicker";

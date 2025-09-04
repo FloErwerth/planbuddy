@@ -1,1 +1,1 @@
-export * from './ParticipantEditScreen';
+export * from "./ParticipantEditScreen";

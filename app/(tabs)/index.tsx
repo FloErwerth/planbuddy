@@ -1,5 +1,5 @@
-import { Events } from '@/screens/Events';
+import { Events } from "@/screens/Events";
 
 export default function HomePage() {
-    return <Events />;
+	return <Events />;
 }

@@ -6,54 +6,54 @@ import { Tabs } from "expo-router";
 import { View } from "tamagui";
 
 const screenOptions: BottomTabNavigationOptions = {
-    tabBarStyle: {
-        height: 60,
-    },
-    tabBarLabelStyle: { height: 0 },
-    tabBarActiveTintColor: colors.primary,
-    headerShown: false,
+	tabBarStyle: {
+		height: 60,
+	},
+	tabBarLabelStyle: { height: 0 },
+	tabBarActiveTintColor: colors.primary,
+	headerShown: false,
 };
 
 export default function TabsLayout() {
-    return (
-        <>
-            <Tabs screenOptions={screenOptions}>
-                <Tabs.Screen
-                    name="index"
-                    options={{
-                        animation: "none",
-                        title: undefined,
-                        tabBarIcon: ({ focused }) => <Home top="$2" scale={1.1} color={focused ? "$primary" : undefined} />,
-                        ...screenOptions,
-                    }}
-                />
-                <Tabs.Screen
-                    name="eventCreation"
-                    options={{
-                        animation: "none",
+	return (
+		<>
+			<Tabs screenOptions={screenOptions}>
+				<Tabs.Screen
+					name="index"
+					options={{
+						animation: "none",
+						title: undefined,
+						tabBarIcon: ({ focused }) => <Home top="$2" scale={1.1} color={focused ? "$primary" : undefined} />,
+						...screenOptions,
+					}}
+				/>
+				<Tabs.Screen
+					name="eventCreation"
+					options={{
+						animation: "none",
 
-                        title: "",
-                        popToTopOnBlur: true,
-                        tabBarIcon: ({ focused }) => <Plus top="$2" scale={1.5} color={focused ? "$primary" : undefined} />,
-                        ...screenOptions,
-                    }}
-                />
-                <Tabs.Screen
-                    name="profile"
-                    options={{
-                        animation: "none",
-                        title: "",
-                        popToTopOnBlur: true,
-                        tabBarIcon: ({ focused }) => (
-                            <View>
-                                <PendingFriendRequestsDot top="$1" left="55%" />
-                                <User top="$2" scale={1.1} color={focused ? "$primary" : undefined} />
-                            </View>
-                        ),
-                        ...screenOptions,
-                    }}
-                />
-            </Tabs>
-        </>
-    );
+						title: "",
+						popToTopOnBlur: true,
+						tabBarIcon: ({ focused }) => <Plus top="$2" scale={1.5} color={focused ? "$primary" : undefined} />,
+						...screenOptions,
+					}}
+				/>
+				<Tabs.Screen
+					name="profile"
+					options={{
+						animation: "none",
+						title: "",
+						popToTopOnBlur: true,
+						tabBarIcon: ({ focused }) => (
+							<View>
+								<PendingFriendRequestsDot top="$1" left="55%" />
+								<User top="$2" scale={1.1} color={focused ? "$primary" : undefined} />
+							</View>
+						),
+						...screenOptions,
+					}}
+				/>
+			</Tabs>
+		</>
+	);
 }

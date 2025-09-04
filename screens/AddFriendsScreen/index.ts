@@ -1,1 +1,1 @@
-export * from './AddFriendsScreen';
+export * from "./AddFriendsScreen";
