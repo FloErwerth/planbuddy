@@ -1,45 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/api/supabase";
-import { AppEvent, Participant, ParticipantRoleEnum } from "./types";
-import { PostgrestSingleResponse } from "@supabase/supabase-js";
+import { Participant, ParticipantRoleEnum } from "./types";
 import { useGetUser } from "@/store/authentication";
 import {
 	CREATE_PARTICIPANT_MUTATION_KEY,
-	DELETE_EVENT_MUTATION_KEY,
 	DELETE_PARTICIPANT_MUTATION_KEY,
 	EVENTS_QUERY_KEY,
 	PARTICIPANT_QUERY_KEY,
 	UPDATE_PARTICIPANT_MUTATION_KEY,
 } from "@/api/events/constants";
-import { EVENT_IMAGE_QUERY_KEY } from "@/api/images/constants";
 import { ParticipantStatusEnum } from "@/api/types";
-
-export const useDeleteEventAndEventImageMutation = () => {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: async (eventId: string): Promise<boolean> => {
-			const result: PostgrestSingleResponse<AppEvent[]> = await supabase.from("events").delete().eq("id", eventId).select();
-
-			if (result.error) {
-				throw new Error(`Error in deleting event mutation: deleting event with message ${result.error.message}`);
-			}
-
-			const imageDeletionResult = await supabase.storage.from("event-images").remove([`${eventId}/image.png`]);
-
-			if (imageDeletionResult.error) {
-				throw new Error(`Error in deleting event mutation: deleting event image with message ${imageDeletionResult.error.message}`);
-			}
-
-			return result.error === null;
-		},
-		onSuccess: async () => {
-			await queryClient.invalidateQueries([EVENTS_QUERY_KEY]);
-			await queryClient.invalidateQueries([EVENT_IMAGE_QUERY_KEY]);
-		},
-		mutationKey: [DELETE_EVENT_MUTATION_KEY],
-	});
-};
 
 type ParticipantMutationArgs = Pick<Participant, "userId" | "eventId">;
 export const useCreateParticipationMutation = () => {
