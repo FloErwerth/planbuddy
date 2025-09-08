@@ -1,6 +1,6 @@
-import { Participant } from "@/api/events/types";
 import { getDefaultParticipant, isParticipantWithIdAndUserId } from "@/api/participants/util";
 import { supabase } from "@/api/supabase";
+import { Participant } from "@/api/types";
 
 /**
  * Inserts a participant using upsert.

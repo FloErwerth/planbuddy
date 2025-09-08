@@ -1,6 +1,6 @@
-import { CREATE_PARTICIPANT_MUTATION_KEY, PARTICIPANT_QUERY_KEY } from "@/api/events/constants";
-import { Participant } from "@/api/events/types";
+import { CREATE_PARTICIPANT_MUTATION_KEY, PARTICIPANT_QUERY_KEY } from "@/api/participants/constants";
 import { upsertParticipantSupabaseQuery } from "@/api/participants/createParticipant/query";
+import { Participant } from "@/api/types";
 import { useGetUser } from "@/store/authentication";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 

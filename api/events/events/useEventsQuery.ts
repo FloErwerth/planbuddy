@@ -1,6 +1,6 @@
 import { EVENTS_QUERY_KEY } from "@/api/events/constants";
 import { eventsSupabaseQuery } from "@/api/events/events/query";
-import { eventsSchema } from "@/api/events/events/schema";
+import { eventsSchema } from "@/api/events/events/types";
 import { useGetUser } from "@/store/authentication";
 import { useQuery } from "@tanstack/react-query";
 

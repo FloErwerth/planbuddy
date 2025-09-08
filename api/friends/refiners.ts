@@ -1,8 +1,9 @@
 import { useDatabaseFriendsQuery } from "@/api/friends/databaseQuery";
-import { StatusEnum } from "@/api/types";
+
 import { sortFriendsToTop } from "@/utils/sorters";
 import { extractOtherUser, useExtractOtherUser } from "@/utils/extractOtherUser";
 import { useGetUser } from "@/store/authentication";
+import { ParticipantStatusEnum } from "@/api/types";
 
 export const useFriendsByStatus = () => {
 	const { data = [], refetch, isLoading } = useDatabaseFriendsQuery();
@@ -10,9 +11,9 @@ export const useFriendsByStatus = () => {
 	const mapped = data.map((friend) => extractOther(friend));
 
 	return {
-		accepted: mapped.filter((friend) => friend.status === StatusEnum.ACCEPTED),
-		pending: mapped.filter((friend) => friend.status === StatusEnum.PENDING),
-		declined: mapped.filter((friend) => friend.status === StatusEnum.DECLINED),
+		accepted: mapped.filter((friend) => friend.status === ParticipantStatusEnum.ACCEPTED),
+		pending: mapped.filter((friend) => friend.status === ParticipantStatusEnum.PENDING),
+		declined: mapped.filter((friend) => friend.status === ParticipantStatusEnum.DECLINED),
 		refetch,
 		isLoading,
 	};
@@ -22,7 +23,7 @@ export const useFriendOverview = () => {
 	const { data = [], refetch, isLoading } = useDatabaseFriendsQuery();
 	const user = useGetUser();
 
-	const pending = data.filter((friend) => friend.status === StatusEnum.PENDING);
+	const pending = data.filter((friend) => friend.status === ParticipantStatusEnum.PENDING);
 
 	return {
 		data: data.sort(sortFriendsToTop),
