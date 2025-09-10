@@ -3,7 +3,7 @@ import { FRIENDS_QUERY_KEY } from "@/api/friends/constants";
 import { supabase } from "@/api/supabase";
 import { ParticipantStatus, User } from "@/api/types";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
-import { friendsQuerySchema, SingleFriendQueryResponse, singleFriendSchema } from "@/api/friends/schema";
+import { SingleFriendQueryResponse, singleFriendSchema } from "@/api/friends/schema";
 import { useGetUser } from "@/store/authentication";
 
 type FriendDatabaseType = {
@@ -13,27 +13,6 @@ type FriendDatabaseType = {
 	fromUserId: User;
 	toUserId: User;
 	status: ParticipantStatus;
-};
-
-export const useDatabaseFriendsQuery = () => {
-	const user = useGetUser();
-
-	return useQuery({
-		queryFn: async () => {
-			if (!user) {
-				return undefined;
-			}
-
-			const queryResponse = await supabase
-				.from("friends")
-				.select("*,requesterId(id,*),receiverId(id,*)")
-				.or(`requesterId.eq.${user.id},receiverId.eq.${user.id}`)
-				.throwOnError();
-
-			return friendsQuerySchema.parse(queryResponse.data);
-		},
-		queryKey: [FRIENDS_QUERY_KEY, user?.id],
-	});
 };
 
 export const useDatabaseFriendQuery = (friendId?: string, options: QueryOptions = {}): UseQueryResult<SingleFriendQueryResponse | undefined> => {

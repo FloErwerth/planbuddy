@@ -2,7 +2,7 @@ import { SheetProps, SizableText, View } from "tamagui";
 import { Sheet } from "@/components/tamagui/Sheet";
 import { Screen } from "@/components/Screen";
 import { Button } from "@/components/tamagui/Button";
-import { useRemoveFriendMutation } from "@/api/friends/addFriendsMutation";
+import { useRemoveFriendMutation } from "@/api/friends/addFriend/useAddFriendMutation";
 import { useState } from "react";
 import { Dialog } from "@/components/tamagui/Dialog";
 import { SimpleFriend } from "@/api/friends/types";

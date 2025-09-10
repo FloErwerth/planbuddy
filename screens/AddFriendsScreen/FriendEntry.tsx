@@ -1,5 +1,5 @@
 import { StatusEnum } from "@/api/types";
-import { useAddFriendMutation } from "@/api/friends/addFriendsMutation";
+import { useAddFriendMutation } from "@/api/friends/addFriend/useAddFriendMutation";
 import { memo, useState } from "react";
 import { SizableText, Spinner, View, XStack } from "tamagui";
 import { Button } from "@/components/tamagui/Button";

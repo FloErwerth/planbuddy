@@ -2,6 +2,7 @@ import { NotificationChannelEnumDefinition } from "@/providers/NotificationsProv
 import { zodNullToUndefined } from "@/utils/zodNullToUndefined";
 import { z } from "zod";
 
+export const FriendRequestStatusEnum = { ACCEPTED: "ACCEPTED", PENDING: "PENDING", DECLINED: "DECLINED" } as const;
 export const ParticipantRoleEnum = { GUEST: "GUEST", ADMIN: "ADMIN", CREATOR: "CREATOR" } as const;
 export const ParticipantStatusEnum = { ACCEPTED: "ACCEPTED", PENDING: "PENDING", DECLINED: "DECLINED" } as const;
 export const participantSchema = z.object({
@@ -67,6 +68,7 @@ export const appEventSchema = z.object({
 	endTime: z.string(),
 });
 
+export type FriendRequestStatus = (typeof FriendRequestStatusEnum)[keyof typeof FriendRequestStatusEnum];
 export type ParticipantRole = (typeof ParticipantRoleEnum)[keyof typeof ParticipantRoleEnum];
 export type ParticipantStatus = (typeof ParticipantStatusEnum)[keyof typeof ParticipantStatusEnum];
 export type AppEvent = z.infer<typeof appEventSchema>;

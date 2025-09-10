@@ -1,7 +1,7 @@
 import { useFriendOverview } from "@/api/friends/refiners";
 import { useState } from "react";
 import { extractOtherUser } from "@/utils/extractOtherUser";
-import { useRemoveFriendMutation, useUpdateFriendMutation } from "@/api/friends/addFriendsMutation";
+import { useRemoveFriendMutation, useUpdateFriendMutation } from "@/api/friends/addFriend/useAddFriendMutation";
 import { StatusEnum } from "@/api/types";
 import { router } from "expo-router";
 import { Card } from "@/components/tamagui/Card";
