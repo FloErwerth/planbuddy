@@ -1,16 +1,15 @@
-import { Participant, ParticipantRoleEnum } from "@/api/events/types";
-import { ParticipantStatusEnum } from "@/api/types";
+import { Participant, ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/types";
 
 /**
  * Defaults:
  * * ROLE: GUEST
  * * STATUS: PENDING
  */
-export const getDefaultParticipant = (participant: Omit<Partial<Participant>, "id" | "userId"> & Required<Pick<Participant, "id" | "userId">>): Participant => {
+export const getDefaultParticipant = (participant: Required<Participant>): Participant => {
 	return {
+		...participant,
 		role: ParticipantRoleEnum.GUEST,
 		status: ParticipantStatusEnum.PENDING,
-		...participant,
 	};
 };
 
