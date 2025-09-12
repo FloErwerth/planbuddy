@@ -1,6 +1,5 @@
-import { useFriendOverview } from "@/api/friends/refiners";
-import { SimpleFriend } from "@/api/friends/types";
-import { StatusEnum } from "@/api/types";
+import { useAllFriendsQuery } from "@/api/friends/allFriends";
+import { Friend, FriendRequestStatusEnum } from "@/api/friends/types";
 import { SearchInput } from "@/components/SearchInput";
 import { Card } from "@/components/tamagui/Card";
 import { UserAvatar } from "@/components/UserAvatar";
@@ -11,17 +10,17 @@ import { Pressable, RefreshControl } from "react-native";
 import { SizableText, View, XStack } from "tamagui";
 
 type FriendsListProps = {
-	onFriendPressed: (friend: SimpleFriend) => void;
-	Action: FC<{ friend: SimpleFriend }>;
+	onFriendPressed: (friend: Friend) => void;
+	Action: FC<{ friend: Friend }>;
 };
 
 export const FriendsList = ({ onFriendPressed, Action }: FriendsListProps) => {
-	const { others, refetch } = useFriendOverview();
+	const { data: friends, refetch } = useAllFriendsQuery();
 	const [refreshing, setRefreshing] = useState(false);
 	const [filter, setFilter] = useState<string | null>(null);
 
-	const render = ({ item: friend }: ListRenderItemInfo<ReturnType<typeof useFriendOverview>["others"][number]>) => {
-		const { id, firstName, lastName, requesterWasMe } = friend;
+	const render = ({ item: friend }: ListRenderItemInfo<Friend>) => {
+		const { id, firstName, lastName } = friend;
 
 		return (
 			<Pressable onPress={() => onFriendPressed(friend)}>
@@ -31,13 +30,11 @@ export const FriendsList = ({ onFriendPressed, Action }: FriendsListProps) => {
 							<UserAvatar id={id} />
 							<View>
 								<SizableText>{`${firstName} ${lastName}`}</SizableText>
-								{friend.status === StatusEnum.ACCEPTED && friend.acceptedAt && (
+								{friend.status === FriendRequestStatusEnum.ACCEPTED && friend.acceptedAt && (
 									<SizableText size="$2">Befreundet seit {formatToDate(friend.acceptedAt)}</SizableText>
 								)}
-								{friend.status === StatusEnum.PENDING && friend.sendAt && (
-									<SizableText size="$2">
-										{requesterWasMe ? "Gesendet" : "Empfangen"} am {formatToDate(friend.sendAt)}
-									</SizableText>
+								{friend.status === FriendRequestStatusEnum.PENDING && friend.sendAt && (
+									<SizableText size="$2">Gesendet am {formatToDate(friend.sendAt)}</SizableText>
 								)}
 							</View>
 						</XStack>
@@ -48,7 +45,7 @@ export const FriendsList = ({ onFriendPressed, Action }: FriendsListProps) => {
 		);
 	};
 
-	const applyFilter = (other: SimpleFriend | undefined) => {
+	const applyFilter = (other: Friend | undefined) => {
 		if (!filter || !other) {
 			return true;
 		}
@@ -71,13 +68,13 @@ export const FriendsList = ({ onFriendPressed, Action }: FriendsListProps) => {
 		return foundMatch;
 	};
 
-	const searchedOthers = others.filter(applyFilter);
+	const searchedOthers = friends?.filter(applyFilter);
 
 	return (
 		<>
 			<SearchInput margin="$4" placeholder="Name oder E-Mail" onChangeText={setFilter} />
 			<FlashList
-				key={searchedOthers.length}
+				key={searchedOthers?.length}
 				refreshControl={
 					<RefreshControl
 						onRefresh={async () => {

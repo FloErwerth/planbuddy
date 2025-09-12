@@ -8,16 +8,19 @@ import { router } from "expo-router";
 import { Dialog } from "@/components/tamagui/Dialog";
 import { Button } from "@/components/tamagui/Button";
 import { useSearchParticipantsByStatus } from "@/api/participants/searchParticipantsByNameStatus/useSearchParticipantsByStatus";
-import { Participant, ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/types";
 import { useUpdateParticipationMutation } from "@/api/participants/updateParticipant/useUpdateParticipantMutation";
 import { useUpdateEventMutation } from "@/api/events/updateEvent/useUpdateEventMutation";
 import { useDeleteParticipantMutation } from "@/api/participants/deleteParticipant/useDeleteParticipantMutation";
 import { useSingleParticipantQuery } from "@/api/participants/singleParticipant/useSingleParticipant";
+import { useGetUser } from "@/store/authentication";
+import { Participant, ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
+import { ParticipantRow } from "@/screens/Participants/Participant";
 
 export default function TransferEvent() {
+	const user = useGetUser();
 	const { eventId } = useEventDetailsContext();
-	const myEvent = useSingleParticipantQuery(eventId);
-	const participants = useSearchParticipantsByStatus(eventId, [ParticipantStatusEnum.ACCEPTED]);
+	const { data: myEvent } = useSingleParticipantQuery(eventId, user.id);
+	const { data: participants } = useSearchParticipantsByStatus(eventId, [ParticipantStatusEnum.ACCEPTED]);
 	const { mutateAsync: updateGuest } = useUpdateParticipationMutation();
 	const { mutateAsync: updateEvent } = useUpdateEventMutation();
 	const { mutateAsync: removeGuest } = useDeleteParticipantMutation();
@@ -25,7 +28,7 @@ export default function TransferEvent() {
 
 	const handleTransferEvent = async () => {
 		try {
-			if (!guestToTransferTo || !guestToTransferTo.id || !myEvent || myEvent?.userId) {
+			if (!guestToTransferTo || !guestToTransferTo.id || !myEvent || myEvent.userId) {
 				return;
 			}
 			setGuestToTransferTo(undefined);
@@ -35,9 +38,7 @@ export default function TransferEvent() {
 			});
 			await updateGuest({
 				id: guestToTransferTo?.id,
-				participant: {
-					role: ParticipantRoleEnum.CREATOR,
-				},
+				role: ParticipantRoleEnum.CREATOR,
 			});
 			await removeGuest(myEvent.userId);
 			router.push("/(tabs)");
@@ -47,27 +48,20 @@ export default function TransferEvent() {
 		}
 	};
 
-	const mappedParticipants = participants.data
-		?.filter((guest) => {
-			if (!guest || !me) {
-				return true;
-			}
-			return guest?.userId !== me?.userId;
-		})
-		.map((participant) => {
-			if (!participant.id) {
-				return null;
-			}
-			return (
-				<Participant
-					key={participant.id}
-					onOpenOptions={() => setGuestToTransferTo(participant)}
-					showEllipsis={false}
-					showStatus={false}
-					participant={participant}
-				/>
-			);
-		});
+	const mappedParticipants = participants?.map((participant) => {
+		if (!participant.id) {
+			return null;
+		}
+		return (
+			<ParticipantRow
+				key={participant.id}
+				onOpenOptions={() => setGuestToTransferTo(participant)}
+				showEllipsis={false}
+				showStatus={false}
+				participant={participant}
+			/>
+		);
+	});
 
 	return (
 		<>

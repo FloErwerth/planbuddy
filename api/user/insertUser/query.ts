@@ -1,9 +1,6 @@
 import { supabase } from "@/api/supabase";
-import { User } from "@/api/types";
+import { User } from "@/api/user/types";
 
-export const insertUserSupabaseQuery = async (insertedUser: User) => {
-	return await supabase
-		.from("users")
-		.insert({ id: insertedUser.id, ...insertedUser })
-		.select();
+export const insertUserSupabaseQuery = async (insertedUser: Partial<User>) => {
+	return await supabase.from("users").insert(insertedUser).select();
 };

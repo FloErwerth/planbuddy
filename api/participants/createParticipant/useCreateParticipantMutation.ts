@@ -9,7 +9,7 @@ export const useCreateParticipationMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (participant: Participant | Participant[]) => {
+		mutationFn: async (participant: Partial<Participant> | Partial<Participant>[]) => {
 			if (user === undefined) {
 				return undefined;
 			}

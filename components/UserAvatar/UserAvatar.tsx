@@ -1,7 +1,7 @@
-import { User } from "@/api/types";
-import { useProfileImageQuery } from "@/api/images";
 import { Avatar, AvatarProps } from "tamagui";
 import { User2 } from "@tamagui/lucide-icons";
+import { useProfileImageQuery } from "@/api/user/profilePicture";
+import { User } from "@/api/user/types";
 
 type UserAvatarProps = Pick<User, "id"> & AvatarProps;
 export const UserAvatar = ({ id, ...props }: UserAvatarProps) => {

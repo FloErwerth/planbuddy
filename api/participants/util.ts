@@ -1,4 +1,4 @@
-import { Participant, ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/types";
+import { Participant, ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
 
 /**
  * Defaults:
@@ -13,6 +13,6 @@ export const getDefaultParticipant = (participant: Required<Participant>): Parti
 	};
 };
 
-export const isParticipantWithIdAndUserId = (participant: Participant): participant is Required<Participant> => {
+export const isParticipantWithIdAndUserId = (participant: Partial<Participant>): participant is Required<Participant> => {
 	return participant.id !== undefined && participant.userId !== undefined;
 };

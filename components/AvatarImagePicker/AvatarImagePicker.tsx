@@ -5,8 +5,8 @@ import Animated, { BounceIn, FadeIn, ZoomOut } from "react-native-reanimated";
 import { Check, Edit3, Trash2 } from "@tamagui/lucide-icons";
 import { color } from "@tamagui/themes";
 import { Button } from "@/components/tamagui/Button";
-import { useProfileImageQuery } from "@/api/images";
 import { useGetUser } from "@/store/authentication";
+import { useProfileImageQuery } from "@/api/user/profilePicture";
 
 type AvatarImagePickerProps = {
 	editable?: boolean;

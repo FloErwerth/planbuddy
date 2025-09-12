@@ -7,7 +7,7 @@ import { Screen } from "@/components/Screen";
 import { SearchInput } from "@/components/SearchInput";
 import { ToggleButton } from "@/components/TogglePillButton";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
-import { Participant } from "@/screens/Participants/Participant";
+import { ParticipantRow } from "@/screens/Participants/Participant";
 import { ParticipantSkeleton } from "@/screens/Participants/ParticipantSkeleton";
 import { useGetUser } from "@/store/authentication";
 import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
@@ -31,7 +31,7 @@ export const Participants = () => {
 		refreshing ? (
 			<ParticipantSkeleton />
 		) : (
-			<Participant
+			<ParticipantRow
 				participant={participant}
 				onOpenOptions={() => {
 					setEditedGuest(participant);

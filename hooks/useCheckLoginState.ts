@@ -3,9 +3,9 @@ import { useEffect } from "react";
 import { router, SplashScreen } from "expo-router";
 import { User as SupabaseUser } from "@supabase/auth-js";
 import { AuthUser, PostgrestSingleResponse } from "@supabase/supabase-js";
-import { User } from "@/api/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSetUser } from "@/store/authentication";
+import { User } from "@/api/user/types";
 
 export const useCheckLoginState = () => {
 	const setUser = useSetUser();

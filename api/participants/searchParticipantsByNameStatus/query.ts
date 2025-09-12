@@ -1,5 +1,5 @@
+import { ParticipantStatus } from "@/api/participants/types";
 import { supabase } from "@/api/supabase";
-import { ParticipantStatus } from "@/api/types";
 
 export const searchParticipantsByNameStatusSupabaseQuery = async (eventId: string, search: string, filters: ParticipantStatus[]) => {
 	const participantsAndUsersQuery = supabase.from("participants").select("*, users(*)");

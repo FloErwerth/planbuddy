@@ -1,6 +1,4 @@
-import { useFriendsByStatus } from "@/api/friends/refiners";
 import { useState } from "react";
-import { SimpleFriend } from "@/api/friends/types";
 import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
 import { Screen } from "@/components/Screen";
 import { BackButton } from "@/components/BackButton";
@@ -11,21 +9,21 @@ import { Pressable } from "react-native";
 import { FriendDisplay } from "@/components/FriendDisplay";
 import { Checkbox } from "@/components/tamagui/Checkbox";
 import { Button } from "@/components/tamagui/Button";
-import { useCreateParticipationMutation } from "@/api/events/mutations";
-import { Participant, ParticipantRoleEnum } from "@/api/events/types";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
-import { StatusEnum } from "@/api/types";
 import { router } from "expo-router";
-import { useParticipantsQuery, useSingleEventQuery } from "@/api/events/queries";
-import { useMe } from "@/api/events/refiners";
 import { NotificationChannelEnum } from "@/providers/NotificationsProvider";
 import { sendGuestInviteNotification } from "@/utils/notifications";
+import { Friend } from "@/api/friends/types";
+import { useCreateParticipationMutation } from "@/api/participants/createParticipant";
+import { useEventQuery } from "@/api/events/event/useEventQuery";
+import { useSingleParticipantQuery } from "@/api/participants/singleParticipant";
+import { useGetUser } from "@/store/authentication";
 
-const Guest = ({ id, onPress, checked, ...friend }: SimpleFriend & { checked: boolean; onPress: (id: string) => void }) => {
+const Guest = ({ id, onPress, checked, ...friend }: Friend & { checked: boolean; onPress: (id: string) => void }) => {
 	return (
 		<Card marginHorizontal="$4" key={id}>
 			<Pressable onPress={() => onPress(id!)}>
-				<FriendDisplay {...friend}>
+				<FriendDisplay id={id} {...friend}>
 					<Checkbox checked={checked} />
 				</FriendDisplay>
 			</Pressable>
@@ -36,17 +34,15 @@ const Guest = ({ id, onPress, checked, ...friend }: SimpleFriend & { checked: bo
 export const EventDetailsAddFriends = () => {
 	const [addedGuests, setAddedGuests] = useState<Set<string>>(new Set());
 	const [isLoading, setIsLoading] = useState(false);
-	const { accepted: friends } = useFriendsByStatus();
 	const [filter, setFilter] = useState<string>();
 	const { width } = useWindowDimensions();
 	const { mutateAsync } = useCreateParticipationMutation();
 	const { eventId } = useEventDetailsContext();
+	const user = useGetUser();
+	const { data: event } = useEventQuery(eventId);	
+	const me = useSingleParticipantQuery(eventId, user.id));
 
-	const { data: event } = useSingleEventQuery(eventId);
-	const { data: participants } = useParticipantsQuery(eventId);
-	const me = useMe(eventId);
-
-	const applyFilter = (other: SimpleFriend | undefined) => {
+	const applyFilter = (other: Friend | undefined) => {
 		if (!filter || !other) {
 			return true;
 		}

@@ -1,9 +1,6 @@
 import { FormProvider, useForm } from "react-hook-form";
 import { onboardingSchema, OnboardingSchema } from "@/api/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useProfileImageQuery, useUploadProfilePictureMutation } from "@/api/images";
-import { useInsertUserMutation } from "@/api/user";
-import { useCreateParticipationMutation } from "@/api/events/mutations";
 import { useEffect, useState } from "react";
 import { readInviteId } from "@/utils/invite";
 import { router } from "expo-router";
@@ -13,6 +10,10 @@ import { AvatarImagePicker } from "@/components/AvatarImagePicker";
 import { FormInput } from "@/components/FormFields";
 import { Button } from "@/components/tamagui/Button";
 import { useGetUser } from "@/store/authentication";
+import { useCreateParticipationMutation } from "@/api/participants/createParticipant";
+import { useInsertUserMutation } from "@/api/user/insertUser";
+import { useProfileImageQuery } from "@/api/user/profilePicture";
+import { useUploadProfilePictureMutation } from "@/api/user/uploadProfilePicture";
 
 export const OnboardingScreen = () => {
 	const form = useForm<OnboardingSchema>({

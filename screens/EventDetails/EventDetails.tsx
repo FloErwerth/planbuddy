@@ -1,7 +1,5 @@
 import { Redirect, router } from "expo-router";
 import { Image } from "expo-image";
-import { useSingleEventQuery } from "@/api/events/queries";
-import { useEventImageQuery } from "@/api/images";
 import { useState } from "react";
 import { Details } from "@/screens/EventDetails/components/Details";
 import { ShareSheet } from "@/sheets/ShareSheet";
@@ -11,16 +9,16 @@ import { BackButton } from "@/components/BackButton";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 import { useGetUser } from "@/store/authentication";
 import { Button } from "@/components/tamagui/Button";
-import { useMe } from "@/api/events/refiners";
-import { ParticipantRoleEnum } from "@/api/events/types";
 import { Pencil } from "@tamagui/lucide-icons";
+import { useSingleParticipantQuery } from "@/api/participants/singleParticipant";
+import { ParticipantRoleEnum } from "@/api/participants/types";
 
 export const EventDetails = () => {
 	const { eventId } = useEventDetailsContext();
-	const me = useMe(eventId);
+	const user = useGetUser();
+	const { data: me } = useSingleParticipantQuery(eventId, user.id);
 	const [showShare, setShowShare] = useState(false);
 
-	const user = useGetUser();
 	const { data: event, isLoading } = useSingleEventQuery(eventId);
 	const { data: image } = useEventImageQuery(eventId);
 
@@ -43,7 +41,7 @@ export const EventDetails = () => {
 			<ScrollableScreen
 				back={<BackButton href="/(tabs)" />}
 				action={
-					me?.role === ParticipantRoleEnum.enum.GUEST ? null : (
+					me?.role === ParticipantRoleEnum.GUEST ? null : (
 						<Button variant="round" onPress={() => router.push("/eventDetails/editEvent")}>
 							<Pencil color="$color" size="$1" scale={0.75} />
 						</Button>
@@ -61,3 +59,10 @@ export const EventDetails = () => {
 		</>
 	);
 };
+function useSingleEventQuery(eventId: string): { data: any; isLoading: any } {
+	throw new Error("Function not implemented.");
+}
+
+function useEventImageQuery(eventId: string): { data: any } {
+	throw new Error("Function not implemented.");
+}

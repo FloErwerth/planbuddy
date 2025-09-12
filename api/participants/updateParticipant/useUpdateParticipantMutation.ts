@@ -10,7 +10,7 @@ export const useUpdateParticipationMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (participant: Participant) => {
+		mutationFn: async (participant: Partial<Participant>) => {
 			if (!isParticipantWithIdAndUserId(participant)) {
 				throw new Error("Error in useUpdateParticipantMutation: Participant was without id or user id.");
 			}

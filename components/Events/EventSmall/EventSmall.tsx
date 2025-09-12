@@ -1,5 +1,5 @@
+import { useEventImageQuery } from "@/api/events/eventImage";
 import { AppEvent } from "@/api/events/types";
-import { useEventImageQuery } from "@/api/images";
 import { Card } from "@/components/tamagui/Card";
 import { SizeableText } from "@/components/tamagui/SizeableText";
 import { getRelativeDate } from "@/utils/date";

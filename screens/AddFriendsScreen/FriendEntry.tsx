@@ -1,4 +1,3 @@
-import { StatusEnum } from "@/api/types";
 import { useAddFriendMutation } from "@/api/friends/addFriend/useAddFriendMutation";
 import { memo, useState } from "react";
 import { SizableText, Spinner, View, XStack } from "tamagui";
@@ -6,67 +5,38 @@ import { Button } from "@/components/tamagui/Button";
 import { UserPlus } from "@tamagui/lucide-icons";
 import { Card } from "@/components/tamagui/Card";
 import { UserAvatar } from "@/components/UserAvatar";
-import { UserWithStatus } from "@/components/UserSearch";
 import { useGetUser } from "@/store/authentication";
+import { Friend, FriendRequestStatusEnum } from "@/api/friends/types";
 
-type SearchAcceptanceStatusProps = { friend: UserWithStatus };
-const SearchAcceptanceStatus = ({ friend: { status, requester } }: SearchAcceptanceStatusProps) => {
+type SearchAcceptanceStatusProps = { friend: Friend };
+const SearchAcceptanceStatus = ({ friend: { status } }: SearchAcceptanceStatusProps) => {
 	const user = useGetUser();
 
-	const isRequester = user?.id === requester?.id;
-
-	if (isRequester) {
-		if (status === StatusEnum.PENDING) {
-			return (
-				<View padding="$1.5" borderRadius="$12" backgroundColor="$color.green8Light">
-					<SizableText size="$1">hinzugefügt!</SizableText>
-				</View>
-			);
-		}
-
-		if (status === StatusEnum.DECLINED) {
-			return (
-				<View padding="$1.5" borderRadius="$12" backgroundColor="$color.red8Light">
-					<SizableText size="$1">abgelehnt</SizableText>
-				</View>
-			);
-		}
-
-		if (status === StatusEnum.ACCEPTED) {
-			return (
-				<View padding="$1.5" borderRadius="$12" backgroundColor="$color.green8Light">
-					<SizableText size="$1">bereits Freunde</SizableText>
-				</View>
-			);
-		}
+	if (status === FriendRequestStatusEnum.PENDING) {
+		return (
+			<View padding="$1.5" borderRadius="$12" backgroundColor="$color.green8Light">
+				<SizableText size="$1">hinzugefügt!</SizableText>
+			</View>
+		);
+	}
+	if (status === FriendRequestStatusEnum.DECLINED) {
+		return (
+			<View padding="$1.5" borderRadius="$12" backgroundColor="$color.red8Light">
+				<SizableText size="$1">abgelehnt</SizableText>
+			</View>
+		);
 	}
 
-	if (status === StatusEnum.ACCEPTED) {
+	if (status === FriendRequestStatusEnum.ACCEPTED) {
 		return (
 			<View padding="$1.5" borderRadius="$12" backgroundColor="$color.green8Light">
 				<SizableText size="$1">bereits Freunde</SizableText>
 			</View>
 		);
 	}
-
-	if (status === StatusEnum.PENDING) {
-		return (
-			<View padding="$1.5" borderRadius="$12" backgroundColor="$color.green8Light">
-				<SizableText size="$1">Anfrage erhalten</SizableText>
-			</View>
-		);
-	}
-
-	if (status === StatusEnum.DECLINED) {
-		return (
-			<View padding="$2" borderRadius="$12" backgroundColor="$color.red8Light">
-				<SizableText size="$2">abgelehnt</SizableText>
-			</View>
-		);
-	}
 };
 
-export const FriendEntry = memo(({ friend }: { friend: UserWithStatus }) => {
+export const FriendEntry = memo(({ friend }: { friend: Friend }) => {
 	const { mutateAsync: addFriend } = useAddFriendMutation();
 	const { id, status, firstName, lastName, email } = friend;
 	const [isRequesting, setIsRequesting] = useState(false);

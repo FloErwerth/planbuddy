@@ -1,19 +1,20 @@
 import { SizableText, View, XStack } from "tamagui";
 import { UserAvatar } from "@/components/UserAvatar";
-import { ParticipantQueryResponse } from "@/api/events/types";
 import { useIsMe } from "@/screens/Participants/useIsMe";
 import { ParticipantsAcceptanceStatus } from "@/screens/Participants/ParticipantsAcceptanceStatus";
 import { Pressable } from "react-native";
 import { Ellipsis } from "@tamagui/lucide-icons";
 import { Card } from "@/components/tamagui/Card";
+import { Participant } from "@/api/participants/types";
+import { User } from "@/api/user/types";
 
 type ParticipantProps = {
 	onOpenOptions?: () => void;
-	participant: ParticipantQueryResponse;
+	participant: Participant & User;
 	showStatus?: boolean;
 	showEllipsis?: boolean;
 };
-export const Participant = ({ participant, onOpenOptions, showStatus = true, showEllipsis = true }: ParticipantProps) => {
+export const ParticipantRow = ({ participant, onOpenOptions, showStatus = true, showEllipsis = true }: ParticipantProps) => {
 	const isMe = useIsMe(participant.userId);
 
 	return (

@@ -1,5 +1,5 @@
+import { FriendRequestStatusEnum } from "@/api/friends/types";
 import { supabase } from "@/api/supabase";
-import { FriendRequestStatusEnum } from "@/api/types";
 
 export const addFriendSupabaseQuery = async (userId: string, friendId: string) => {
 	return await supabase

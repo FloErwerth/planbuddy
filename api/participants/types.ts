@@ -24,6 +24,7 @@ export const eventFromParticipantsSchema = z
 	.transform(({ data }) =>
 		data.map((participant) => ({
 			id: participant.id,
+			userId: participant.userId,
 			eventId: participant.eventId,
 			role: participant.role,
 			status: participant.status,

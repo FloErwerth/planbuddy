@@ -1,7 +1,6 @@
-import { useUpdateParticipationMutation } from "@/api/events/mutations";
-import { useEventsQuery, useParticipantsQuery } from "@/api/events/queries";
-import { ParticipantRoleEnum } from "@/api/events/types";
-import { StatusEnum } from "@/api/types";
+import { AppEvent } from "@/api/events/types";
+import { ParticipantRoleEnum } from "@/api/participants/types";
+import { useUpdateParticipationMutation } from "@/api/participants/updateParticipant";
 import { EventSmall } from "@/components/Events/EventSmall";
 import { Screen } from "@/components/Screen";
 import { SearchInput } from "@/components/SearchInput";
@@ -17,7 +16,6 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { RefreshControl } from "react-native";
 import { View, XStack } from "tamagui";
-import type { AppEvent } from "@/api/events/types";
 
 const contentContainerStyle = { gap: "$3", paddingVertical: "$4", flex: 1 };
 
@@ -30,7 +28,7 @@ type AcceptEventInviteProps = {
 	event: AppEvent;
 };
 const AcceptEventInvite = ({ event }: AcceptEventInviteProps) => {
-	const { data: participants } = useParticipantsQuery(event.id);
+	const participants = event.participants;
 	const user = useGetUser();
 	const { mutateAsync: updateParticipation } = useUpdateParticipationMutation();
 	const acceptInvitation = async (updatedEventId: string, eventName: string) => {

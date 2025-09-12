@@ -5,6 +5,6 @@ import { PostgrestSingleResponse } from "@supabase/supabase-js";
 /**
  * Updates an event in the database.
  */
-export const updateEventSupabaseQuery = async (event: AppEvent): Promise<PostgrestSingleResponse<AppEvent>> => {
+export const updateEventSupabaseQuery = async (event: Partial<AppEvent>): Promise<PostgrestSingleResponse<AppEvent>> => {
 	return await supabase.from("events").update(event).eq("id", event.id).select().single().throwOnError();
 };

@@ -8,7 +8,7 @@ export const useInsertUserMutation = () => {
 	const queryClient = useQueryClient();
 	const user = useGetUser();
 	return useMutation({
-		mutationFn: async (insertedUser: User) => {
+		mutationFn: async (insertedUser: Partial<User>) => {
 			const result = await insertUserSupabaseQuery(insertedUser);
 
 			if (result.error) {
