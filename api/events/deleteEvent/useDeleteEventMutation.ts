@@ -1,6 +1,5 @@
-import { DELETE_EVENT_MUTATION_KEY, EVENTS_QUERY_KEY } from "@/api/events/constants";
+import { DELETE_EVENT_MUTATION_KEY, EVENT_IMAGE_QUERY_KEY, EVENTS_QUERY_KEY } from "@/api/events/constants";
 import { deleteEventImageSupabaseQuery, deleteEventSupabaseQuery } from "@/api/events/deleteEvent/query";
-import { EVENT_IMAGE_QUERY_KEY } from "@/api/images/constants";
 import { invalidateQueriesSimultaneously } from "@/api/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 

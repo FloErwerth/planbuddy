@@ -1,4 +1,4 @@
-import { DELETE_PARTICIPANT_MUTATION_KEY, PARTICIPANT_QUERY_KEY } from "@/api/events/constants";
+import { DELETE_PARTICIPANT_MUTATION_KEY, PARTICIPANT_QUERY_KEY } from "@/api/participants/constants";
 import { deleteParticipantSupabaseQuery } from "@/api/participants/deleteParticipant/query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 

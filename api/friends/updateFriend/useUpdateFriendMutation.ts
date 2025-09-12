@@ -1,5 +1,5 @@
 import { FRIENDS_MUTATION_KEY, FRIENDS_QUERY_KEY } from "@/api/friends/constants";
-import { SimpleFriend } from "@/api/friends/types";
+import { BaseFriend } from "@/api/friends/types";
 import { updateFriendSupabaseQuery } from "@/api/friends/updateFriend/query";
 import { useGetUser } from "@/store/authentication";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -9,7 +9,7 @@ export const useUpdateFriendMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (friend: SimpleFriend) => {
+		mutationFn: async (friend: BaseFriend) => {
 			if (!user) {
 				throw new Error("Probably not logged in.");
 			}

@@ -10,3 +10,5 @@ export const userSchema = object({
 	pushToken: z.string().nullable(),
 	pushChannels: z.array(NotificationChannelEnumDefinition),
 });
+
+export type User = z.infer<typeof userSchema>;

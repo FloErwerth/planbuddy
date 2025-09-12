@@ -1,8 +1,8 @@
 import { EVENTS_QUERY_KEY, CREATE_EVENT_MUTATION_KEY } from "@/api/events/constants";
 import { createEventSupabaseQuery } from "@/api/events/createEvents/query";
-import { AppEvent, Participant, ParticipantRoleEnum } from "@/api/events/types";
+import { AppEvent } from "@/api/events/types";
+import { Participant, ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
 import { supabase } from "@/api/supabase";
-import { ParticipantStatusEnum } from "@/api/types";
 import { useGetUser } from "@/store/authentication";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -20,7 +20,7 @@ export const useCreateEventMutation = () => {
 				throw new Error(`Error in useCreateEventMutation: ${queryResult.error.message}`);
 			}
 
-			const insertedUsers: Participant[] = [
+			const insertedUsers: Omit<Participant, "id">[] = [
 				{
 					userId: user.id,
 					eventId: queryResult.data.id,

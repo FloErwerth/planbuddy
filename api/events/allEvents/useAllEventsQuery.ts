@@ -1,10 +1,10 @@
 import { EVENTS_QUERY_KEY } from "@/api/events/constants";
-import { eventsSupabaseQuery } from "@/api/events/events/query";
-import { eventsSchema } from "@/api/events/events/types";
+import { allEventsSupabaseQuery } from "@/api/events/allEvents/query";
+import { eventsSchema } from "@/api/events/allEvents/types";
 import { useGetUser } from "@/store/authentication";
 import { useQuery } from "@tanstack/react-query";
 
-export const useEventsQuery = () => {
+export const useAllEventsQuery = () => {
 	const user = useGetUser();
 
 	return useQuery({
@@ -12,7 +12,7 @@ export const useEventsQuery = () => {
 			if (!user) {
 				return [];
 			}
-			const result = await eventsSupabaseQuery(user.id);
+			const result = await allEventsSupabaseQuery(user.id);
 
 			if (result.error) {
 				throw new Error(`Error in useEventsQuery: ${result.error}`);

@@ -1,6 +1,6 @@
-import { User } from "@/api/types";
 import { INSERT_USERS_MUTATION_KEY, USERS_QUERY_KEY } from "@/api/user/constants";
 import { insertUserSupabaseQuery } from "@/api/user/insertUser/query";
+import { User } from "@/api/user/types";
 import { useGetUser } from "@/store/authentication";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 

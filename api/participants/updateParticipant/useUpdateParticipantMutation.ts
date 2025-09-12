@@ -1,5 +1,6 @@
-import { EVENTS_QUERY_KEY, PARTICIPANT_QUERY_KEY, UPDATE_PARTICIPANT_MUTATION_KEY } from "@/api/events/constants";
-import { Participant } from "@/api/events/types";
+import { EVENTS_QUERY_KEY } from "@/api/events/constants";
+import { PARTICIPANT_QUERY_KEY, UPDATE_PARTICIPANT_MUTATION_KEY } from "@/api/participants/constants";
+import { Participant } from "@/api/participants/types";
 import { isParticipantWithIdAndUserId } from "@/api/participants/util";
 import { supabase } from "@/api/supabase";
 import { invalidateQueriesSimultaneously } from "@/api/utils";

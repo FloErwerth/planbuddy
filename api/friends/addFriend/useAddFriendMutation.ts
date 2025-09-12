@@ -1,17 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FRIENDS_MUTATION_KEY, FRIENDS_QUERY_KEY } from "@/api/friends/constants";
-import { useFriendOverview } from "@/api/friends/refiners";
 import { useGetUser } from "@/store/authentication";
 import { addFriendSupabaseQuery } from "@/api/friends/addFriend/query";
+import { useAllFriendsQuery } from "@/api/friends/allFriends/useAllFriendsQuery";
 
 export const useAddFriendMutation = () => {
 	const user = useGetUser();
 	const queryClient = useQueryClient();
-	const { data } = useFriendOverview();
+	const { data } = useAllFriendsQuery();
 
 	return useMutation({
 		mutationFn: async (friendId: string) => {
-			const isAlreadyFriend = data.find((friend) => friend.requester?.id === friendId || friend.receiver?.id === friendId);
+			const isAlreadyFriend = data?.find((friend) => friend.userId === friendId);
 
 			if (isAlreadyFriend) {
 				return;
