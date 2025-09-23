@@ -12,6 +12,7 @@ export const useAllEventsQuery = () => {
 			if (!user) {
 				return [];
 			}
+
 			const result = await allEventsSupabaseQuery(user.id);
 
 			if (result.error) {
