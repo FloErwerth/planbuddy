@@ -3,7 +3,7 @@ import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
 import { Screen } from "@/components/Screen";
 import { BackButton } from "@/components/BackButton";
 import { SearchInput } from "@/components/SearchInput";
-import { AnimatePresence, getTokenValue, Spinner, useWindowDimensions, View } from "tamagui";
+import { AnimatePresence, getTokenValue, Spinner, Token, useWindowDimensions, View } from "tamagui";
 import { Card } from "@/components/tamagui/Card";
 import { Pressable } from "react-native";
 import { FriendDisplay } from "@/components/FriendDisplay";
@@ -136,7 +136,7 @@ export const EventDetailsAddFriends = () => {
 						margin="$4"
 						position="absolute"
 						bottom={0}
-						width={width - 2 * getTokenValue("$4", "space")}
+						width={width - 2 * getTokenValue("$4" as Token, "space")}
 						onPress={handleAddParticipants}
 					>
 						{isLoading ? <Spinner /> : "Gäste hinzufügen"}

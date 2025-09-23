@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { array } from "zod";
 import { debounce } from "tamagui";
 import { FRIENDS_QUERY_KEY } from "@/api/friends/constants";
-import { useGetUser } from "@/store/authentication";
+import { useUser } from "@/store/authentication";
 import { USERS_QUERY_KEY } from "@/api/user/constants";
 import { userSchema } from "@/api/user/types";
 import { allFriendsQueryResponseSchema, Friend } from "@/api/friends/types";
@@ -34,7 +34,7 @@ export const useUserSearchContext = () => {
 };
 
 const useUsersWithStatusQuery = (search: string, { showUsersWhenEmpty = false }: UserSearchOptions) => {
-	const user = useGetUser();
+	const [user] = useUser();
 
 	return useQuery({
 		queryFn: async () => {
@@ -69,7 +69,7 @@ const useUsersWithStatusQuery = (search: string, { showUsersWhenEmpty = false }:
 				.or(`requesterId.in.(${ids}),receiverId.in.(${ids})`)
 				.throwOnError();
 
-			return allFriendsQueryResponseSchema.parse(friends.data).map((friend) => getFriendFromQuery(friend, user.id));
+			return allFriendsQueryResponseSchema.parse(friends.data).map((friend) => getFriendFromQuery(friend, user?.id));
 		},
 		queryKey: [FRIENDS_QUERY_KEY, USERS_QUERY_KEY, user?.id, search.toLowerCase()],
 	});

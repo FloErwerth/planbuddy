@@ -9,7 +9,7 @@ export const getBaseFriendFromQuery = (response: FriendsQueryResponse): BaseFrie
 	};
 };
 
-export const getFriendFromQuery = (response: FriendsQueryResponse, userId: string) => {
+export const getFriendFromQuery = (response: FriendsQueryResponse, userId?: string) => {
 	const baseFriend = getBaseFriendFromQuery(response);
 	const receiver = { ...response.receiverId };
 	const requester = { ...response.requesterId };
@@ -24,6 +24,10 @@ export const getFriendFromQuery = (response: FriendsQueryResponse, userId: strin
 
 	if (receiver.id !== userId && requester.id !== userId) {
 		throw new Error("Error in getFriendFromQuery: The received data had no overlap with the user");
+	}
+
+	if (!userId) {
+		throw new Error("Error in getFriendFromQuery: The user ID is required.");
 	}
 
 	if (requesterUserId === userId) {
