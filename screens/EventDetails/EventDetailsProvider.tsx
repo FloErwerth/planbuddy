@@ -9,7 +9,7 @@ import { User } from "@/api/user/types";
 type EventDetailsContextType =
 	| {
 			eventId: string;
-			editedGuest: Participant | undefined;
+			editedGuest: (Participant & User) | undefined;
 			setEditedGuest: (guest: (Participant & User) | undefined) => void;
 			toggleInviteToEvent: (userId: string) => void;
 			numberOfAddedUsers: number;

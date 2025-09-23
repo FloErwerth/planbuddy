@@ -26,6 +26,7 @@ export const eventFromParticipantsSchema = z
 			id: participant.id,
 			userId: participant.userId,
 			eventId: participant.eventId,
+			createdAt: participant.users.createdAt,
 			role: participant.role,
 			status: participant.status,
 			email: participant.users.email,

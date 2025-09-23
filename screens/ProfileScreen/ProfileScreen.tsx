@@ -1,4 +1,3 @@
-import { useUserQuery } from "@/api/user";
 import { Screen } from "@/components/Screen";
 import { SizableText, Spinner, View, XStack } from "tamagui";
 import { UserAvatar } from "@/components/UserAvatar";
@@ -13,9 +12,10 @@ import { Separator } from "@/components/tamagui/Separator";
 import { Pressable } from "react-native";
 import { useState } from "react";
 import { DeleteUserDialog } from "./DeleteUserDialog";
+import { useGetUserQuery } from "@/api/user/getUser";
 
 export const ProfileScreen = () => {
-	const { data: user, isLoading: isLoadingProfile } = useUserQuery();
+	const { data: user, isLoading: isLoadingProfile } = useGetUserQuery();
 	const logout = useLogout();
 	const [deleteUserDialogOpen, setDeleteUserDialogOpen] = useState(false);
 
@@ -38,7 +38,7 @@ export const ProfileScreen = () => {
 					</Button>
 				}
 			>
-				<UserAvatar size="$10" alignSelf="center" {...user} />
+				<UserAvatar size="$10" alignSelf="center" id={user?.id} />
 				<View alignSelf="center" justifyContent="center">
 					<SizableText size="$6" textAlign="center">
 						{user?.firstName} {user?.lastName}

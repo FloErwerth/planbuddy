@@ -9,7 +9,7 @@ export const useUpdateUserMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async ({ updatedUser, onSuccess }: { updatedUser: User; onSuccess?: (user: User) => void }) => {
+		mutationFn: async ({ updatedUser, onSuccess }: { updatedUser: Partial<User>; onSuccess?: (user: User) => void }) => {
 			const result = await updateUserSupabaseQuery(updatedUser);
 
 			if (result.error) {

@@ -44,7 +44,7 @@ export const EditGuestOptions = ({ onRemoveGuest }: ParticipantEditGuestOptionsP
 				<SizableText>Rolle</SizableText>
 				<PressableRow
 					onPress={toggleRole}
-					iconRight={<Checkbox onPress={toggleRole} checked={guest?.role === ParticipantRoleEnum.enum.ADMIN} />}
+					iconRight={<Checkbox onPress={toggleRole} checked={guest?.role === ParticipantRoleEnum.ADMIN} />}
 					justifyContent="space-between"
 				>
 					<SizableText>Ist Admin</SizableText>

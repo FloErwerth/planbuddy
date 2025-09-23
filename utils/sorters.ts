@@ -1,11 +1,11 @@
-import { ParticipantStatus, StatusEnum } from "@/api/types";
-import { Friend } from "@/api/friends/schema";
+import { Friend } from "@/api/friends/types";
+import { ParticipantStatus, ParticipantStatusEnum } from "@/api/participants/types";
 
 export const sortFriendsToTop = (a: { status?: ParticipantStatus }, b: { status?: ParticipantStatus }) => {
-	if (a.status === StatusEnum.ACCEPTED && b.status === StatusEnum.ACCEPTED) {
+	if (a.status === ParticipantStatusEnum.ACCEPTED && b.status === ParticipantStatusEnum.ACCEPTED) {
 		return 0;
 	}
-	if (a.status === StatusEnum.ACCEPTED && b.status !== StatusEnum.ACCEPTED) {
+	if (a.status === ParticipantStatusEnum.ACCEPTED && b.status !== ParticipantStatusEnum.ACCEPTED) {
 		return -1;
 	}
 	return 1;

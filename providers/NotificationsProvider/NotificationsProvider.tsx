@@ -2,6 +2,8 @@ import { registerForPushNotificationsAsync } from "@/utils/notifications";
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 import * as Notifications from "expo-notifications";
 import z from "zod";
+import { useGetUserQuery } from "@/api/user/getUser";
+import { useUpdateUserMutation } from "@/api/user/updateUser";
 
 export const NotificationChannelEnumDefinition = z.enum(["GUEST_INVITE", "GUEST_UPDATE", "GUEST_START", "HOST_INVITATION_ANSWERED"]);
 export const NotificationChannelEnum = NotificationChannelEnumDefinition.Enum;
@@ -30,7 +32,7 @@ export const useNotificationContext = () => {
 };
 
 export const NotificationsProvider = ({ children }: PropsWithChildren) => {
-	const { data: user } = useUserQuery();
+	const { data: user } = useGetUserQuery();
 	const [notification, setNotification] = useState<Notifications.Notification | undefined>();
 	const { mutateAsync } = useUpdateUserMutation();
 
@@ -118,10 +120,3 @@ export const NotificationsProvider = ({ children }: PropsWithChildren) => {
 		</NotificationContext.Provider>
 	);
 };
-function useUserQuery(): { data: any } {
-	throw new Error("Function not implemented.");
-}
-
-function useUpdateUserMutation(): { mutateAsync: any } {
-	throw new Error("Function not implemented.");
-}

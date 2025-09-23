@@ -1,6 +1,6 @@
-import { useParticipantsQuery } from "@/api/events/queries";
-import { ParticipantQueryResponse } from "@/api/events/types";
-import { ParticipantStatus, StatusEnum } from "@/api/types";
+import { useSearchParticipantsByStatus } from "@/api/participants/searchParticipantsByNameStatus";
+import { Participant, ParticipantStatus, ParticipantStatusEnum } from "@/api/participants/types";
+import { User } from "@/api/user/types";
 import { BackButton } from "@/components/BackButton";
 import { PlusButton } from "@/components/PlusButton";
 import { Screen } from "@/components/Screen";
@@ -22,19 +22,19 @@ export const Participants = () => {
 	const [activeFilters, setActiveFilters] = useState<ParticipantStatus[]>([]);
 	const [search, setSearch] = useState("");
 	const [refreshing, setRefreshing] = useState(false);
-	const { data: participants, refetch, isLoading } = useParticipantsQuery(eventId, activeFilters, search);
+	const { data: participants, refetch, isLoading } = useSearchParticipantsByStatus(eventId, activeFilters, search);
 	const user = useGetUser();
 
 	const sortedParticipants = participants?.sort((a) => (a.userId === user?.id ? 1 : 0));
 
-	const render = ({ item: participant }: ListRenderItemInfo<ParticipantQueryResponse>) =>
+	const render = ({ item: participatingUser }: ListRenderItemInfo<Participant & User>) =>
 		refreshing ? (
 			<ParticipantSkeleton />
 		) : (
 			<ParticipantRow
-				participant={participant}
+				participatingUser={participatingUser}
 				onOpenOptions={() => {
-					setEditedGuest(participant);
+					setEditedGuest(participatingUser);
 					router.push("/eventDetails/editGuest");
 				}}
 			/>
@@ -52,9 +52,9 @@ export const Participants = () => {
 		}
 	};
 
-	const acceptedFilterActive = activeFilters.includes(StatusEnum.ACCEPTED);
-	const declinedFilterActive = activeFilters.includes(StatusEnum.DECLINED);
-	const pendingFilterActive = activeFilters.includes(StatusEnum.PENDING);
+	const acceptedFilterActive = activeFilters.includes(ParticipantStatusEnum.ACCEPTED);
+	const declinedFilterActive = activeFilters.includes(ParticipantStatusEnum.DECLINED);
+	const pendingFilterActive = activeFilters.includes(ParticipantStatusEnum.PENDING);
 
 	return (
 		<>
@@ -62,7 +62,7 @@ export const Participants = () => {
 				<XStack gap="$3">
 					<ToggleButton
 						borderRadius="$12"
-						onPress={() => toggleFilter(StatusEnum.ACCEPTED)}
+						onPress={() => toggleFilter(ParticipantStatusEnum.ACCEPTED)}
 						active={acceptedFilterActive}
 						icon={<Eye color="$background" size="$1" />}
 					>
@@ -71,14 +71,14 @@ export const Participants = () => {
 					<ToggleButton
 						borderRadius="$12"
 						active={pendingFilterActive}
-						onPress={() => toggleFilter(StatusEnum.PENDING)}
+						onPress={() => toggleFilter(ParticipantStatusEnum.PENDING)}
 						icon={<Eye color="$background" size="$1" />}
 					>
 						Ausstehend
 					</ToggleButton>
 					<ToggleButton
 						borderRadius="$12"
-						onPress={() => toggleFilter(StatusEnum.DECLINED)}
+						onPress={() => toggleFilter(ParticipantStatusEnum.DECLINED)}
 						active={declinedFilterActive}
 						icon={<Eye color="$background" size="$1" />}
 					>

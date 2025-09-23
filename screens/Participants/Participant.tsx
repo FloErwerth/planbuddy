@@ -10,28 +10,28 @@ import { User } from "@/api/user/types";
 
 type ParticipantProps = {
 	onOpenOptions?: () => void;
-	participant: Participant & User;
+	participatingUser: Participant & User;
 	showStatus?: boolean;
 	showEllipsis?: boolean;
 };
-export const ParticipantRow = ({ participant, onOpenOptions, showStatus = true, showEllipsis = true }: ParticipantProps) => {
-	const isMe = useIsMe(participant.userId);
+export const ParticipantRow = ({ participatingUser, onOpenOptions, showStatus = true, showEllipsis = true }: ParticipantProps) => {
+	const isMe = useIsMe(participatingUser.userId);
 
 	return (
 		<Pressable onPress={onOpenOptions}>
 			<Card flexDirection="row" justifyContent="space-between" backgroundColor={isMe ? "$color.blue4Light" : "$background"} alignItems="center">
 				<XStack gap="$4" alignItems="center" justifyContent="space-evenly">
-					<UserAvatar id={participant.userId} />
+					<UserAvatar id={participatingUser.userId} />
 					<View>
 						<SizableText size="$5">
-							{participant.firstName} {participant.lastName}
+							{participatingUser.firstName} {participatingUser.lastName}
 						</SizableText>
-						<SizableText size="$2">{participant.role}</SizableText>
+						<SizableText size="$2">{participatingUser.role}</SizableText>
 					</View>
 				</XStack>
 				<XStack alignItems="center" gap="$4">
 					<View>
-						{isMe ? <SizableText marginRight="$2">Du</SizableText> : showStatus ? <ParticipantsAcceptanceStatus status={participant.status} /> : null}
+						{isMe ? <SizableText marginRight="$2">Du</SizableText> : showStatus ? <ParticipantsAcceptanceStatus status={participatingUser.status} /> : null}
 					</View>
 					{showEllipsis && onOpenOptions && <Ellipsis />}
 				</XStack>

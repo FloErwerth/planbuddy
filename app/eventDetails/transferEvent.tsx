@@ -15,16 +15,17 @@ import { useSingleParticipantQuery } from "@/api/participants/singleParticipant/
 import { useGetUser } from "@/store/authentication";
 import { Participant, ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
 import { ParticipantRow } from "@/screens/Participants/Participant";
+import { User } from "@sentry/react-native";
 
 export default function TransferEvent() {
 	const user = useGetUser();
 	const { eventId } = useEventDetailsContext();
 	const { data: myEvent } = useSingleParticipantQuery(eventId, user.id);
-	const { data: participants } = useSearchParticipantsByStatus(eventId, [ParticipantStatusEnum.ACCEPTED]);
+	const { data: participatingUsers } = useSearchParticipantsByStatus(eventId, [ParticipantStatusEnum.ACCEPTED]);
 	const { mutateAsync: updateGuest } = useUpdateParticipationMutation();
 	const { mutateAsync: updateEvent } = useUpdateEventMutation();
 	const { mutateAsync: removeGuest } = useDeleteParticipantMutation();
-	const [guestToTransferTo, setGuestToTransferTo] = useState<Participant | undefined>(undefined);
+	const [guestToTransferTo, setGuestToTransferTo] = useState<(Participant & User) | undefined>(undefined);
 
 	const handleTransferEvent = async () => {
 		try {
@@ -48,17 +49,17 @@ export default function TransferEvent() {
 		}
 	};
 
-	const mappedParticipants = participants?.map((participant) => {
-		if (!participant.id) {
+	const mappedParticipants = participatingUsers?.map((participatingUser) => {
+		if (!participatingUser.id) {
 			return null;
 		}
 		return (
 			<ParticipantRow
-				key={participant.id}
-				onOpenOptions={() => setGuestToTransferTo(participant)}
+				key={participatingUser.id}
+				onOpenOptions={() => setGuestToTransferTo(participatingUser)}
 				showEllipsis={false}
 				showStatus={false}
-				participant={participant}
+				participatingUser={participatingUser}
 			/>
 		);
 	});

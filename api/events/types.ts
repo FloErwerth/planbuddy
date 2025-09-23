@@ -1,4 +1,3 @@
-import { participantSchema } from "@/api/participants/types";
 import { zodNullToUndefined } from "@/utils/zodNullToUndefined";
 import z from "zod";
 
@@ -14,7 +13,6 @@ export const appEventSchema = z.object({
 	endTime: z.string(),
 });
 
-export const eventSchema = participantSchema.and(appEventSchema.omit({ id: true }));
-export const eventsSchema = z.array(eventSchema);
+export const eventsSchema = z.array(appEventSchema);
 
 export type AppEvent = z.infer<typeof appEventSchema>;

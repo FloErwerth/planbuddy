@@ -9,7 +9,7 @@ export const useUpdateFriendMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (friend: BaseFriend) => {
+		mutationFn: async (friend: Partial<BaseFriend>) => {
 			if (!user) {
 				throw new Error("Probably not logged in.");
 			}

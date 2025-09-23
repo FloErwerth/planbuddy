@@ -1,5 +1,4 @@
 import { Sheet } from "@/components/tamagui/Sheet";
-import { useSingleEventQuery } from "@/api/events/queries";
 import { SheetProps, SizableText, useWindowDimensions, View, XStack, YStack } from "tamagui";
 import { Card } from "@/components/tamagui/Card";
 import QRCode from "react-native-qrcode-svg";
@@ -8,13 +7,14 @@ import { ClipboardCopy, Share2 } from "@tamagui/lucide-icons";
 import * as ExpoClipboard from "expo-clipboard";
 import { Screen } from "@/components/Screen";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
+import { useEventQuery } from "@/api/events/event/useEventQuery";
 
 const websiteURL = process.env.EXPO_PUBLIC_WEBPAGE_URL;
 
 type ShareSheetProps = SheetProps;
 export const ShareSheet = ({ ...props }: ShareSheetProps) => {
 	const { eventId } = useEventDetailsContext();
-	const { data: event, isLoading } = useSingleEventQuery(eventId);
+	const { data: event, isLoading } = useEventQuery(eventId);
 	const { width } = useWindowDimensions();
 	const invitationLink = `${websiteURL}?eventId=${eventId}`;
 

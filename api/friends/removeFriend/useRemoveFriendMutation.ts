@@ -5,7 +5,7 @@ export const useRemoveFriendMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (friendId: string) => {
+		mutationFn: async (friendId?: string) => {
 			const result = await removeFriendSupabaseQuery(friendId);
 
 			if (result.error) {

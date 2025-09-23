@@ -18,6 +18,9 @@ import { useCreateParticipationMutation } from "@/api/participants/createPartici
 import { useEventQuery } from "@/api/events/event/useEventQuery";
 import { useSingleParticipantQuery } from "@/api/participants/singleParticipant";
 import { useGetUser } from "@/store/authentication";
+import { useAcceptedFriends } from "@/hooks/friends/useAcceptedFriends";
+import { useAllParticipantsFromEventQuery } from "@/api/participants/allParticipants";
+import { Participant, ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
 
 const Guest = ({ id, onPress, checked, ...friend }: Friend & { checked: boolean; onPress: (id: string) => void }) => {
 	return (
@@ -39,8 +42,10 @@ export const EventDetailsAddFriends = () => {
 	const { mutateAsync } = useCreateParticipationMutation();
 	const { eventId } = useEventDetailsContext();
 	const user = useGetUser();
-	const { data: event } = useEventQuery(eventId);	
-	const me = useSingleParticipantQuery(eventId, user.id));
+	const { data: event } = useEventQuery(eventId);
+	const { data: participants } = useAllParticipantsFromEventQuery(eventId);
+	const { data: me } = useSingleParticipantQuery(eventId, user.id);
+	const acceptedFriends = useAcceptedFriends();
 
 	const applyFilter = (other: Friend | undefined) => {
 		if (!filter || !other) {
@@ -65,7 +70,7 @@ export const EventDetailsAddFriends = () => {
 		return foundMatch;
 	};
 
-	const friendsWithChecked = friends
+	const friendsWithChecked = acceptedFriends
 		.map((friend) => ({
 			...friend,
 			checked: addedGuests.has(friend.userId!),
@@ -83,7 +88,7 @@ export const EventDetailsAddFriends = () => {
 		setAddedGuests(newGuests);
 	};
 
-	const render = ({ item: friend }: ListRenderItemInfo<SimpleFriend & { checked: boolean }>) => {
+	const render = ({ item: friend }: ListRenderItemInfo<Friend & { checked: boolean }>) => {
 		return <Guest {...friend} onPress={() => toggleGuest(friend.userId!, friend.checked)} />;
 	};
 
@@ -92,12 +97,14 @@ export const EventDetailsAddFriends = () => {
 		try {
 			const addedGuestsList = friendsWithChecked.filter(({ checked }) => checked);
 			await mutateAsync(
-				addedGuestsList.map(({ userId }) => ({ userId, eventId, role: ParticipantRoleEnum.enum.GUEST, status: StatusEnum.PENDING }) satisfies Participant)
+				addedGuestsList.map(
+					({ userId }) => ({ userId, eventId, role: ParticipantRoleEnum.GUEST, status: ParticipantStatusEnum.PENDING }) satisfies Omit<Participant, "id">
+				)
 			);
 			await Promise.all(
-				addedGuestsList.map(async ({ other, me }) => {
-					if (other && other.pushToken && other.pushChannels?.includes(NotificationChannelEnum.GUEST_INVITE)) {
-						return await sendGuestInviteNotification(other.pushToken, me?.firstName, event?.name);
+				addedGuestsList.map(async (friend) => {
+					if (friend && friend.pushToken && me?.firstName && event?.name && friend.pushChannels?.includes(NotificationChannelEnum.GUEST_INVITE)) {
+						return await sendGuestInviteNotification(friend.pushToken, me.firstName, event.name);
 					}
 				})
 			);

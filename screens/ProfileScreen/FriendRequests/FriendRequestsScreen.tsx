@@ -1,8 +1,4 @@
-import { useFriendOverview } from "@/api/friends/refiners";
 import { useState } from "react";
-import { extractOtherUser } from "@/utils/extractOtherUser";
-import { useRemoveFriendMutation, useUpdateFriendMutation } from "@/api/friends/addFriend/useAddFriendMutation";
-import { StatusEnum } from "@/api/types";
 import { router } from "expo-router";
 import { Card } from "@/components/tamagui/Card";
 import { SizableText, View, XStack } from "tamagui";
@@ -14,27 +10,31 @@ import { Screen } from "@/components/Screen";
 import { BackButton } from "@/components/BackButton";
 import { ScrollView } from "@/components/tamagui/ScrollView";
 import { Dialog } from "@/components/tamagui/Dialog";
+import { usePendingFriends } from "@/hooks/friends/usePendingFriends";
+import { useRemoveFriendMutation } from "@/api/friends/removeFriend";
+import { useUpdateFriendMutation } from "@/api/friends/updateFriend";
+import { Friend, FriendRequestStatusEnum } from "@/api/friends/types";
 
 export const FriendRequestsScreen = () => {
-	const { pendingToAccept } = useFriendOverview();
-	const [userToDecline, setUserToDecline] = useState<ReturnType<typeof extractOtherUser> | undefined>(undefined);
+	const pendingFriends = usePendingFriends();
+	const [userToDecline, setUserToDecline] = useState<Friend | undefined>(undefined);
 	const { mutateAsync: removeFriend } = useRemoveFriendMutation();
 	const { mutateAsync: updateFriend } = useUpdateFriendMutation();
 
-	if (pendingToAccept.length === 0) {
+	if (pendingFriends.length === 0) {
 		return null;
 	}
 
 	const acceptFriendRequest = async (id: string) => {
 		await updateFriend({
 			id,
-			status: StatusEnum.ACCEPTED,
-			acceptedAt: new Date(),
+			status: FriendRequestStatusEnum.ACCEPTED,
+			acceptedAt: new Date().toISOString(),
 		});
 		router.navigate("/profile");
 	};
 
-	const mapped = pendingToAccept.map((pending) => {
+	const mapped = pendingFriends.map((pending) => {
 		return (
 			<Card key={pending.id}>
 				<XStack alignItems="center" justifyContent="space-between">
