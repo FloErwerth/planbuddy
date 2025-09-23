@@ -1,5 +1,5 @@
-import { Event } from "@/api/events/types";
-import { useEventImageQuery } from "@/api/images";
+import { useEventImageQuery } from "@/api/events/eventImage";
+import { AppEvent } from "@/api/events/types";
 import { Card } from "@/components/tamagui/Card";
 import { SizeableText } from "@/components/tamagui/SizeableText";
 import { getRelativeDate } from "@/utils/date";
@@ -8,7 +8,7 @@ import { router } from "expo-router";
 import { Pressable } from "react-native";
 import { View, XStack } from "tamagui";
 
-type EventSmallProps = Pick<Event, "name" | "location" | "startTime" | "id">;
+type EventSmallProps = Pick<AppEvent, "name" | "location" | "startTime" | "id">;
 
 const imageStyle = { aspectRatio: "4/3", width: "33%", borderRadius: 8 } as const;
 export const EventSmall = ({ name, startTime, id }: EventSmallProps) => {

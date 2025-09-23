@@ -2,27 +2,26 @@ import { DialogProps, SizableText, View } from "tamagui";
 import { Button } from "@/components/tamagui/Button";
 import { router } from "expo-router";
 import { Dialog } from "@/components/tamagui/Dialog";
-import { useParticipantsQuery } from "@/api/events/queries";
-import { Role } from "@/api/events/types";
+import { useMe } from "@/api/hooks";
+import { ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
-import { StatusEnum } from "@/api/types";
-import { useMe } from "@/api/events/refiners";
-import { useDeleteEventAndEventImageMutation } from "@/api/events/mutations";
 import { useState } from "react";
+import { useAllParticipantsFromEventQuery } from "@/api/participants/allParticipants";
+import { useDeleteEventMutation } from "@/api/events/deleteEvent";
 
 type CreatorContentProps = Pick<DialogProps, "onOpenChange">;
 
 export const CreatorContent = ({ onOpenChange }: CreatorContentProps) => {
 	const { eventId } = useEventDetailsContext();
 	const me = useMe(eventId);
-	const participants = useParticipantsQuery(eventId);
-	const hasAdmin = participants.data?.some((participant) => participant.role === Role.enum.ADMIN);
+	const participants = useAllParticipantsFromEventQuery(eventId);
+	const hasAdmin = participants.data?.some((participant) => participant.role === ParticipantRoleEnum.ADMIN);
 	const hasOtherGuests = participants.data?.some((participant) => {
-		return participant.userId !== me?.userId && participant.status === StatusEnum.ACCEPTED;
+		return participant.userId !== me?.userId && participant.status === ParticipantStatusEnum.ACCEPTED;
 	});
 	const [chooseAdminSheetOpen, setChooseAdminSheetOpen] = useState(false);
 
-	const { mutateAsync: deleteEvent } = useDeleteEventAndEventImageMutation();
+	const { mutateAsync: deleteEvent } = useDeleteEventMutation();
 
 	const handleDeleteEvent = async () => {
 		await deleteEvent(eventId);

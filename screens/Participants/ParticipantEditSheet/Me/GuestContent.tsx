@@ -1,8 +1,8 @@
 import { DialogProps, SizableText, View } from "tamagui";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
-import { useDeleteParticipantMutation } from "@/api/events/mutations";
 import { Button } from "@/components/tamagui/Button";
 import { router } from "expo-router";
+import { useDeleteParticipantMutation } from "@/api/participants/deleteParticipant";
 
 type GuestContentProps = Pick<DialogProps, "onOpenChange">;
 export const GuestContent = ({ onOpenChange }: GuestContentProps) => {

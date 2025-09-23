@@ -1,31 +1,32 @@
-import { useFriendsByStatus } from "@/api/friends/refiners";
 import { useState } from "react";
-import { SimpleFriend } from "@/api/friends/types";
 import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
 import { Screen } from "@/components/Screen";
 import { BackButton } from "@/components/BackButton";
 import { SearchInput } from "@/components/SearchInput";
-import { AnimatePresence, getTokenValue, Spinner, useWindowDimensions, View } from "tamagui";
+import { AnimatePresence, getTokenValue, Spinner, Token, useWindowDimensions, View } from "tamagui";
 import { Card } from "@/components/tamagui/Card";
 import { Pressable } from "react-native";
 import { FriendDisplay } from "@/components/FriendDisplay";
 import { Checkbox } from "@/components/tamagui/Checkbox";
 import { Button } from "@/components/tamagui/Button";
-import { useCreateParticipationMutation } from "@/api/events/mutations";
-import { Participant, Role } from "@/api/events/types";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
-import { StatusEnum } from "@/api/types";
 import { router } from "expo-router";
-import { useParticipantsQuery, useSingleEventQuery } from "@/api/events/queries";
-import { useMe } from "@/api/events/refiners";
 import { NotificationChannelEnum } from "@/providers/NotificationsProvider";
 import { sendGuestInviteNotification } from "@/utils/notifications";
+import { Friend } from "@/api/friends/types";
+import { useCreateParticipationMutation } from "@/api/participants/createParticipant";
+import { useEventQuery } from "@/api/events/event/useEventQuery";
+import { useSingleParticipantQuery } from "@/api/participants/singleParticipant";
+import { useGetUser } from "@/store/authentication";
+import { useAcceptedFriends } from "@/hooks/friends/useAcceptedFriends";
+import { useAllParticipantsFromEventQuery } from "@/api/participants/allParticipants";
+import { Participant, ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
 
-const Guest = ({ id, onPress, checked, ...friend }: SimpleFriend & { checked: boolean; onPress: (id: string) => void }) => {
+const Guest = ({ id, onPress, checked, ...friend }: Friend & { checked: boolean; onPress: (id: string) => void }) => {
 	return (
 		<Card marginHorizontal="$4" key={id}>
 			<Pressable onPress={() => onPress(id!)}>
-				<FriendDisplay {...friend}>
+				<FriendDisplay id={id} {...friend}>
 					<Checkbox checked={checked} />
 				</FriendDisplay>
 			</Pressable>
@@ -36,17 +37,17 @@ const Guest = ({ id, onPress, checked, ...friend }: SimpleFriend & { checked: bo
 export const EventDetailsAddFriends = () => {
 	const [addedGuests, setAddedGuests] = useState<Set<string>>(new Set());
 	const [isLoading, setIsLoading] = useState(false);
-	const { accepted: friends } = useFriendsByStatus();
 	const [filter, setFilter] = useState<string>();
 	const { width } = useWindowDimensions();
 	const { mutateAsync } = useCreateParticipationMutation();
 	const { eventId } = useEventDetailsContext();
+	const user = useGetUser();
+	const { data: event } = useEventQuery(eventId);
+	const { data: participants } = useAllParticipantsFromEventQuery(eventId);
+	const { data: me } = useSingleParticipantQuery(eventId, user.id);
+	const acceptedFriends = useAcceptedFriends();
 
-	const { data: event } = useSingleEventQuery(eventId);
-	const { data: participants } = useParticipantsQuery(eventId);
-	const me = useMe(eventId);
-
-	const applyFilter = (other: SimpleFriend | undefined) => {
+	const applyFilter = (other: Friend | undefined) => {
 		if (!filter || !other) {
 			return true;
 		}
@@ -69,7 +70,7 @@ export const EventDetailsAddFriends = () => {
 		return foundMatch;
 	};
 
-	const friendsWithChecked = friends
+	const friendsWithChecked = acceptedFriends
 		.map((friend) => ({
 			...friend,
 			checked: addedGuests.has(friend.userId!),
@@ -87,7 +88,7 @@ export const EventDetailsAddFriends = () => {
 		setAddedGuests(newGuests);
 	};
 
-	const render = ({ item: friend }: ListRenderItemInfo<SimpleFriend & { checked: boolean }>) => {
+	const render = ({ item: friend }: ListRenderItemInfo<Friend & { checked: boolean }>) => {
 		return <Guest {...friend} onPress={() => toggleGuest(friend.userId!, friend.checked)} />;
 	};
 
@@ -95,11 +96,15 @@ export const EventDetailsAddFriends = () => {
 		setIsLoading(true);
 		try {
 			const addedGuestsList = friendsWithChecked.filter(({ checked }) => checked);
-			await mutateAsync(addedGuestsList.map(({ userId }) => ({ userId, eventId, role: Role.enum.GUEST, status: StatusEnum.PENDING }) satisfies Participant));
+			await mutateAsync(
+				addedGuestsList.map(
+					({ userId }) => ({ userId, eventId, role: ParticipantRoleEnum.GUEST, status: ParticipantStatusEnum.PENDING }) satisfies Omit<Participant, "id">
+				)
+			);
 			await Promise.all(
-				addedGuestsList.map(async ({ other, me }) => {
-					if (other && other.pushToken && other.pushChannels?.includes(NotificationChannelEnum.GUEST_INVITE)) {
-						return await sendGuestInviteNotification(other.pushToken, me?.firstName, event?.name);
+				addedGuestsList.map(async (friend) => {
+					if (friend && friend.pushToken && me?.firstName && event?.name && friend.pushChannels?.includes(NotificationChannelEnum.GUEST_INVITE)) {
+						return await sendGuestInviteNotification(friend.pushToken, me.firstName, event.name);
 					}
 				})
 			);
@@ -131,7 +136,7 @@ export const EventDetailsAddFriends = () => {
 						margin="$4"
 						position="absolute"
 						bottom={0}
-						width={width - 2 * getTokenValue("$4", "space")}
+						width={width - 2 * getTokenValue("$4" as Token, "space")}
 						onPress={handleAddParticipants}
 					>
 						{isLoading ? <Spinner /> : "Gäste hinzufügen"}

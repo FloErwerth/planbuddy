@@ -1,6 +1,5 @@
 import { Screen } from "@/components/Screen";
 import { Redirect, useGlobalSearchParams } from "expo-router";
-import { useSingleEventQuery } from "@/api/events/queries";
 import { SizableText, useWindowDimensions, View, XStack, YStack } from "tamagui";
 import { Card } from "@/components/tamagui/Card";
 import QRCode from "react-native-qrcode-svg";
@@ -8,13 +7,14 @@ import * as ExpoClipboard from "expo-clipboard";
 import { Pressable, Share } from "react-native";
 import { ClipboardCopy, Share2 } from "@tamagui/lucide-icons";
 import { BackButton } from "@/components/BackButton";
+import { useEventQuery } from "@/api/events/event/useEventQuery";
 
 const websiteURL = process.env.EXPO_PUBLIC_WEBPAGE_URL;
 export const ShareEvent = () => {
 	const { shareEvent: eventId } = useGlobalSearchParams<{
 		shareEvent: string;
 	}>();
-	const { data: event, isLoading } = useSingleEventQuery(eventId);
+	const { data: event, isLoading } = useEventQuery(eventId);
 	const { width } = useWindowDimensions();
 	const invitationLink = `${websiteURL}?eventId=${eventId}`;
 

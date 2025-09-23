@@ -1,4 +1,4 @@
-import { useSingleEventQuery } from "@/api/events/queries";
+import { useEventQuery } from "@/api/events/event/useEventQuery";
 import { PressableRow } from "@/components/PressableRow";
 import { Card } from "@/components/tamagui/Card";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
@@ -10,7 +10,7 @@ import { SizableText, XStack } from "tamagui";
 
 export const Details = () => {
 	const { eventId } = useEventDetailsContext();
-	const { data: event } = useSingleEventQuery(eventId);
+	const { data: event } = useEventQuery(eventId);
 
 	if (!event) {
 		return null;

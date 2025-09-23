@@ -1,15 +1,15 @@
 import { SizableText, View } from "tamagui";
-import { Status, StatusEnum } from "@/api/types";
 import { Ellipsis } from "@tamagui/lucide-icons";
 import { Pressable } from "react-native";
+import { ParticipantStatus, ParticipantStatusEnum } from "@/api/participants/types";
 
 type AcceptanceStatusProps = {
-	status: Status | undefined;
+	status: ParticipantStatus | undefined;
 	openOptions: () => void;
 };
 
 export const FriendAcceptanceStatus = ({ status, openOptions }: AcceptanceStatusProps) => {
-	if (status === StatusEnum.ACCEPTED) {
+	if (status === ParticipantStatusEnum.ACCEPTED) {
 		return (
 			<View>
 				<Pressable onPress={openOptions}>
@@ -19,7 +19,7 @@ export const FriendAcceptanceStatus = ({ status, openOptions }: AcceptanceStatus
 		);
 	}
 
-	if (status === StatusEnum.PENDING) {
+	if (status === ParticipantStatusEnum.PENDING) {
 		return (
 			<View padding="$2" borderRadius="$12" backgroundColor="$color.yellow8Light">
 				<SizableText size="$2">Ausstehend</SizableText>
@@ -27,7 +27,7 @@ export const FriendAcceptanceStatus = ({ status, openOptions }: AcceptanceStatus
 		);
 	}
 
-	if (status === StatusEnum.DECLINED) {
+	if (status === ParticipantStatusEnum.DECLINED) {
 		return (
 			<View padding="$2" borderRadius="$12" backgroundColor="$color.red8Light">
 				<SizableText size="$2">Abgelehnt</SizableText>

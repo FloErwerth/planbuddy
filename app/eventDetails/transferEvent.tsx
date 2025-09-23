@@ -1,32 +1,35 @@
 import { Screen } from "@/components/Screen";
 import { BackButton } from "@/components/BackButton";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
-import { useParticipantsQuery, useSingleEventQuery } from "@/api/events/queries";
 import { ScrollView } from "@/components/tamagui/ScrollView";
 import { useState } from "react";
-import { Participant } from "@/screens/Participants/Participant";
-import { StatusEnum } from "@/api/types";
-import { useMe } from "@/api/events/refiners";
 import { SizableText, View } from "tamagui";
-import { useDeleteParticipantMutation, useUpdateEventMutation, useUpdateParticipationMutation } from "@/api/events/mutations";
-import { ParticipantQueryResponse, Role } from "@/api/events/types";
 import { router } from "expo-router";
 import { Dialog } from "@/components/tamagui/Dialog";
 import { Button } from "@/components/tamagui/Button";
+import { useSearchParticipantsByStatus } from "@/api/participants/searchParticipantsByNameStatus/useSearchParticipantsByStatus";
+import { useUpdateParticipationMutation } from "@/api/participants/updateParticipant/useUpdateParticipantMutation";
+import { useUpdateEventMutation } from "@/api/events/updateEvent/useUpdateEventMutation";
+import { useDeleteParticipantMutation } from "@/api/participants/deleteParticipant/useDeleteParticipantMutation";
+import { useSingleParticipantQuery } from "@/api/participants/singleParticipant/useSingleParticipant";
+import { useGetUser } from "@/store/authentication";
+import { Participant, ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
+import { ParticipantRow } from "@/screens/Participants/Participant";
+import { User } from "@sentry/react-native";
 
 export default function TransferEvent() {
+	const user = useGetUser();
 	const { eventId } = useEventDetailsContext();
-	const { data: event } = useSingleEventQuery(eventId);
-	const participants = useParticipantsQuery(eventId, [StatusEnum.ACCEPTED]);
-	const me = useMe(eventId);
+	const { data: myEvent } = useSingleParticipantQuery(eventId, user.id);
+	const { data: participatingUsers } = useSearchParticipantsByStatus(eventId, [ParticipantStatusEnum.ACCEPTED]);
 	const { mutateAsync: updateGuest } = useUpdateParticipationMutation();
 	const { mutateAsync: updateEvent } = useUpdateEventMutation();
 	const { mutateAsync: removeGuest } = useDeleteParticipantMutation();
-	const [guestToTransferTo, setGuestToTransferTo] = useState<ParticipantQueryResponse | undefined>(undefined);
+	const [guestToTransferTo, setGuestToTransferTo] = useState<(Participant & User) | undefined>(undefined);
 
 	const handleTransferEvent = async () => {
 		try {
-			if (!me.id || !guestToTransferTo || !guestToTransferTo.id || !event) {
+			if (!guestToTransferTo || !guestToTransferTo.id || !myEvent || myEvent.userId) {
 				return;
 			}
 			setGuestToTransferTo(undefined);
@@ -36,11 +39,9 @@ export default function TransferEvent() {
 			});
 			await updateGuest({
 				id: guestToTransferTo?.id,
-				participant: {
-					role: Role.enum.CREATOR,
-				},
+				role: ParticipantRoleEnum.CREATOR,
 			});
-			await removeGuest(me?.id);
+			await removeGuest(myEvent.userId);
 			router.push("/(tabs)");
 		} catch (e) {
 			console.error(e);
@@ -48,27 +49,20 @@ export default function TransferEvent() {
 		}
 	};
 
-	const mappedParticipants = participants.data
-		?.filter((guest) => {
-			if (!guest || !me) {
-				return true;
-			}
-			return guest?.userId !== me?.userId;
-		})
-		.map((participant) => {
-			if (!participant.id) {
-				return null;
-			}
-			return (
-				<Participant
-					key={participant.id}
-					onOpenOptions={() => setGuestToTransferTo(participant)}
-					showEllipsis={false}
-					showStatus={false}
-					participant={participant}
-				/>
-			);
-		});
+	const mappedParticipants = participatingUsers?.map((participatingUser) => {
+		if (!participatingUser.id) {
+			return null;
+		}
+		return (
+			<ParticipantRow
+				key={participatingUser.id}
+				onOpenOptions={() => setGuestToTransferTo(participatingUser)}
+				showEllipsis={false}
+				showStatus={false}
+				participatingUser={participatingUser}
+			/>
+		);
+	});
 
 	return (
 		<>

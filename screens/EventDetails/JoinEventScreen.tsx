@@ -1,8 +1,8 @@
-import { useCreateParticipationMutation } from "@/api/events/mutations";
 import { router, useGlobalSearchParams } from "expo-router";
 import { useEffect } from "react";
 import { writeInviteId } from "@/utils/invite";
 import { useGetUser } from "@/store/authentication";
+import { useCreateParticipationMutation } from "@/api/participants/createParticipant";
 
 export const JoinEventScreen = () => {
 	const user = useGetUser();

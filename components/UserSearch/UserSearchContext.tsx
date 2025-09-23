@@ -1,21 +1,17 @@
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from "react";
-import { Status, User, userSchema } from "@/api/types";
 import { supabase } from "@/api/supabase";
 import { useQuery } from "@tanstack/react-query";
 import { array } from "zod";
 import { debounce } from "tamagui";
-import { friendsQuerySchema } from "@/api/friends/schema";
 import { FRIENDS_QUERY_KEY } from "@/api/friends/constants";
-import { useGetUser } from "@/store/authentication";
+import { useUser } from "@/store/authentication";
 import { USERS_QUERY_KEY } from "@/api/user/constants";
+import { userSchema } from "@/api/user/types";
+import { allFriendsQueryResponseSchema, Friend } from "@/api/friends/types";
+import { getFriendFromQuery } from "@/api/friends/utils/getFriendFromQuery";
 
-export type UserWithStatus = User & {
-	status?: Status;
-	receiver?: User;
-	requester?: User;
-};
 type SearchContextType = {
-	users: UserWithStatus[] | undefined;
+	users: Friend[] | undefined;
 	search: (search: string) => void;
 	setSearchDisplay: (search: string) => void;
 	searchDisplay: string;
@@ -38,7 +34,7 @@ export const useUserSearchContext = () => {
 };
 
 const useUsersWithStatusQuery = (search: string, { showUsersWhenEmpty = false }: UserSearchOptions) => {
-	const user = useGetUser();
+	const [user] = useUser();
 
 	return useQuery({
 		queryFn: async () => {
@@ -73,18 +69,7 @@ const useUsersWithStatusQuery = (search: string, { showUsersWhenEmpty = false }:
 				.or(`requesterId.in.(${ids}),receiverId.in.(${ids})`)
 				.throwOnError();
 
-			const parsedFriends = friendsQuerySchema.parse(friends.data);
-
-			return parsedResult.map((user) => {
-				const foundFriend = parsedFriends.find((friend) => friend.requester?.id === user.id || friend.receiver?.id === user.id);
-
-				return {
-					status: foundFriend?.status ?? undefined,
-					requester: foundFriend?.requester,
-					receiver: foundFriend?.receiver,
-					...user,
-				};
-			}) as UserWithStatus[];
+			return allFriendsQueryResponseSchema.parse(friends.data).map((friend) => getFriendFromQuery(friend, user?.id));
 		},
 		queryKey: [FRIENDS_QUERY_KEY, USERS_QUERY_KEY, user?.id, search.toLowerCase()],
 	});

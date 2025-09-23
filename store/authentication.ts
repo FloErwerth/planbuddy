@@ -1,26 +1,24 @@
+import { User } from "@/api/user/types";
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai/index";
-import { User } from "@supabase/auth-js";
 
-export const onboardedAtom = atom<boolean>(false);
+const defaultUser: User = { id: "", createdAt: "", email: "", pushToken: undefined, firstName: undefined, lastName: undefined, pushChannels: [] };
 
-export const useWasOnboarded = () => useAtomValue(onboardedAtom);
-export const useSetWasOnboarded = () => useSetAtom(onboardedAtom);
-
-export const useIsAuthenticated = () => {
-	const user = useGetUser();
-	const wasOnboarded = useWasOnboarded();
-
-	return !!user && wasOnboarded;
-};
-
-export const userAtom = atom<User | undefined>(undefined);
+export const userAtom = atom<User>(defaultUser);
 
 export const useSetUser = () => {
 	return useSetAtom(userAtom);
 };
 
+export const useResetUser = () => {
+	const setUser = useSetUser();
+
+	return () => setUser(defaultUser);
+};
+
 export const useGetUser = () => {
-	return useAtomValue(userAtom);
+	const user = useAtomValue(userAtom);
+
+	return user;
 };
 
 export const useUser = () => {

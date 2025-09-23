@@ -2,12 +2,12 @@ import { SheetProps, SizableText, View } from "tamagui";
 import { Sheet } from "@/components/tamagui/Sheet";
 import { Screen } from "@/components/Screen";
 import { Button } from "@/components/tamagui/Button";
-import { useRemoveFriendMutation } from "@/api/friends/addFriendsMutation";
 import { useState } from "react";
 import { Dialog } from "@/components/tamagui/Dialog";
-import { SimpleFriend } from "@/api/friends/types";
+import { Friend } from "@/api/friends/types";
+import { useRemoveFriendMutation } from "@/api/friends/removeFriend";
 
-type ManageFriendSheetProps = SheetProps & { friend?: SimpleFriend };
+type ManageFriendSheetProps = SheetProps & { friend: Friend };
 export const ManageFriendSheet = ({ friend, onOpenChange, ...props }: ManageFriendSheetProps) => {
 	const { mutateAsync } = useRemoveFriendMutation();
 	const [warningModal, setWarningModal] = useState(false);
@@ -17,7 +17,7 @@ export const ManageFriendSheet = ({ friend, onOpenChange, ...props }: ManageFrie
 	};
 
 	const handleRemoveFriend = async () => {
-		await mutateAsync(friend?.id);
+		await mutateAsync(friend.id);
 		setWarningModal(false);
 		onOpenChange?.(false);
 	};

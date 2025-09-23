@@ -3,13 +3,13 @@ import { router } from "expo-router";
 import { SizableText, View, XStack } from "tamagui";
 import { UserPlus } from "@tamagui/lucide-icons";
 import { PendingFriendRequestsDot } from "@/components/PendingFriendRequestsDot/PendingFriendRequestsDot";
-import { useFriendOverview } from "@/api/friends/refiners";
+import { usePendingFriends } from "@/hooks/friends/usePendingFriends";
 
 export const FriendRequestRow = () => {
-	const { pendingToAccept } = useFriendOverview();
+	const pendingFriends = usePendingFriends();
 
 	return (
-		pendingToAccept.length > 0 && (
+		pendingFriends.length > 0 && (
 			<PressableRow
 				onPress={() => router.navigate("/(tabs)/profile/friendRequests")}
 				backgroundColor="transparent"

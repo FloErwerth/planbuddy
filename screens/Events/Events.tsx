@@ -1,7 +1,10 @@
-import { useUpdateParticipationMutation } from "@/api/events/mutations";
-import { useEventsQuery, useParticipantsQuery } from "@/api/events/queries";
-import { Role } from "@/api/events/types";
-import { StatusEnum } from "@/api/types";
+import { useAllEventsQuery } from "@/api/events/allEvents";
+import { AppEvent } from "@/api/events/types";
+import { FriendRequestStatusEnum } from "@/api/friends/types";
+import { useAllParticipantsFromEventQuery } from "@/api/participants/allParticipants";
+import { useSingleParticipantQuery } from "@/api/participants/singleParticipant";
+import { ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
+import { useUpdateParticipationMutation } from "@/api/participants/updateParticipant";
 import { EventSmall } from "@/components/Events/EventSmall";
 import { Screen } from "@/components/Screen";
 import { SearchInput } from "@/components/SearchInput";
@@ -17,7 +20,6 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { RefreshControl } from "react-native";
 import { View, XStack } from "tamagui";
-import type { Event } from "@/api/events/types";
 
 const contentContainerStyle = { gap: "$3", paddingVertical: "$4", flex: 1 };
 
@@ -27,29 +29,30 @@ type MappedEventsProps = {
 };
 
 type AcceptEventInviteProps = {
-	event: Event;
+	event: AppEvent;
 };
 const AcceptEventInvite = ({ event }: AcceptEventInviteProps) => {
-	const { data: participants } = useParticipantsQuery(event.id);
+	const { data: participants } = useAllParticipantsFromEventQuery(event.id);
 	const user = useGetUser();
+	const { data: me } = useSingleParticipantQuery(event.id, user.id);
 	const { mutateAsync: updateParticipation } = useUpdateParticipationMutation();
+
 	const acceptInvitation = async (updatedEventId: string, eventName: string) => {
-		const participantData = participants?.filter(({ eventId }) => eventId === updatedEventId);
-		const myParticipation = participantData?.find(({ userId }) => user?.id === userId);
-		const participantsToSendNotification = participantData?.filter(
+		const myParticipation = participants?.find(({ userId }) => user?.id === userId);
+		const participantsToSendNotification = participants?.filter(
 			({ role, pushChannels, pushToken }) =>
-				(role === Role.Enum.ADMIN || role === Role.Enum.CREATOR) &&
+				(role === ParticipantRoleEnum.ADMIN || role === ParticipantRoleEnum.CREATOR) &&
 				pushChannels?.includes(NotificationChannelEnum.HOST_INVITATION_ANSWERED) &&
 				Boolean(pushToken)
 		);
 
 		if (myParticipation && myParticipation.id) {
-			await updateParticipation({ id: myParticipation.id, participant: { status: StatusEnum.ACCEPTED } });
+			await updateParticipation({ id: myParticipation.id, status: ParticipantStatusEnum.ACCEPTED });
 
 			if (participantsToSendNotification && participantsToSendNotification.length > 0) {
 				await Promise.all(
 					participantsToSendNotification.map((participant) =>
-						sendGuestHasAnsweredInviteNotification(participant.pushToken!, StatusEnum.ACCEPTED, myParticipation.firstName, eventName)
+						sendGuestHasAnsweredInviteNotification(participant.pushToken!, FriendRequestStatusEnum.ACCEPTED, me?.firstName, eventName)
 					)
 				);
 			}
@@ -64,7 +67,7 @@ const AcceptEventInvite = ({ event }: AcceptEventInviteProps) => {
 };
 
 const MappedEvents = ({ search, showPastEvents }: MappedEventsProps) => {
-	const { data: events } = useEventsQuery();
+	const { data: events } = useAllEventsQuery();
 
 	if (events === undefined || events?.length === 0) {
 		return (
@@ -104,16 +107,12 @@ const MappedEvents = ({ search, showPastEvents }: MappedEventsProps) => {
 		});
 
 	return filtered.map((event) => {
-		if (event.status === StatusEnum.PENDING) {
-			return <AcceptEventInvite key={event.id} event={event} />;
-		}
-
 		return <EventSmall key={event.id} {...event} />;
 	});
 };
 
 export const Events = () => {
-	const { refetch } = useEventsQuery();
+	const { refetch } = useAllEventsQuery();
 	const [refreshing, setRefreshing] = useState(false);
 	const [search, setSearch] = useState<string>();
 	const [showPastEvents, setShowPastEvents] = useState(false);

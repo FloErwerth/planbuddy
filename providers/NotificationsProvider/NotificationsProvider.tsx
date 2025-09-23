@@ -2,7 +2,8 @@ import { registerForPushNotificationsAsync } from "@/utils/notifications";
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 import * as Notifications from "expo-notifications";
 import z from "zod";
-import { useUpdateUserMutation, useUserQuery } from "@/api/user";
+import { useUpdateUserMutation } from "@/api/user/updateUser";
+import { useGetUser } from "@/store/authentication";
 
 export const NotificationChannelEnumDefinition = z.enum(["GUEST_INVITE", "GUEST_UPDATE", "GUEST_START", "HOST_INVITATION_ANSWERED"]);
 export const NotificationChannelEnum = NotificationChannelEnumDefinition.Enum;
@@ -31,7 +32,7 @@ export const useNotificationContext = () => {
 };
 
 export const NotificationsProvider = ({ children }: PropsWithChildren) => {
-	const { data: user } = useUserQuery();
+	const user = useGetUser();
 	const [notification, setNotification] = useState<Notifications.Notification | undefined>();
 	const { mutateAsync } = useUpdateUserMutation();
 

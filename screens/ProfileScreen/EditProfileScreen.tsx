@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { useUpdateUserMutation, useUserQuery } from "@/api/user";
-import { useDeleteProfilePictureMutation, useProfileImageQuery, useUploadProfilePictureMutation } from "@/api/images";
 import { FormProvider, useForm } from "react-hook-form";
 import { onboardingSchema, OnboardingSchema } from "@/api/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,14 +10,19 @@ import { Button } from "@/components/tamagui/Button";
 import { BackButton } from "@/components/BackButton";
 import { Trash } from "@tamagui/lucide-icons";
 import { Dialog } from "@/components/tamagui/Dialog";
+import { useGetUserQuery } from "@/api/user/getUser";
+import { useUpdateUserMutation } from "@/api/user/updateUser";
+import { useUploadProfilePictureMutation } from "@/api/user/uploadProfilePicture";
+import { useDeleteProfilePictureMutation } from "@/api/user/deleteUserProfile";
+import { useProfileImageQuery } from "@/api/user/profilePicture";
 
 export const EditProfileScreen = () => {
 	const [isLoading, setIsLoading] = useState(false);
-	const { data: user } = useUserQuery();
+	const { data: user } = useGetUserQuery();
 	const { mutate: updateUser } = useUpdateUserMutation();
 	const { mutate: updateImage } = useUploadProfilePictureMutation();
 	const { mutateAsync: deleteImage } = useDeleteProfilePictureMutation();
-	const { data: imageFromDatabase } = useProfileImageQuery();
+	const { data: imageFromDatabase } = useProfileImageQuery(user?.id);
 	const [image, setImage] = useState<string>();
 	const [deleteUserModalOpen, setDeleteUserModalOpen] = useState(false);
 

@@ -2,9 +2,9 @@ import { DialogProps, SizableText, Spinner, View } from "tamagui";
 import { Dialog } from "@/components/tamagui/Dialog";
 import { Button } from "@/components/tamagui/Button";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
-import { useDeleteParticipantMutation } from "@/api/events/mutations";
 import { useState } from "react";
 import { router } from "expo-router";
+import { useDeleteParticipantMutation } from "@/api/participants/deleteParticipant";
 
 export type ParticipantLeaveEventModalProps = DialogProps;
 

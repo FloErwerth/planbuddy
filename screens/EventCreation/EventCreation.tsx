@@ -1,6 +1,3 @@
-import { useCreateEventMutation, useUpdateEventMutation } from "@/api/events/mutations";
-import { appEventSchema, Event } from "@/api/events/types";
-import { useEventImageQuery, useRemoveEventImageMutation, useUploadEventImageMutation } from "@/api/images";
 import { FormTextArea } from "@/components/FormFields";
 import { FormInput } from "@/components/FormFields/FormInput";
 import { ScrollableScreen } from "@/components/Screen";
@@ -16,9 +13,15 @@ import { Separator, SizableText, View, XStack } from "tamagui";
 import { EventSelectStartEnd } from "../Events/EventSelectStartEnd";
 import { useStartEndTimePickers } from "../Events/hooks/useStartEndTime";
 import { BackButton } from "@/components/BackButton";
+import { useCreateEventMutation } from "@/api/events/createEvents";
+import { useEventImageQuery } from "@/api/events/eventImage";
+import { useRemoveEventImageMutation } from "@/api/events/removeEventImage";
+import { AppEvent, appEventSchema } from "@/api/events/types";
+import { useUpdateEventMutation } from "@/api/events/updateEvent";
+import { useUploadEventImageMutation } from "@/api/events/uploadEventImage";
 
 type EventCreationProps = {
-	event?: Event;
+	event?: AppEvent;
 };
 
 export const EventCreation = ({ event }: EventCreationProps) => {
@@ -61,7 +64,7 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 	const { mutateAsync: removeImage } = useRemoveEventImageMutation();
 	const [imageToUpload, setImageToUpload] = useState<string | undefined>(eventImage);
 
-	const handleCreateEvent = async (data: Event) => {
+	const handleCreateEvent = async (data: AppEvent) => {
 		try {
 			setIsLoading(true);
 			let createdEvent: Awaited<ReturnType<typeof createEvent>>;

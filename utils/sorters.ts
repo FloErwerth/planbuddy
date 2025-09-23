@@ -1,17 +1,17 @@
-import { Status, StatusEnum } from "@/api/types";
-import { SingleFriendQueryResponse } from "@/api/friends/schema";
+import { Friend } from "@/api/friends/types";
+import { ParticipantStatus, ParticipantStatusEnum } from "@/api/participants/types";
 
-export const sortFriendsToTop = (a: { status?: Status }, b: { status?: Status }) => {
-	if (a.status === StatusEnum.ACCEPTED && b.status === StatusEnum.ACCEPTED) {
+export const sortFriendsToTop = (a: { status?: ParticipantStatus }, b: { status?: ParticipantStatus }) => {
+	if (a.status === ParticipantStatusEnum.ACCEPTED && b.status === ParticipantStatusEnum.ACCEPTED) {
 		return 0;
 	}
-	if (a.status === StatusEnum.ACCEPTED && b.status !== StatusEnum.ACCEPTED) {
+	if (a.status === ParticipantStatusEnum.ACCEPTED && b.status !== ParticipantStatusEnum.ACCEPTED) {
 		return -1;
 	}
 	return 1;
 };
 
-export const sortRelationshipToTop = (a: { status?: Status }, b: { status?: Status }) => {
+export const sortRelationshipToTop = (a: { status?: ParticipantStatus }, b: { status?: ParticipantStatus }) => {
 	if (a.status !== undefined && b.status !== undefined) {
 		return sortFriendsToTop(a, b);
 	}
@@ -21,7 +21,7 @@ export const sortRelationshipToTop = (a: { status?: Status }, b: { status?: Stat
 	return 1;
 };
 
-export const sortByFirstName = (a: SingleFriendQueryResponse, b: SingleFriendQueryResponse) => {
+export const sortByFirstName = (a: Friend, b: Friend) => {
 	if (a.firstName && b.firstName) {
 		return a.firstName?.localeCompare(b.firstName);
 	}

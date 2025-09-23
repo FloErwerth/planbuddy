@@ -1,36 +1,37 @@
 import { SizableText, View, XStack } from "tamagui";
 import { UserAvatar } from "@/components/UserAvatar";
-import { ParticipantQueryResponse } from "@/api/events/types";
 import { useIsMe } from "@/screens/Participants/useIsMe";
 import { ParticipantsAcceptanceStatus } from "@/screens/Participants/ParticipantsAcceptanceStatus";
 import { Pressable } from "react-native";
 import { Ellipsis } from "@tamagui/lucide-icons";
 import { Card } from "@/components/tamagui/Card";
+import { Participant } from "@/api/participants/types";
+import { User } from "@/api/user/types";
 
 type ParticipantProps = {
 	onOpenOptions?: () => void;
-	participant: ParticipantQueryResponse;
+	participatingUser: Participant & User;
 	showStatus?: boolean;
 	showEllipsis?: boolean;
 };
-export const Participant = ({ participant, onOpenOptions, showStatus = true, showEllipsis = true }: ParticipantProps) => {
-	const isMe = useIsMe(participant.userId);
+export const ParticipantRow = ({ participatingUser, onOpenOptions, showStatus = true, showEllipsis = true }: ParticipantProps) => {
+	const isMe = useIsMe(participatingUser.userId);
 
 	return (
 		<Pressable onPress={onOpenOptions}>
 			<Card flexDirection="row" justifyContent="space-between" backgroundColor={isMe ? "$color.blue4Light" : "$background"} alignItems="center">
 				<XStack gap="$4" alignItems="center" justifyContent="space-evenly">
-					<UserAvatar id={participant.userId} />
+					<UserAvatar id={participatingUser.userId} />
 					<View>
 						<SizableText size="$5">
-							{participant.firstName} {participant.lastName}
+							{participatingUser.firstName} {participatingUser.lastName}
 						</SizableText>
-						<SizableText size="$2">{participant.role}</SizableText>
+						<SizableText size="$2">{participatingUser.role}</SizableText>
 					</View>
 				</XStack>
 				<XStack alignItems="center" gap="$4">
 					<View>
-						{isMe ? <SizableText marginRight="$2">Du</SizableText> : showStatus ? <ParticipantsAcceptanceStatus status={participant.status} /> : null}
+						{isMe ? <SizableText marginRight="$2">Du</SizableText> : showStatus ? <ParticipantsAcceptanceStatus status={participatingUser.status} /> : null}
 					</View>
 					{showEllipsis && onOpenOptions && <Ellipsis />}
 				</XStack>

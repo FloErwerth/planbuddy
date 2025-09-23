@@ -2,15 +2,16 @@ import { SizableText, View } from "tamagui";
 import { Screen } from "@/components/Screen";
 import { FriendEntry } from "@/screens/AddFriendsScreen/FriendEntry";
 import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
-import { UserSearchInput, UserWithStatus, useUserSearchContext } from "@/components/UserSearch";
+import { UserSearchInput, useUserSearchContext } from "@/components/UserSearch";
 import { UserSearch } from "@tamagui/lucide-icons";
+import { Friend } from "@/api/friends/types";
 
 const containerStyle = { padding: 16, paddingBottom: 32 } as const;
 
 const AddFriendsDisplay = () => {
 	const { users } = useUserSearchContext();
 
-	const renderItem = ({ item: user }: ListRenderItemInfo<UserWithStatus>) => <FriendEntry friend={user} />;
+	const renderItem = ({ item: friend }: ListRenderItemInfo<Friend>) => <FriendEntry friend={friend} />;
 
 	if (users !== undefined && users?.length === 0) {
 		return (

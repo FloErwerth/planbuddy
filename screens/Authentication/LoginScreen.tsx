@@ -48,6 +48,7 @@ export const LoginScreen = () => {
 			});
 
 			if (loginResult.error) {
+				router.replace("/authentication");
 				switch (loginResult.error.code) {
 					case "over_request_rate_limit":
 					case "over_email_send_rate_limit":

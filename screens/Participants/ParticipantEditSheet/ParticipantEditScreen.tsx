@@ -1,8 +1,6 @@
 import { Screen } from "@/components/Screen";
 import { Button } from "@/components/tamagui/Button";
 import { useState } from "react";
-import { useUpdateParticipationMutation } from "@/api/events/mutations";
-import { useMe } from "@/api/events/refiners";
 import { EditGuestOptions } from "@/screens/Participants/ParticipantEditSheet/Guest/EditGuestOptions";
 import { ParticipantEditMeOptions } from "./Me/ParticipantEditMeOptions";
 import { ParticipantLeaveEventDialog } from "@/screens/Participants/ParticipantEditSheet/Guest/ParticipantLeaveEventModal";
@@ -10,6 +8,8 @@ import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvi
 import { BackButton } from "@/components/BackButton";
 import { MeLeaveEventDialog } from "@/screens/Participants/ParticipantEditSheet/Me/MeLeaveEventDialog";
 import { router } from "expo-router";
+import { useUpdateParticipationMutation } from "@/api/participants/updateParticipant";
+import { useMe } from "@/api/hooks";
 
 export const ParticipantEditScreen = () => {
 	const { eventId, editedGuest, setEditedGuest } = useEventDetailsContext();
@@ -25,7 +25,7 @@ export const ParticipantEditScreen = () => {
 		}
 		await mutateAsync({
 			id: editedGuest.id!,
-			participant: { role: editedGuest.role },
+			role: editedGuest.role,
 		});
 		router.back();
 	};

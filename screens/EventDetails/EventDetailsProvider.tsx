@@ -1,15 +1,16 @@
 import { createContext, PropsWithChildren, useContext, useState } from "react";
-import { ParticipantQueryResponse } from "@/api/events/types";
 import { router, useGlobalSearchParams } from "expo-router";
-import { useCreateParticipationMutation } from "@/api/events/mutations";
 import { AnimatePresence, SizableText, View } from "tamagui";
 import { Button } from "@/components/tamagui/Button";
+import { Participant } from "@/api/participants/types";
+import { useCreateParticipationMutation } from "@/api/participants/createParticipant";
+import { User } from "@/api/user/types";
 
 type EventDetailsContextType =
 	| {
 			eventId: string;
-			editedGuest: ParticipantQueryResponse | undefined;
-			setEditedGuest: (guest: ParticipantQueryResponse | undefined) => void;
+			editedGuest: (Participant & User) | undefined;
+			setEditedGuest: (guest: (Participant & User) | undefined) => void;
 			toggleInviteToEvent: (userId: string) => void;
 			numberOfAddedUsers: number;
 			usersToAdd: Set<string>;
@@ -30,7 +31,7 @@ export const useEventDetailsContext = () => {
 
 export const EventDetailsProvider = ({ children }: PropsWithChildren) => {
 	const { eventId } = useGlobalSearchParams<{ eventId: string }>();
-	const [editedGuest, setEditedGuest] = useState<ParticipantQueryResponse>();
+	const [editedGuest, setEditedGuest] = useState<Participant & User>();
 	const [usersToAdd, setUsersToAdd] = useState<Set<string>>(new Set());
 	const { mutateAsync } = useCreateParticipationMutation();
 
