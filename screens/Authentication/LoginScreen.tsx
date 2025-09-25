@@ -1,10 +1,5 @@
-import { supabase } from "@/api/supabase";
-import { BackButton } from "@/components/BackButton";
 import { FormInput } from "@/components/FormFields";
-import { Screen } from "@/components/Screen";
 import { Button } from "@/components/tamagui/Button";
-import { Separator } from "@/components/tamagui/Separator";
-import { Sheet } from "@/components/tamagui/Sheet";
 import { useLoginContext } from "@/providers/LoginProvider";
 import { LoginSchema, loginSchema } from "@/screens/Authentication/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,7 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { debounce, SizableText, View } from "tamagui";
 
-export const LoginScreen = () => {
+export const LoginForm = () => {
 	const navigation = useNavigation();
 	const [hintSheetOpen, setHintSheetOpen] = useState(false);
 	const { email: previousEmail, loginError, setLoginError, setEmail, setStartedLoginAttempt, startResendTokenTimer, resendTokenTime } = useLoginContext();
@@ -35,7 +30,8 @@ export const LoginScreen = () => {
 	}, [navigation, resetForm]);
 
 	const signUpWithPhone = async ({ email }: LoginSchema) => {
-		if (email === previousEmail && resendTokenTime > 0) {
+		router.push({ pathname: "/authentication/sendingEmail", params: { email } });
+		/*if (email === previousEmail && resendTokenTime > 0) {
 			setHintSheetOpen(true);
 			return;
 		}
@@ -70,7 +66,7 @@ export const LoginScreen = () => {
 		}
 
 		setEmail(email);
-		startResendTokenTimer();
+		startResendTokenTimer();*/
 	};
 
 	const handleEnterCode = () => {
@@ -81,33 +77,20 @@ export const LoginScreen = () => {
 
 	return (
 		<>
-			<Screen back={<BackButton href="/" />} title="Anmelden" flex={1}>
+			<View gap="$4" flex={1}>
 				<FormProvider {...form}>
-					<SizableText size="$8" textAlign="center">
-						Melde dich ganz bequem ohne Passwort an
+					<SizableText size="$5" textAlign="center">
+						Melde dich hier ganz bequem mit deiner E-Mail an
 					</SizableText>
-					{loginError && <SizableText theme="error">{loginError}</SizableText>}
-					<FormInput label="Email" name="email" autoCapitalize="none" />
-					<Button onPress={debounce(form.handleSubmit(signUpWithPhone), 200, true)}>Anmelden</Button>
-				</FormProvider>
-			</Screen>
-			<Sheet snapPoints={undefined} snapPointsMode="fit" open={hintSheetOpen} onOpenChange={setHintSheetOpen}>
-				<Screen>
-					<SizableText size="$6">Gleiche E-Mail</SizableText>
-					<SizableText>Es sieht so aus als hättest Du die gleiche E-Mail wie in deinem vorherigen Login-Versuch benutzt.</SizableText>
 					<View gap="$2">
-						<SizableText>Du kannst Dir erneut einen Code an {previousEmail} verschicken</SizableText>
-						<Button onPress={debounce(form.handleSubmit(signUpWithPhone), 200, true)} disabled={resendTokenTime > 0}>
-							{resendTokenTime > 0 ? `Code in ${resendTokenTime} erneut versenden` : `Code erneut versenden`}
+						{loginError && <SizableText theme="error">{loginError}</SizableText>}
+						<FormInput autoComplete="email" autoCorrect={false} placeholder="max@mustermann@email.de" size="$5" name="email" autoCapitalize="none" />
+						<Button size="$5" fontWeight="700" onPress={debounce(form.handleSubmit(signUpWithPhone), 200, true)}>
+							Anmelden
 						</Button>
 					</View>
-					<Separator />
-					<View gap="$2">
-						<SizableText>Oder, wenn Du doch einen Code erhalten hast:</SizableText>
-						<Button onPress={debounce(handleEnterCode, 200, true)}>Deinen Code eingeben</Button>
-					</View>
-				</Screen>
-			</Sheet>
+				</FormProvider>
+			</View>
 		</>
 	);
 };

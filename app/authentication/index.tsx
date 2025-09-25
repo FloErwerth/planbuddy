@@ -1,5 +1,5 @@
-import { LoginScreen } from "@/screens/Authentication";
+import { LoginForm } from "@/screens/Authentication";
 
 export default function Login() {
-	return <LoginScreen />;
+	return <LoginForm />;
 }

@@ -9,7 +9,7 @@ export const colors = {
 	background: "#F9F7F7",
 	accent: "#DBE2EF",
 	accent2: "#2c2a26",
-	primary: "#112D4E",
+	primary: "#19a1e6",
 };
 
 const font = createFont({
@@ -65,10 +65,6 @@ const font = createFont({
 
 export const tamaguiConfig = createTamagui({
 	...config,
-
-	animations: {
-		...config.animations,
-	},
 	fonts: {
 		body: font,
 		heading: font,
