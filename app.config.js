@@ -11,19 +11,18 @@ export default {
 		slug: "planbuddy",
 		version: packageJson.version,
 		orientation: "portrait",
-		icon: "./assets/images/icon.png",
 		scheme: "planbuddy",
 		userInterfaceStyle: "automatic",
-		splash: {
-			image: "./assets/images/splash-icon.png",
-			resizeMode: "contain",
-			backgroundColor: "#ffffff",
-		},
 		ios: {
 			bundleIdentifier: "de.florian.erwerth.planbuddy",
 			supportsTablet: false,
 			infoPlist: {
 				ITSAppUsesNonExemptEncryption: false,
+			},
+			icon: {
+				light: "./assets/images/ios-light.png",
+				dark: "./assets/images/ios-dark.png",
+				tinted: "./assets/images/ios-tinted.png",
 			},
 		},
 		android: {
@@ -31,6 +30,8 @@ export default {
 			edgeToEdgeEnabled: true,
 			adaptiveIcon: {
 				backgroundColor: "#ffffff",
+				foregroundImage: "./assets/images/adaptive-icon.png",
+				monochromeImage: "./assets/images/adaptive-icon.png",
 			},
 			intentFilters: [
 				{
@@ -49,12 +50,7 @@ export default {
 			googleServicesFile: "./google-services.json",
 		},
 		plugins: [
-			[
-				"expo-router",
-				{
-					asyncRoutes: false,
-				},
-			],
+			"expo-router",
 			[
 				"expo-image-picker",
 				{
@@ -73,6 +69,18 @@ export default {
 			"expo-build-properties",
 			"react-native-compressor",
 			"expo-notifications",
+			[
+				"expo-splash-screen",
+				{
+					backgroundColor: "#F9F7F7",
+					image: "./assets/images/splash-icon.png",
+					dark: {
+						image: "./assets/images/splash-icon.png",
+						backgroundColor: "#000000",
+					},
+					imageWidth: 200,
+				},
+			],
 		],
 		experiments: {
 			reactCompiler: true,
