@@ -5,7 +5,14 @@ import { Providers } from "@/providers";
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack";
 import * as Sentry from "@sentry/react-native";
 import { useCheckLoginStateOnAppStart } from "@/hooks/useCheckLoginState";
-
+import {
+	PlusJakartaSans_400Regular as Normal,
+	PlusJakartaSans_400Regular_Italic as Italic,
+	PlusJakartaSans_600SemiBold as SemiBold,
+	PlusJakartaSans_600SemiBold_Italic as SemiBoldItalic,
+	PlusJakartaSans_700Bold as Bold,
+	PlusJakartaSans_700Bold_Italic as BoldItalic,
+} from "@expo-google-fonts/plus-jakarta-sans";
 import * as Notifications from "expo-notifications";
 
 Notifications.setNotificationHandler({
@@ -43,12 +50,12 @@ const AppStack = () => {
 
 export default Sentry.wrap(function RootLayout() {
 	const [fontsLoaded] = useFonts({
-		Normal: require("../assets/fonts/Roboto-Regular.ttf"),
-		Italic: require("../assets/fonts/Roboto-MediumItalic.ttf"),
-		SemiBold: require("../assets/fonts/Roboto-SemiBold.ttf"),
-		SemiBoldItalic: require("../assets/fonts/Roboto-SemiBoldItalic.ttf"),
-		Bold: require("../assets/fonts/Roboto-Bold.ttf"),
-		BoldItalic: require("../assets/fonts/Roboto-BoldItalic.ttf"),
+		Normal,
+		Italic,
+		SemiBold,
+		SemiBoldItalic,
+		Bold,
+		BoldItalic,
 	});
 
 	if (!fontsLoaded) {
