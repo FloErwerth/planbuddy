@@ -38,6 +38,9 @@ export const Calendar = ({ date, onDateSelected, minimumDate, maximumDate }: Cal
 		<ReactNativeCalendar
 			minDate={minimumIsoDate}
 			maxDate={maximumIsoDate}
+			headerStyle={{
+				height: 50,
+			}}
 			initialDate={isoDate}
 			onDayPress={(data) => {
 				onDateSelected(new Date(data.dateString));

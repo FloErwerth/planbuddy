@@ -10,7 +10,7 @@ export const FormInput = <T extends FieldValues>({ name, label, ...inputProps }:
 			<Controller
 				render={({ field: { value, onChange }, fieldState: { error } }) => {
 					const theme = error ? "error" : "default";
-					return <Input theme={theme} value={value} onChangeText={onChange} {...inputProps} />;
+					return <Input borderColor={error ? "$error" : "transparent"} theme={theme} value={value} onChangeText={onChange} {...inputProps} />;
 				}}
 				name={name}
 			/>

@@ -1,10 +1,10 @@
 import { Input } from "@/components/tamagui/Input";
-import { useState } from "react";
-import { Pressable } from "react-native";
+import { useRef, useState } from "react";
 import { AnimatePresence, debounce, getTokenValue, InputProps, Token, View } from "tamagui";
 import { Search, X } from "@tamagui/lucide-icons";
+import { TextInput, useWindowDimensions } from "react-native";
 import { Button } from "@/components/tamagui/Button";
-import { useWindowDimensions } from "react-native";
+import { useSetTimeout } from "@/hooks/useSetTimeout";
 
 type SearchInputProps = Omit<InputProps, "onChangeText"> & {
 	onChangeText: (text: string) => void;
@@ -13,35 +13,35 @@ type SearchInputProps = Omit<InputProps, "onChangeText"> & {
 export const ScreenTopbarSearch = ({ onChangeText, top, ...props }: SearchInputProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const { width } = useWindowDimensions();
+	const inputRef = useRef<TextInput>(null);
+	const { setTimeout } = useSetTimeout();
 
 	const paddingRightValue = getTokenValue("$4" as Token, "space");
 
+	const handleToggleInput = () => {
+		setIsOpen((open) => {
+			if (open) {
+				return false;
+			} else {
+				return true;
+			}
+		});
+	};
 	return (
 		<>
 			<View alignItems="center" justifyContent="center">
-				<Pressable onPress={() => setIsOpen((open) => !open)}>
-					<Search size="$2" />
-				</Pressable>
+				<Button size="$4" variant="round" onPress={handleToggleInput}>
+					{isOpen ? <X size="$2" /> : <Search opacity={isOpen ? 0 : 1} size="$1" />}
+				</Button>
 			</View>
 
-			{isOpen && (
-				<AnimatePresence>
-					<View
-						animation="100ms"
-						position="absolute"
-						width={width - paddingRightValue * 4}
-						top={top || "$-2"}
-						right={paddingRightValue * 2}
-						enterStyle={{ opacity: 0 }}
-						exitStyle={{ opacity: 0 }}
-					>
-						<Input borderRadius="$12" {...props} onChangeText={debounce(onChangeText, 300)} />
-						<Button variant="transparent" backgroundColor="transparent" position="absolute" right="$2" top={0} onPress={() => setIsOpen(false)}>
-							<X size="$2" backgroundColor="transparent" />
-						</Button>
+			<AnimatePresence>
+				{isOpen && (
+					<View position="absolute" width={width - paddingRightValue * 4.5} right={paddingRightValue * 2.5}>
+						<Input autoFocus size="$3" paddingVertical="$1" {...props} onChangeText={debounce(onChangeText, 300)} ref={inputRef} />
 					</View>
-				</AnimatePresence>
-			)}
+				)}
+			</AnimatePresence>
 		</>
 	);
 };

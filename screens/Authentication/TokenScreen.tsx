@@ -84,7 +84,7 @@ export const TokenScreen = () => {
 					</View>
 				</View>
 				<View gap="$1">
-					<Button size="$5" fontWeight="700" onPress={debounce(onComplete, 200, true)}>
+					<Button size="$5" elevationAndroid="$0" fontWeight="700" onPress={debounce(onComplete, 200, true)}>
 						Verifizieren
 					</Button>
 					<Button size="$5" variant="transparent" fontWeight="700" onPress={debounce(handleChangeMail, 200, true)}>

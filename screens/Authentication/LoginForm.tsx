@@ -63,6 +63,8 @@ export const LoginForm = () => {
 						<FormInput
 							theme={loginError ? "error" : "default"}
 							autoComplete="email"
+							textContentType="emailAddress"
+							keyboardType="email-address"
 							autoCorrect={false}
 							placeholder="max@mustermann@email.de"
 							size="$5"

@@ -6,9 +6,12 @@ import { getRelativeDate } from "@/utils/date";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { Pressable } from "react-native";
+import Animated from "react-native-reanimated";
 import { View, XStack } from "tamagui";
 
 type EventSmallProps = Pick<AppEvent, "name" | "location" | "startTime" | "id">;
+
+const AnimatedImage = Animated.createAnimatedComponent(Image);
 
 const imageStyle = { aspectRatio: "4/3", width: "33%", borderRadius: 8 } as const;
 export const EventSmall = ({ name, startTime, id }: EventSmallProps) => {
@@ -30,7 +33,7 @@ export const EventSmall = ({ name, startTime, id }: EventSmallProps) => {
 						</SizeableText>
 						<SizeableText size="$5">{getRelativeDate(new Date(startTime))}</SizeableText>
 					</View>
-					{image && <Image source={image} style={imageStyle} />}
+					{image && <AnimatedImage sharedTransitionTag={id} source={image} style={imageStyle} />}
 				</XStack>
 			</Card>
 		</Pressable>

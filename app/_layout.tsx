@@ -6,13 +6,13 @@ import { NativeStackNavigationOptions } from "@react-navigation/native-stack";
 import * as Sentry from "@sentry/react-native";
 import { useCheckLoginStateOnAppStart } from "@/hooks/useCheckLoginState";
 import {
-	PlusJakartaSans_400Regular as Normal,
-	PlusJakartaSans_400Regular_Italic as Italic,
-	PlusJakartaSans_600SemiBold as SemiBold,
-	PlusJakartaSans_600SemiBold_Italic as SemiBoldItalic,
-	PlusJakartaSans_700Bold as Bold,
-	PlusJakartaSans_700Bold_Italic as BoldItalic,
-} from "@expo-google-fonts/plus-jakarta-sans";
+	NunitoSans_400Regular as Normal,
+	NunitoSans_400Regular_Italic as Italic,
+	NunitoSans_600SemiBold as SemiBold,
+	NunitoSans_600SemiBold_Italic as SemiBoldItalic,
+	NunitoSans_700Bold as Bold,
+	NunitoSans_700Bold_Italic as BoldItalic,
+} from "@expo-google-fonts/nunito-sans";
 import * as Notifications from "expo-notifications";
 
 Notifications.setNotificationHandler({

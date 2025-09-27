@@ -6,9 +6,9 @@ export const colors = {
 	...color,
 	color: "#171614",
 	disabled: color.gray8Light,
-	background: "#F9F7F7",
-	accent: "#DBE2EF",
-	accent2: "#2c2a26",
+	background: "#f6f7f8",
+	accent: "#EDEBEB",
+	accent2: "#e1f1ef",
 	primary: "#19a1e6",
 };
 
@@ -65,6 +65,7 @@ const font = createFont({
 
 export const tamaguiConfig = createTamagui({
 	...config,
+
 	fonts: {
 		body: font,
 		heading: font,

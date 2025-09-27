@@ -14,7 +14,7 @@ export const Screen = ({ children, back = false, title, action, ...props }: Scre
 	const { top } = useSafeAreaInsets();
 
 	return (
-		<View padding="$4" paddingTop={top || "$4"} gap="$4" backgroundColor="$background" {...props}>
+		<View padding="$4" paddingTop={top || "$4"} gap="$4" {...props}>
 			{(back || title || action) && (
 				<XStack alignItems="center">
 					<View flex={hasActionOrBack ? 0.2 : 0}>{back}</View>

@@ -18,20 +18,22 @@ export const ScrollableScreen = ({ children, showBackButton = false, back, title
 
 	return (
 		<KeyboardAwareScrollView contentContainerStyle={{ flexGrow: viewProps.flex ? 1 : 0 }}>
-			{(back || title || action) && (
-				<XStack alignItems="center">
-					<View flex={hasActionOrBack ? 0.2 : 0}>{back}</View>
-					<View flex={1}>
-						<SizableText size="$6" textAlign="center">
-							{title}
-						</SizableText>
-					</View>
-					<View flex={hasActionOrBack ? 0.2 : 0} alignItems="flex-end">
-						{action}
-					</View>
-				</XStack>
-			)}
-			<Screen {...viewProps}>{children}</Screen>
+			<Screen {...viewProps}>
+				{(back || title || action) && (
+					<XStack alignItems="center">
+						<View flex={hasActionOrBack ? 0.2 : 0}>{back}</View>
+						<View flex={1}>
+							<SizableText size="$6" textAlign="center">
+								{title}
+							</SizableText>
+						</View>
+						<View flex={hasActionOrBack ? 0.2 : 0} alignItems="flex-end">
+							{action}
+						</View>
+					</XStack>
+				)}
+				{children}
+			</Screen>
 		</KeyboardAwareScrollView>
 	);
 };

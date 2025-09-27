@@ -5,6 +5,7 @@ export const Input = styled(TamaguiInput, {
 	fontWeight: 400,
 	borderWidth: "$1",
 	backgroundColor: "$accent",
+	borderColor: "transparent",
 	focusStyle: {
 		borderColor: "$primary",
 		borderWidth: "$1",

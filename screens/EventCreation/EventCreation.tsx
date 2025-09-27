@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Separator, SizableText, View, XStack } from "tamagui";
+import { Separator, SizableText, View, XStack, YStack } from "tamagui";
 import { EventSelectStartEnd } from "../Events/EventSelectStartEnd";
 import { useStartEndTimePickers } from "../Events/hooks/useStartEndTime";
 import { BackButton } from "@/components/BackButton";
@@ -114,10 +114,10 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 
 	return (
 		<>
-			<ScrollableScreen back={event && <BackButton />} title={event && "Event bearbeiten"}>
-				<View backgroundColor="$background" overflow="hidden" elevationAndroid="$2" width="100%" borderRadius="$8">
+			<ScrollableScreen paddingBottom="$12" back={event && <BackButton />} title={event ? "Event bearbeiten" : "Event erstellen"}>
+				<YStack backgroundColor="$accent" overflow="hidden" borderRadius="$4" elevation="$2">
 					<EventCreationImage setImage={setImageToUpload} image={imageToUpload} />
-				</View>
+				</YStack>
 				<View gap="$4" height="100%">
 					<FormProvider {...form}>
 						<FormInput label="Eventname" name="name" />
@@ -149,10 +149,10 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 									<XStack gap="$4" width="100%" alignItems="center" justifyContent="space-between">
 										<SizableText>Ende</SizableText>
 										<XStack gap="$2" alignSelf="center">
-											<ToggleButton inactiveBackgroundColor="$white" active={isEndCalendarOpen} onPress={showEndCalendar} size="$2">
+											<ToggleButton elevationAndroid={0} inactiveBackgroundColor="$white" active={isEndCalendarOpen} onPress={showEndCalendar} size="$2">
 												<SizableText color={isEndCalendarOpen ? "$background" : "$color"}>{formatToDate(endDate)}</SizableText>
 											</ToggleButton>
-											<ToggleButton inactiveBackgroundColor="$white" active={isEndTimeOpen} onPress={showEndTime} size="$2">
+											<ToggleButton elevationAndroid={0} inactiveBackgroundColor="$white" active={isEndTimeOpen} onPress={showEndTime} size="$2">
 												<SizableText color={isEndTimeOpen ? "$background" : "$color"}>{formatToTime(endDate)}</SizableText>
 											</ToggleButton>
 										</XStack>
@@ -180,9 +180,13 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 				</View>
 			</ScrollableScreen>
 			<Button
-				marginHorizontal="$4"
-				marginBottom="$4"
 				disabled={hasErrors}
+				position="absolute"
+				bottom="$4"
+				left="$4"
+				right="$4"
+				size="$5"
+				fontWeight="700"
 				onPress={form.handleSubmit((data) =>
 					handleCreateEvent({
 						...data,

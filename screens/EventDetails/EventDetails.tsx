@@ -12,6 +12,11 @@ import { Button } from "@/components/tamagui/Button";
 import { Pencil } from "@tamagui/lucide-icons";
 import { useSingleParticipantQuery } from "@/api/participants/singleParticipant";
 import { ParticipantRoleEnum } from "@/api/participants/types";
+import Animated from "react-native-reanimated";
+import { useEventQuery } from "@/api/events/event/useEventQuery";
+import { useEventImageQuery } from "@/api/events/eventImage";
+
+const AnimatedImage = Animated.createAnimatedComponent(Image);
 
 export const EventDetails = () => {
 	const { eventId } = useEventDetailsContext();
@@ -19,10 +24,10 @@ export const EventDetails = () => {
 	const { data: me } = useSingleParticipantQuery(eventId, user.id);
 	const [showShare, setShowShare] = useState(false);
 
-	const { data: event, isLoading } = useSingleEventQuery(eventId);
+	const { data: event, isLoading } = useEventQuery(eventId);
 	const { data: image } = useEventImageQuery(eventId);
 
-	const hasMissingData = !user || !event;
+	const hasMissingData = !user || !event || !event.id;
 
 	if (isLoading) {
 		return (
@@ -50,19 +55,12 @@ export const EventDetails = () => {
 			>
 				{image && (
 					<View backgroundColor="$background" overflow="hidden" elevationAndroid="$2" width="100%" borderRadius="$8">
-						<Image source={image} style={{ width: "auto", height: 200 }} />
+						<AnimatedImage sharedTransitionTag={eventId} source={image} style={{ width: "auto", height: 200 }} />
 					</View>
 				)}
-				{event?.id && <Details />}
-				{event?.id && <ShareSheet onOpenChange={setShowShare} open={showShare} />}
+				<Details />
+				<ShareSheet onOpenChange={setShowShare} open={showShare} />
 			</ScrollableScreen>
 		</>
 	);
 };
-function useSingleEventQuery(eventId: string): { data: any; isLoading: any } {
-	throw new Error("Function not implemented.");
-}
-
-function useEventImageQuery(eventId: string): { data: any } {
-	throw new Error("Function not implemented.");
-}

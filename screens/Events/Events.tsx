@@ -10,6 +10,7 @@ import { Screen } from "@/components/Screen";
 import { ScreenTopbarSearch } from "@/components/Screen/ScreenTopbarSearch";
 import { Button } from "@/components/tamagui/Button";
 import { ScrollView } from "@/components/tamagui/ScrollView";
+import { Separator } from "@/components/tamagui/Separator";
 import { SizeableText } from "@/components/tamagui/SizeableText";
 import { ToggleButton } from "@/components/TogglePillButton";
 import { NotificationChannelEnum } from "@/providers/NotificationsProvider";
@@ -19,7 +20,7 @@ import { CalendarX } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import { useState } from "react";
 import { RefreshControl } from "react-native";
-import { View, XStack } from "tamagui";
+import { Circle, View, XStack } from "tamagui";
 
 const contentContainerStyle = { gap: "$3", paddingVertical: "$4", flex: 1 };
 
@@ -71,11 +72,22 @@ const MappedEvents = ({ search, showPastEvents }: MappedEventsProps) => {
 
 	if (events === undefined || events?.length === 0) {
 		return (
-			<View gap="$4" flex={1} justifyContent="center" alignItems="center">
-				<CalendarX size="$4" />
-				<SizeableText textAlign="center">Leider keine bevorstehenden Events vorhanden</SizeableText>
-				<SizeableText textAlign="center">Dies kannst Du leicht ändern, indem Du ein Event erstellst und Freunde dazu einlädst</SizeableText>
-				<Button borderRadius="$12" onPress={() => router.replace("/(tabs)/eventCreation")}>
+			<View paddingHorizontal="$4" gap="$4" flex={1} justifyContent="center" alignItems="center">
+				<Circle backgroundColor="$accent" size="$12" borderRadius="100%">
+					<CalendarX color="$primary" size="$6" />
+				</Circle>
+				<SizeableText textAlign="center" size="$6" fontWeight="700">
+					Keine Events
+				</SizeableText>
+				<View marginBottom="$4">
+					<SizeableText textAlign="center" size="$3">
+						Leider konnten keine Events gefunden werden
+					</SizeableText>
+					<SizeableText textAlign="center" size="$3">
+						Das kannst Du leicht ändern, indem Du selbst ein Event erstellst
+					</SizeableText>
+				</View>
+				<Button fontWeight="700" size="$5" onPress={() => router.replace("/(tabs)/eventCreation")}>
 					Event erstellen
 				</Button>
 			</View>
@@ -121,20 +133,21 @@ export const Events = () => {
 
 	return (
 		<>
-			<Screen title="Events" action={<ScreenTopbarSearch onChangeText={setSearch} />} backgroundColor="white">
+			<Screen title="Events" action={<ScreenTopbarSearch onChangeText={setSearch} />}>
 				<XStack gap="$2">
-					<View flex={0.5}>
-						<ToggleButton size="$4" borderRadius="$12" onPress={toggleShowEvents} active={!showPastEvents}>
+					<View>
+						<ToggleButton size="$3" backgroundColor={!showPastEvents ? "$primary" : "$accent"} onPress={toggleShowEvents} active={!showPastEvents}>
 							<SizeableText color={!showPastEvents ? "$background" : "$color"}>Ausstehend</SizeableText>
 						</ToggleButton>
 					</View>
-					<View flex={0.5}>
-						<ToggleButton size="$4" borderRadius="$12" onPress={toggleShowEvents} active={showPastEvents}>
+					<View>
+						<ToggleButton size="$3" backgroundColor={showPastEvents ? "$primary" : "$accent"} onPress={toggleShowEvents} active={showPastEvents}>
 							<SizeableText color={showPastEvents ? "$background" : "$color"}>Vergangen</SizeableText>
 						</ToggleButton>
 					</View>
 				</XStack>
 			</Screen>
+			<Separator />
 			<ScrollView
 				refreshControl={
 					<RefreshControl
