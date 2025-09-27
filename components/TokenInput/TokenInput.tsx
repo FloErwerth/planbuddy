@@ -1,6 +1,7 @@
+import { Input } from "@/components/tamagui/Input";
 import { useRef } from "react";
 import { NativeSyntheticEvent, TextInputKeyPressEventData } from "react-native";
-import { Input, XStack } from "tamagui";
+import { XStack, Input as InputTamagui } from "tamagui";
 
 type OTPInputProps = {
 	value: string[];
@@ -10,7 +11,7 @@ type OTPInputProps = {
 };
 
 export const TokenInput = ({ value, onChange, length = 6, disabled = false }: OTPInputProps) => {
-	const inputRefs = useRef<Input[]>([]);
+	const inputRefs = useRef<InputTamagui[]>([]);
 	const focusInput = (index: number) => {
 		if (inputRefs.current[index]) {
 			inputRefs.current[index].focus();
@@ -35,7 +36,7 @@ export const TokenInput = ({ value, onChange, length = 6, disabled = false }: OT
 	};
 
 	return (
-		<XStack justifyContent="flex-start" gap="$2">
+		<XStack justifyContent="center" gap="$2">
 			{Array(length)
 				.fill(0)
 				.map((_, index) => {
@@ -54,8 +55,10 @@ export const TokenInput = ({ value, onChange, length = 6, disabled = false }: OT
 							textAlign="center"
 							maxLength={1}
 							size="$5"
-							fontSize="$6"
 							fontWeight="bold"
+							focusStyle={{
+								fontWeight: "bold",
+							}}
 							keyboardType="number-pad"
 							onChangeText={(text) => handleChange(text, index)}
 							onKeyPress={(event) => handleKeyPress(event, index)}

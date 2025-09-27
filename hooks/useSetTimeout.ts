@@ -38,6 +38,7 @@ export const useSetInterval = () => {
 		setInterval: (fn: () => void, timeout: number) => {
 			timer.current = setInterval(fn, timeout);
 		},
+		timer,
 		clear,
 	};
 };

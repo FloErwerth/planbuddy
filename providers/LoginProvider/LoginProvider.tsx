@@ -1,4 +1,5 @@
-import { createContext, PropsWithChildren, useContext, useRef, useState } from "react";
+import { useSetInterval } from "@/hooks/useSetTimeout";
+import { createContext, PropsWithChildren, useContext, useState } from "react";
 
 type LoginContextType =
 	| {
@@ -6,11 +7,9 @@ type LoginContextType =
 			setEmail: (email: string) => void;
 			setLoginError: (error: string) => void;
 			loginError?: string;
-			startedLoginAttempt: boolean;
-			setStartedLoginAttempt: (attemptStarted: boolean) => void;
 			resendTokenTime: number;
 			resetTokenPage: () => void;
-			startResendTokenTimer: (timeInSeconds?: number) => void;
+			startResendTokenTimer: () => void;
 	  }
 	| undefined;
 
@@ -31,23 +30,21 @@ const SECOND_MS = 1000;
 export const LoginProvider = ({ children }: PropsWithChildren) => {
 	const [email, setEmail] = useState<string>("");
 	const [loginError, setLoginError] = useState<string>("");
-	const [resendTokenTime, setResendTokenTime] = useState<number>(RESEND_TIME_SECONDS);
-	const [startedLoginAttempt, setStartedLoginAttempt] = useState(false);
-	const timer = useRef<ReturnType<typeof setInterval>>(-1);
+	const [resendTokenTime, setResendTokenTime] = useState<number>(0);
+	const { setInterval, clear } = useSetInterval();
 
 	const resetTokenPage = () => {
-		clearInterval(timer.current);
-		setResendTokenTime(RESEND_TIME_SECONDS);
-		setStartedLoginAttempt(false);
+		clear();
+		setResendTokenTime(0);
 	};
 
-	const startResendTokenTimer = (time?: number) => {
-		setResendTokenTime(time ?? RESEND_TIME_SECONDS);
-		setStartedLoginAttempt(true);
-		timer.current = setInterval(() => {
+	const startResendTokenTimer = () => {
+		clear();
+		setResendTokenTime(RESEND_TIME_SECONDS);
+		setInterval(() => {
 			setResendTokenTime((time) => {
 				if (time === 0) {
-					clearInterval(timer.current);
+					clear();
 					return 0;
 				}
 				return time - 1;
@@ -58,12 +55,10 @@ export const LoginProvider = ({ children }: PropsWithChildren) => {
 	return (
 		<LoginContext.Provider
 			value={{
-				setStartedLoginAttempt,
 				setLoginError,
 				setEmail,
 				email,
 				loginError,
-				startedLoginAttempt,
 				startResendTokenTimer,
 				resendTokenTime,
 				resetTokenPage,

@@ -1,5 +1,5 @@
-import { LoginForm } from "@/screens/Authentication";
+import { Redirect } from "expo-router";
 
 export default function Login() {
-	return <LoginForm />;
+	return <Redirect href="/" />;
 }

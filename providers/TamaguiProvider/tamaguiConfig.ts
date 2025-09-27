@@ -94,16 +94,19 @@ export const tamaguiConfig = createTamagui({
 			accent: colors.accent,
 		},
 		error: {
-			focusColor: "#354173",
+			placeholderColor: color.red7Light,
+
 			primary: color.red9Light,
-			backgroundColor: color.red4Light,
+			background: color.red4Light,
 			color: color.red9Light,
 			borderColor: color.red10Light,
 			fill: color.red9Light,
 			colorFocus: color.red9Light,
 			colorActive: color.red9Light,
-			backgroundColorFocus: color.red2Light,
-			backgroundColorActive: color.red2Light,
+			backgroundColorFocus: color.red3Light,
+			backgroundColorActive: color.red3Light,
+			placeholderTextColor: color.red9Light,
+			accent: color.red4Light,
 		},
 		dark: {
 			bg: "#111",
