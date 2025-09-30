@@ -60,9 +60,9 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 	const { mutateAsync: createEvent } = useCreateEventMutation();
 	const { mutateAsync: uploadEventImage } = useUploadEventImageMutation();
 	const { mutateAsync: updateEvent } = useUpdateEventMutation();
-	const { data: eventImage } = useEventImageQuery(event?.id);
+	const { data: eventImage = null } = useEventImageQuery(event?.id);
 	const { mutateAsync: removeImage } = useRemoveEventImageMutation();
-	const [imageToUpload, setImageToUpload] = useState<string | undefined>(eventImage);
+	const [imageToUpload, setImageToUpload] = useState<string | null>(eventImage);
 
 	const handleCreateEvent = async (data: AppEvent) => {
 		try {

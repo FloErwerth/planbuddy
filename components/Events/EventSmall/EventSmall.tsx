@@ -1,21 +1,21 @@
 import { useEventImageQuery } from "@/api/events/eventImage";
 import { AppEvent } from "@/api/events/types";
-import { Card } from "@/components/tamagui/Card";
 import { SizeableText } from "@/components/tamagui/SizeableText";
-import { getRelativeDate } from "@/utils/date";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { Pressable } from "react-native";
-import Animated from "react-native-reanimated";
+import { Pressable, StyleSheet } from "react-native";
 import { View, XStack } from "tamagui";
+
+import placeholderImage from "@/assets/images/placeholderEventImageSmall.png";
+import { formatToDate, formatToTime } from "@/utils/date";
 
 type EventSmallProps = Pick<AppEvent, "name" | "location" | "startTime" | "id">;
 
-const AnimatedImage = Animated.createAnimatedComponent(Image);
+const styles = StyleSheet.create({ wrapper: { height: 110 }, image: { aspectRatio: "1/1", width: 80, borderRadius: 8 } });
 
-const imageStyle = { aspectRatio: "4/3", width: "33%", borderRadius: 8 } as const;
-export const EventSmall = ({ name, startTime, id }: EventSmallProps) => {
+export const EventSmall = ({ name, location, startTime, id }: EventSmallProps) => {
 	const { data: image } = useEventImageQuery(id);
+
 	return (
 		<Pressable
 			onPress={() =>
@@ -25,17 +25,20 @@ export const EventSmall = ({ name, startTime, id }: EventSmallProps) => {
 				})
 			}
 		>
-			<Card marginHorizontal="$4">
-				<XStack gap="$2">
-					<View justifyContent="space-between" flex={1}>
-						<SizeableText size="$8" numberOfLines={2}>
-							{name}
+			<XStack gap="$3" alignItems="center">
+				<Image source={image || placeholderImage} style={styles.image} />
+				<View justifyContent="space-between" gap="$2">
+					<SizeableText size="$5" fontWeight="700" numberOfLines={2}>
+						{name}
+					</SizeableText>
+					<View gap="$1">
+						<SizeableText size="$3">
+							{formatToDate(startTime)}, {formatToTime(startTime)} Uhr
 						</SizeableText>
-						<SizeableText size="$5">{getRelativeDate(new Date(startTime))}</SizeableText>
+						<SizeableText size="$3">{location}</SizeableText>
 					</View>
-					{image && <AnimatedImage sharedTransitionTag={id} source={image} style={imageStyle} />}
-				</XStack>
-			</Card>
+				</View>
+			</XStack>
 		</Pressable>
 	);
 };

@@ -1,9 +1,9 @@
 import { SizableText, XStack } from "tamagui";
 import { UserAvatar } from "@/components/UserAvatar";
 import { PropsWithChildren } from "react";
-import { Friend } from "@/api/friends/types";
+import { User } from "@/api/user/types";
 
-type FriendDisplayProps = Friend & PropsWithChildren;
+type FriendDisplayProps = User & PropsWithChildren;
 
 export const FriendDisplay = ({ id, firstName, lastName, children }: FriendDisplayProps) => {
 	return (

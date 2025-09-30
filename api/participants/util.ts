@@ -5,7 +5,7 @@ import { Participant, ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/p
  * * ROLE: GUEST
  * * STATUS: PENDING
  */
-export const getDefaultParticipant = (participant: Required<Participant>): Participant => {
+export const getDefaultParticipant = (participant: Partial<Participant>): Partial<Participant> => {
 	return {
 		...participant,
 		role: ParticipantRoleEnum.GUEST,

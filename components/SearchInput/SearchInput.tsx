@@ -1,9 +1,30 @@
+import { Button } from "@/components/tamagui/Button";
 import { Input } from "@/components/tamagui/Input";
-import { debounce, InputProps } from "tamagui";
+import { X } from "@tamagui/lucide-icons";
+import { useRef, useState } from "react";
+import { debounce, InputProps, View, Input as InputTamagui } from "tamagui";
 
 type SearchInputProps = Omit<InputProps, "onChangeText"> & {
 	onChangeText: (text: string) => void;
 };
 export const SearchInput = ({ onChangeText, ...props }: SearchInputProps) => {
-	return <Input {...props} onChangeText={debounce(onChangeText, 300)} />;
+	const [hasValue, setHasValue] = useState(false);
+	const inputRef = useRef<InputTamagui>(null);
+
+	const handleClear = () => {
+		setHasValue(false);
+		onChangeText("");
+		inputRef.current?.clear();
+	};
+
+	return (
+		<View>
+			<Input ref={inputRef} {...props} onChange={(e) => setHasValue(!!e.nativeEvent.text)} onChangeText={debounce(onChangeText, 300)}></Input>
+			{hasValue && (
+				<Button variant="round" paddingVertical="$0" position="absolute" top="$1.5" right="$1.5" onPress={handleClear}>
+					<X size="$1" />
+				</Button>
+			)}
+		</View>
+	);
 };

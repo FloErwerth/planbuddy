@@ -4,9 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useProfileImageQuery = (userId?: string) => {
 	return useQuery({
-		queryFn: async (): Promise<string | undefined> => {
+		queryFn: async (): Promise<string | null> => {
 			if (!userId) {
-				return undefined;
+				return null;
 			}
 
 			// get image
@@ -15,13 +15,13 @@ export const useProfileImageQuery = (userId?: string) => {
 			if (download.error) {
 				if (download.error.name === "StorageUnknownError") {
 					// this is likely because of no image uploaded for the event
-					return undefined;
+					return null;
 				}
 				throw new Error(download.error.message);
 			}
 
 			if (download.data.size === 0) {
-				return undefined;
+				return null;
 			}
 
 			return new Promise((resolve, _) => {

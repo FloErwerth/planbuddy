@@ -14,7 +14,6 @@ import { useGetUserQuery } from "@/api/user/getUser";
 import { useUpdateUserMutation } from "@/api/user/updateUser";
 import { useUploadProfilePictureMutation } from "@/api/user/uploadProfilePicture";
 import { useDeleteProfilePictureMutation } from "@/api/user/deleteUserProfile";
-import { useProfileImageQuery } from "@/api/user/profilePicture";
 
 export const EditProfileScreen = () => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -22,8 +21,6 @@ export const EditProfileScreen = () => {
 	const { mutate: updateUser } = useUpdateUserMutation();
 	const { mutate: updateImage } = useUploadProfilePictureMutation();
 	const { mutateAsync: deleteImage } = useDeleteProfilePictureMutation();
-	const { data: imageFromDatabase } = useProfileImageQuery(user?.id);
-	const [image, setImage] = useState<string>();
 	const [deleteUserModalOpen, setDeleteUserModalOpen] = useState(false);
 
 	const form = useForm<OnboardingSchema>({
@@ -45,7 +42,6 @@ export const EditProfileScreen = () => {
 
 	const handleImageDeletion = async () => {
 		await deleteImage();
-		setImage(undefined);
 	};
 
 	const disabled = !form.formState.isDirty || isLoading;
@@ -63,7 +59,7 @@ export const EditProfileScreen = () => {
 				title="Profil bearbeiten"
 			>
 				<View flex={1} gap="$4">
-					<AvatarImagePicker editable image={image ?? imageFromDatabase} onImageDeleted={handleImageDeletion} onImageSelected={updateImage} />
+					<AvatarImagePicker editable onImageDeleted={handleImageDeletion} onImageSelected={updateImage} />
 
 					<FormProvider {...form}>
 						<FormInput label="Email" name="email" editable={false} disabled value={user?.email} />

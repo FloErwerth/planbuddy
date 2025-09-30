@@ -21,12 +21,12 @@ export const PressableRow = ({ onPress, icon, iconRight, children, ...wrapperPro
 
 	return (
 		<Pressable onPress={onPress}>
-			<XStack gap="$3" alignItems="center">
-				{icon}
-				<Card flex={1} justifyContent="space-between" alignItems="center" padding="$3" borderRadius="$4" flexDirection="row" {...wrapperProps}>
+			<XStack alignItems="center" gap="$3">
+				<Card>{icon}</Card>
+				<XStack flex={1} justifyContent="space-between" alignItems="center" borderRadius="$4" flexDirection="row" {...wrapperProps}>
 					{children}
 					<IconRight />
-				</Card>
+				</XStack>
 			</XStack>
 		</Pressable>
 	);

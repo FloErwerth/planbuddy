@@ -10,8 +10,8 @@ export const useUploadProfilePictureMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (file?: string) => {
-			if (!file) {
+		mutationFn: async (file: string | null) => {
+			if (file === null) {
 				return Promise.resolve(undefined);
 			}
 

@@ -73,6 +73,22 @@ export const tamaguiConfig = createTamagui({
 
 	tokens: {
 		...config.tokens,
+		radius: {
+			0: 0,
+			1: 3,
+			2: 5,
+			3: 7,
+			4: 9,
+			5: 10,
+			true: 16,
+			6: 16,
+			7: 19,
+			8: 22,
+			9: 26,
+			10: 34,
+			11: 42,
+			12: 50,
+		},
 		color: {
 			...config.tokens.color,
 			color: colors.color,

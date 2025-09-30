@@ -75,6 +75,9 @@ const useUsersWithStatusQuery = (search: string, { showUsersWhenEmpty = false }:
 	});
 };
 
+/**
+ * @deprecated implement user search hook
+ */
 export const UserSearchProvider = ({ children, ...options }: PropsWithChildren & UserSearchOptions) => {
 	const [debouncedSearch, setDebouncedSearch] = useState("");
 	const [searchDisplay, setSearchDisplay] = useState("");

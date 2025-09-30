@@ -12,7 +12,7 @@ export const useSearchParticipantsByStatus = (eventId?: string, filters: Partici
 			}
 
 			const result = await searchParticipantsByNameStatusSupabaseQuery(eventId, search, filters);
-			const parsedResult = searchParticipantsByStatusNameSchema.safeParse(result.data);
+			const parsedResult = searchParticipantsByStatusNameSchema.safeParse(result);
 
 			if (parsedResult.error) {
 				throw new Error(`Error in useSearchParticipantsByStatusName: ${parsedResult.error.message}`);

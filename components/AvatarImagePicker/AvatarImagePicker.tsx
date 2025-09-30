@@ -10,7 +10,6 @@ import { useProfileImageQuery } from "@/api/user/profilePicture";
 
 type AvatarImagePickerProps = {
 	editable?: boolean;
-	image: string | undefined;
 	onImageSelected?: (imageUri: string) => void;
 	onImageDeleted?: () => void;
 };
@@ -54,7 +53,7 @@ export const AvatarImagePicker = ({ editable = false, onImageSelected, onImageDe
 		return (
 			<View position="absolute">
 				<Animated.View entering={FadeIn.duration(200).delay(100)}>
-					{image ? (
+					{image !== null ? (
 						<Trash2 zIndex={999} onPress={onImageDeleted} scale={0.75} color="$background" />
 					) : (
 						<Edit3 zIndex={999} onPress={pickImage} scale={0.75} color="$background" />

@@ -12,6 +12,7 @@ export const participantSchema = z.object({
 	eventId: z.string(),
 	role: z.enum([ParticipantRoleEnum.GUEST, ParticipantRoleEnum.CREATOR, ParticipantRoleEnum.ADMIN]),
 	status: z.enum([ParticipantStatusEnum.ACCEPTED, ParticipantStatusEnum.PENDING, ParticipantStatusEnum.DECLINED]),
+	createdAt: z.string(),
 });
 
 /**
