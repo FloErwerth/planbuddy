@@ -8,13 +8,12 @@ import { supabase } from "@/api/supabase";
  */
 export const upsertParticipantSupabaseQuery = async (participant: Partial<Participant> | Partial<Participant>[]) => {
 	if (Array.isArray(participant)) {
-		const participantsToUpsert = participant.filter(isParticipantWithIdAndUserId).map((participant) => getDefaultParticipant(participant));
-		return await supabase.from("participants").upsert(participantsToUpsert, { ignoreDuplicates: true });
+		return await supabase.from("participants").upsert(participant, { ignoreDuplicates: true });
 	}
 
 	if (!isParticipantWithIdAndUserId(participant)) {
 		throw new Error("Error in upsertParticipantSupabaseQuery: Incomming single participant was invalid.");
 	}
 
-	return await supabase.from("participants").upsert(getDefaultParticipant(participant), { ignoreDuplicates: true });
+	return await supabase.from("participants").upsert(getDefaultParticipant(participant), { ignoreDuplicates: true }).throwOnError().select;
 };

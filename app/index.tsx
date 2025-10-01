@@ -1,20 +1,22 @@
-import { Screen } from "@/components/Screen";
-import { Button } from "@/components/tamagui/Button";
-import { router } from "expo-router";
-import { debounce, SizableText, View } from "tamagui";
+import { ScrollableScreen } from "@/components/Screen";
+import { LoginForm } from "@/screens/Authentication";
+import { Image } from "expo-image";
+import { SizableText, View } from "tamagui";
+import splashIcon from "@/assets/images/splash-icon.png";
 
 export default function InitialAppScreen() {
 	return (
-		<Screen flex={1} justifyContent="center" gap="$10">
-			<View>
-				<SizableText size="$12" textAlign="center">
-					PlanBuddy
+		<ScrollableScreen flex={1}>
+			<View flex={0.33} justifyContent="center" alignItems="center" gap="$4">
+				<Image source={splashIcon} style={{ width: 300, height: 135 }} />
+				<SizableText size="$11" fontWeight="700" textAlign="center">
+					Willkommen bei PlanBuddy
 				</SizableText>
-				<SizableText size="$5" alignSelf="center" width="90%" fontWeight="$4" textAlign="center">
-					Events erstellen, Freunde einladen und gemeinsam feiern
+				<SizableText size="$6" alignSelf="center" width="90%" fontWeight="$4" textAlign="center">
+					Erstelle mühelos Events mit deinen Freunden
 				</SizableText>
 			</View>
-			<Button onPress={debounce(() => router.push("/authentication"), 200, true)}>Anmelden</Button>
-		</Screen>
+			<LoginForm />
+		</ScrollableScreen>
 	);
 }

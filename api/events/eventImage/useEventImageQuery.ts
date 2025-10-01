@@ -4,23 +4,22 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useEventImageQuery = (eventId?: string) => {
 	return useQuery({
-		queryFn: async (): Promise<string | undefined> => {
+		queryFn: async (): Promise<string | null> => {
 			if (!eventId) {
-				return undefined;
+				return null;
 			}
-
 			const download = await supabase.storage.from("event-images").download(`${eventId}/image.png?bust=${Date.now()}`);
 
 			if (download.error) {
 				if (download.error.name === "StorageUnknownError") {
 					// this is likely because of no image uploaded for the event
-					return undefined;
+					return null;
 				}
 				throw new Error(download.error.message);
 			}
 
 			if (download.data.size < 100) {
-				return;
+				return null;
 			}
 
 			return new Promise((resolve, _) => {

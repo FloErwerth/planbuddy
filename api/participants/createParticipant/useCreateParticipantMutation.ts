@@ -14,11 +14,7 @@ export const useCreateParticipationMutation = () => {
 				return undefined;
 			}
 
-			const result = await upsertParticipantSupabaseQuery(participant);
-
-			if (result.error) {
-				throw new Error(result.error.message);
-			}
+			await upsertParticipantSupabaseQuery(participant);
 		},
 		onSuccess: async () => {
 			await queryClient.invalidateQueries({ queryKey: [PARTICIPANT_QUERY_KEY] });

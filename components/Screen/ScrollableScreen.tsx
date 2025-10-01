@@ -1,7 +1,8 @@
-import { ScrollView } from "@/components/tamagui/ScrollView";
+import { Screen } from "@/components/Screen/Screen";
 import { PropsWithChildren, ReactNode } from "react";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { SizableText, View, XStack } from "tamagui";
+import { SizableText, View, ViewProps, XStack } from "tamagui";
 
 export type ScrollableScreenProps = PropsWithChildren & {
 	showBackButton?: boolean;
@@ -9,35 +10,30 @@ export type ScrollableScreenProps = PropsWithChildren & {
 	back?: ReactNode;
 	action?: ReactNode;
 	submit?: ReactNode;
-};
+} & ViewProps;
 
-export const ScrollableScreen = ({ children, showBackButton = false, back, title, action }: ScrollableScreenProps) => {
+export const ScrollableScreen = ({ children, showBackButton = false, back, title, action, ...viewProps }: ScrollableScreenProps) => {
 	const hasActionOrBack = !!back || !!action;
 	const { top } = useSafeAreaInsets();
 
 	return (
-		<ScrollView
-			contentContainerStyle={{
-				padding: "$4",
-				gap: "$4",
-				paddingTop: top || "$4",
-				backgroundColor: "$background",
-			}}
-		>
-			{(back || title || action) && (
-				<XStack alignItems="center">
-					<View flex={hasActionOrBack ? 0.2 : 0}>{back}</View>
-					<View flex={1}>
-						<SizableText size="$6" textAlign="center">
-							{title}
-						</SizableText>
-					</View>
-					<View flex={hasActionOrBack ? 0.2 : 0} alignItems="flex-end">
-						{action}
-					</View>
-				</XStack>
-			)}
-			{children}
-		</ScrollView>
+		<KeyboardAwareScrollView contentContainerStyle={{ flexGrow: viewProps.flex ? 1 : 0 }}>
+			<Screen {...viewProps}>
+				{(back || title || action) && (
+					<XStack alignItems="center">
+						<View flex={hasActionOrBack ? 0.2 : 0}>{back}</View>
+						<View flex={1}>
+							<SizableText size="$6" textAlign="center">
+								{title}
+							</SizableText>
+						</View>
+						<View flex={hasActionOrBack ? 0.2 : 0} alignItems="flex-end">
+							{action}
+						</View>
+					</XStack>
+				)}
+				{children}
+			</Screen>
+		</KeyboardAwareScrollView>
 	);
 };

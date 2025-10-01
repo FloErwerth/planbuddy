@@ -7,14 +7,14 @@ import * as ExpoImagePicker from "expo-image-picker";
 import { Button } from "@/components/tamagui/Button";
 
 type EventCreationImageProps = {
-	image?: string;
-	setImage: (image?: string) => void;
+	image: string | null;
+	setImage: (image: string | null) => void;
 };
 export const EventCreationImage = ({ image, setImage }: EventCreationImageProps) => {
 	const imageStyle = useAnimatedStyle(
 		() =>
 			({
-				height: withTiming(image ? 200 : 100),
+				height: withTiming(image !== null ? 200 : 100),
 				justifyContent: "center",
 			}) as const
 	);
@@ -35,7 +35,7 @@ export const EventCreationImage = ({ image, setImage }: EventCreationImageProps)
 		() =>
 			({
 				position: "absolute",
-				opacity: withTiming(image ? 1 : 0),
+				opacity: withTiming(image !== null ? 1 : 0),
 				zIndex: 15,
 				right: 8,
 				top: 8,
@@ -45,12 +45,12 @@ export const EventCreationImage = ({ image, setImage }: EventCreationImageProps)
 	return (
 		<>
 			<Animated.View style={buttonStyle}>
-				<Button onPress={() => setImage(undefined)} width="$3" height="$3" padding={0} borderRadius="$12">
+				<Button onPress={() => setImage(null)} width="$3" height="$3" padding={0} borderRadius="$12">
 					<Trash2 size="$1" color="$background" />
 				</Button>
 			</Animated.View>
 			<Animated.View style={imageStyle}>
-				{image ? (
+				{image !== null ? (
 					<Image source={image} style={{ width: "auto", height: 200 }} />
 				) : (
 					<Pressable onPress={pickImage}>

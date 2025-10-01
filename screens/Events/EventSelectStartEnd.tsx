@@ -2,6 +2,7 @@ import { Calendar } from "@/components/Calendar";
 import { HeightTransition } from "@/components/HeightTransition";
 import { timePartialsWithoutTimeZone } from "@/utils/date";
 import { EventTimerPicker } from "./EventTimerPicker";
+import { useState } from "react";
 
 type EventSelectStartEndProps = {
 	showCalendar: boolean;
@@ -14,6 +15,7 @@ type EventSelectStartEndProps = {
 };
 
 export const EventSelectStartEnd = ({ date, minimumDate, setDate, showCalendar, showTimePicker, setTime }: EventSelectStartEndProps) => {
+	const [month, setMonth] = useState(0);
 	const getLimits = () => {
 		if (!minimumDate) {
 			return undefined;
@@ -34,7 +36,7 @@ export const EventSelectStartEnd = ({ date, minimumDate, setDate, showCalendar, 
 			<HeightTransition paddingBottom="$4" paddingTop="$2" open={showCalendar}>
 				<Calendar date={date} onDateSelected={setDate} minimumDate={minimumDate} />
 			</HeightTransition>
-			<HeightTransition paddingTop="$2" alignSelf="center" open={showTimePicker}>
+			<HeightTransition enableHeightChange={false} paddingTop="$2" alignSelf="center" open={showTimePicker}>
 				<EventTimerPicker
 					initialValue={{ hours: date.getHours(), minutes: date.getMinutes() }}
 					{...getLimits()}

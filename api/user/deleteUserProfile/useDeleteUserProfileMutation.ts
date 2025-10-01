@@ -11,7 +11,7 @@ export const useDeleteProfilePictureMutation = () => {
 
 	return useMutation({
 		mutationFn: async () => {
-			if (!image) {
+			if (image === null) {
 				return;
 			}
 

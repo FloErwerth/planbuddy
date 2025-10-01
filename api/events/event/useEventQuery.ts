@@ -8,7 +8,13 @@ export const useEventQuery = (eventId: string) => {
 		queryFn: async () => {
 			const event = await eventSupabaseQuery(eventId);
 
-			return appEventSchema.parse(event.data);
+			const parsedEvent = appEventSchema.safeParse(event.data);
+
+			if (parsedEvent.error) {
+				throw new Error(`Error in useEventQuery: ${parsedEvent.error.message}`);
+			}
+
+			return parsedEvent.data;
 		},
 		queryKey: [EVENTS_QUERY_KEY, eventId],
 	});

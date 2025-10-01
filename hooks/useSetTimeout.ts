@@ -17,6 +17,7 @@ export const useSetTimeout = () => {
 		setTimeout: (fn: () => void, timeout: number) => {
 			timer.current = setTimeout(fn, timeout);
 		},
+		timer,
 		clear,
 	};
 };

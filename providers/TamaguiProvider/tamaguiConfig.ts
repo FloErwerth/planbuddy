@@ -6,10 +6,10 @@ export const colors = {
 	...color,
 	color: "#171614",
 	disabled: color.gray8Light,
-	background: "#F9F7F7",
-	accent: "#DBE2EF",
-	accent2: "#2c2a26",
-	primary: "#112D4E",
+	background: "#f6f7f8",
+	accent: "#EDEBEB",
+	accent2: "#e1f1ef",
+	primary: "#19a1e6",
 };
 
 const font = createFont({
@@ -66,9 +66,6 @@ const font = createFont({
 export const tamaguiConfig = createTamagui({
 	...config,
 
-	animations: {
-		...config.animations,
-	},
 	fonts: {
 		body: font,
 		heading: font,
@@ -76,6 +73,22 @@ export const tamaguiConfig = createTamagui({
 
 	tokens: {
 		...config.tokens,
+		radius: {
+			0: 0,
+			1: 3,
+			2: 5,
+			3: 7,
+			4: 9,
+			5: 10,
+			true: 16,
+			6: 16,
+			7: 19,
+			8: 22,
+			9: 26,
+			10: 34,
+			11: 42,
+			12: 50,
+		},
 		color: {
 			...config.tokens.color,
 			color: colors.color,
@@ -98,16 +111,19 @@ export const tamaguiConfig = createTamagui({
 			accent: colors.accent,
 		},
 		error: {
-			focusColor: "#354173",
+			placeholderColor: color.red7Light,
+
 			primary: color.red9Light,
-			backgroundColor: color.red4Light,
+			background: color.red4Light,
 			color: color.red9Light,
 			borderColor: color.red10Light,
 			fill: color.red9Light,
 			colorFocus: color.red9Light,
 			colorActive: color.red9Light,
-			backgroundColorFocus: color.red2Light,
-			backgroundColorActive: color.red2Light,
+			backgroundColorFocus: color.red3Light,
+			backgroundColorActive: color.red3Light,
+			placeholderTextColor: color.red9Light,
+			accent: color.red4Light,
 		},
 		dark: {
 			bg: "#111",

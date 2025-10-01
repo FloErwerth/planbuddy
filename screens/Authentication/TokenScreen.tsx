@@ -3,20 +3,17 @@ import { BackButton } from "@/components/BackButton";
 import { Screen } from "@/components/Screen";
 import { TokenInput } from "@/components/TokenInput/TokenInput";
 import { Button } from "@/components/tamagui/Button";
-import { Sheet } from "@/components/tamagui/Sheet";
 import { useCheckLoginState } from "@/hooks/useCheckLoginState";
 import { useLoginContext } from "@/providers/LoginProvider";
-import { tokenSchema } from "@/screens/Authentication/types";
 import { useSetUser } from "@/store/authentication";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { debounce, SizableText, View } from "tamagui";
 
 export const TokenScreen = () => {
-	const { email, resendTokenTime, startedLoginAttempt, setStartedLoginAttempt, startResendTokenTimer, setLoginError, resetTokenPage } = useLoginContext();
-	const [token, setToken] = useState<string[]>([]);
+	const { email, resetTokenPage } = useLoginContext();
+	const [token, setToken] = useState<string[]>([" ", " ", " ", " ", " ", " "]);
 	const [previousToken, setPreviousToken] = useState<string[]>([]);
-	const [showSheet, setShowSheet] = useState(false);
 	const setUser = useSetUser();
 	const [tokenError, setTokenError] = useState<string>("");
 	const hasValue = !token.every((val) => !val);
@@ -56,55 +53,18 @@ export const TokenScreen = () => {
 		}
 	};
 
-	const resendToken = async () => {
-		router.push({ pathname: "/authentication/sendingEmail", params: { email } });
-		const result = await supabase.auth.signInWithOtp({
-			email,
-		});
-		startResendTokenTimer();
-
-		if (result.error) {
-			switch (result.error.code) {
-				case "over_request_rate_limit":
-				case "over_email_send_rate_limit":
-					// should never happen
-					setLoginError(`Es wurden mit ${email} zu viele Loginversuche gemacht. Bitte versuche es später noch einmal`);
-					break;
-				case "email_exists":
-					setLoginError("Diese E-Mail ist bereits vergeben");
-					break;
-				default:
-					setLoginError("Es ist ein Fehler aufgetreten, bitte versuche es erneut");
-			}
-			router.replace("/authentication");
-			return;
-		}
-	};
-
 	const handleChangeMail = () => {
-		setStartedLoginAttempt(false);
-		setShowSheet(false);
-		console.log("change");
-
-		router.push("/authentication");
+		router.replace("/");
 	};
-
-	useEffect(() => {
-		const parsedToken = tokenSchema.safeParse(token);
-
-		if (parsedToken.success) {
-			void onComplete();
-		}
-	}, [token]);
 
 	return (
 		<>
-			<Screen back={<BackButton href="/authentication" />} flex={1} title="Verifizierung">
+			<Screen back={<BackButton href="/" />} flex={1} title="Verifizierung">
 				<View flex={1} justifyContent="center" gap="$6">
-					<SizableText size="$8">Checke deine E-Mails</SizableText>
-					<SizableText>
-						Wir haben dir eine E-Mail an <SizableText fontWeight="bold">{email}</SizableText> gesendet. Bitte gib den dort angezeigten Code unten ein
+					<SizableText size="$8" fontWeight="bold" textAlign="center">
+						Checke deine E-Mails
 					</SizableText>
+					<SizableText textAlign="center">Wir haben dir einen 6-stelligen Code an {email} gesendet. Bitte gib den dort angezeigten Code unten ein</SizableText>
 					<View gap="$2">
 						{tokenError && (
 							<SizableText
@@ -122,23 +82,16 @@ export const TokenScreen = () => {
 						)}
 						<TokenInput value={token} onChange={setToken} />
 					</View>
-					<Button onPress={() => setShowSheet(true)} size="$3" alignSelf="flex-start" variant="secondary">
-						Keinen Code erhalten
+				</View>
+				<View gap="$1">
+					<Button size="$5" elevationAndroid="$0" fontWeight="700" onPress={debounce(onComplete, 200, true)}>
+						Verifizieren
+					</Button>
+					<Button size="$5" variant="transparent" fontWeight="700" onPress={debounce(handleChangeMail, 200, true)}>
+						Neuen Code anfordern
 					</Button>
 				</View>
 			</Screen>
-			<Sheet snapPoints={undefined} snapPointsMode="fit" open={showSheet} onOpenChange={setShowSheet}>
-				<Screen>
-					<SizableText size="$6">Hast Du keinen Code erhalten?</SizableText>
-					<SizableText>Wenn Du keinen Code erhalten hast, dann hast Du folgende Möglichkeiten:</SizableText>
-					<View gap="$2">
-						<Button onPress={debounce(resendToken, 200, true)} disabled={resendTokenTime > 0 && startedLoginAttempt}>
-							{startedLoginAttempt && resendTokenTime > 0 ? `In ${resendTokenTime} erneut senden` : "Erneut senden"}
-						</Button>
-						<Button onPress={debounce(handleChangeMail, 200, true)}>E-Mail-Addresse ändern</Button>
-					</View>
-				</Screen>
-			</Sheet>
 		</>
 	);
 };

@@ -8,26 +8,29 @@ import { LoginProvider } from "@/providers/LoginProvider";
 import { NotificationsProvider } from "@/providers/NotificationsProvider";
 import { SafeAreaProvider } from "@/providers/SafeAreaProvider";
 import { UserSearchProvider } from "@/components/UserSearch";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 export const Providers = ({ children }: PropsWithChildren) => {
 	return (
 		<StrictMode>
-			<QueryProvider>
-				<UserSearchProvider>
-					<TamaguiProvider>
-						<SafeAreaProvider>
-							<ErrorBoundary fallback={ErrorScreen}>
-								<LoginProvider>
-									<NotificationsProvider>
-										<StatusBar hidden />
-										{children}
-									</NotificationsProvider>
-								</LoginProvider>
-							</ErrorBoundary>
-						</SafeAreaProvider>
-					</TamaguiProvider>
-				</UserSearchProvider>
-			</QueryProvider>
+			<KeyboardProvider>
+				<QueryProvider>
+					<UserSearchProvider>
+						<TamaguiProvider>
+							<SafeAreaProvider>
+								<ErrorBoundary fallback={ErrorScreen}>
+									<LoginProvider>
+										<NotificationsProvider>
+											<StatusBar hidden />
+											{children}
+										</NotificationsProvider>
+									</LoginProvider>
+								</ErrorBoundary>
+							</SafeAreaProvider>
+						</TamaguiProvider>
+					</UserSearchProvider>
+				</QueryProvider>
+			</KeyboardProvider>
 		</StrictMode>
 	);
 };

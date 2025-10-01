@@ -1,7 +1,5 @@
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { router, useGlobalSearchParams } from "expo-router";
-import { AnimatePresence, SizableText, View } from "tamagui";
-import { Button } from "@/components/tamagui/Button";
 import { Participant } from "@/api/participants/types";
 import { useCreateParticipationMutation } from "@/api/participants/createParticipant";
 import { User } from "@/api/user/types";
@@ -14,6 +12,8 @@ type EventDetailsContextType =
 			toggleInviteToEvent: (userId: string) => void;
 			numberOfAddedUsers: number;
 			usersToAdd: Set<string>;
+			toggleGuest: (userId: string) => void;
+			clearUsersToAdd: () => void;
 	  }
 	| undefined;
 
@@ -70,6 +70,30 @@ export const EventDetailsProvider = ({ children }: PropsWithChildren) => {
 		router.replace("/eventDetails/participants");
 	};
 
+	const addGuest = (userId: string) => {
+		setUsersToAdd((current) => {
+			const newSet = new Set(current.values());
+			newSet.add(userId);
+			return newSet;
+		});
+	};
+
+	const toggleGuest = (userId: string) => {
+		if (usersToAdd.has(userId)) {
+			removeGuest(userId);
+			return;
+		}
+		addGuest(userId);
+	};
+
+	const removeGuest = (userId: string) => {
+		setUsersToAdd((current) => {
+			const newSet = new Set(current.values());
+			newSet.delete(userId);
+			return newSet;
+		});
+	};
+
 	const contextValue: EventDetailsContextType = {
 		eventId,
 		editedGuest,
@@ -77,28 +101,9 @@ export const EventDetailsProvider = ({ children }: PropsWithChildren) => {
 		toggleInviteToEvent,
 		numberOfAddedUsers: usersToAdd.size,
 		usersToAdd,
+		toggleGuest,
+		clearUsersToAdd: () => setUsersToAdd(new Set()),
 	};
 
-	return (
-		<EventDetailsContext.Provider value={contextValue}>
-			{children}
-			<View width="100%" position="absolute" bottom={0} pointerEvents={usersToAdd.size > 0 ? "auto" : "none"} padding="$4">
-				<AnimatePresence>
-					{usersToAdd.size > 0 && (
-						<Button
-							onPress={handleInviteUsers}
-							width="100%"
-							animation="bouncy"
-							exitStyle={{ opacity: 0, bottom: -10 }}
-							enterStyle={{ opacity: 0, bottom: -10 }}
-						>
-							<SizableText color="$background">
-								{usersToAdd.size} {usersToAdd.size === 1 ? "Gast" : "Gäste"} hinzufügen
-							</SizableText>
-						</Button>
-					)}
-				</AnimatePresence>
-			</View>
-		</EventDetailsContext.Provider>
-	);
+	return <EventDetailsContext.Provider value={contextValue}>{children}</EventDetailsContext.Provider>;
 };

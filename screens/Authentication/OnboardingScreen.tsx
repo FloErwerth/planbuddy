@@ -20,11 +20,11 @@ export const OnboardingScreen = () => {
 		resolver: zodResolver(onboardingSchema),
 	});
 	const user = useGetUser();
-	const { data: imageFromDatabase } = useProfileImageQuery(user?.id);
+	const { data: imageFromDatabase = null } = useProfileImageQuery(user?.id);
 	const { mutateAsync: insertUser } = useInsertUserMutation();
 	const { mutateAsync: joinEvent } = useCreateParticipationMutation();
 
-	const [file, setFile] = useState<string>();
+	const [file, setFile] = useState<string | null>(null);
 	const { mutateAsync: uploadImage } = useUploadProfilePictureMutation();
 
 	useEffect(() => {
@@ -68,7 +68,7 @@ export const OnboardingScreen = () => {
 				Herzlich Willkommen bei PlanBuddy!
 			</SizableText>
 			<SizableText>Wenn Du willst such Dir ein schickes Profilbild aus und lade es hoch</SizableText>
-			<AvatarImagePicker editable image={file} onImageDeleted={() => setFile(undefined)} onImageSelected={setFile} />
+			<AvatarImagePicker editable onImageDeleted={() => setFile(null)} onImageSelected={setFile} />
 			<SizableText>Damit deine Freunde dich ohne Probleme finden können gib uns bitte folgende Informationen. Diese Angaben sind alle optional.</SizableText>
 			<FormProvider {...form}>
 				<FormInput autoComplete="given-name" textContentType="givenName" label="Vorname" name="firstName" />

@@ -41,7 +41,7 @@ export const Participants = () => {
 		);
 
 	if (!participants && !isLoading) {
-		return <Redirect href=".." />;
+		return <Redirect href="/eventDetails" />;
 	}
 
 	const toggleFilter = (toggledFilter: ParticipantStatus) => {
@@ -58,7 +58,7 @@ export const Participants = () => {
 
 	return (
 		<>
-			<Screen back={<BackButton />} title="Teilnehmer" action={<PlusButton onPress={() => router.push("./addFriends")} />}>
+			<Screen back={<BackButton href="/eventDetails" />} title="Teilnehmer" action={<PlusButton onPress={() => router.push("./inviteGuests")} />}>
 				<XStack gap="$3">
 					<ToggleButton
 						borderRadius="$12"

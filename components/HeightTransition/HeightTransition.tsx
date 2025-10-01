@@ -5,14 +5,18 @@ import { View, ViewProps } from "tamagui";
 
 type HeightTransitionProps = {
 	open: boolean;
+	enableHeightChange?: boolean;
 } & Omit<ViewProps, "position" | "onLayout">;
 
-export const HeightTransition = ({ children, open, ...viewProps }: HeightTransitionProps) => {
+const ANIMATION_DURATION = 200;
+
+export const HeightTransition = ({ children, open, enableHeightChange = true, ...viewProps }: HeightTransitionProps) => {
 	const [containerHeight, setContainerHeight] = useState<number>();
 	const [renderChildren, setRenderChildren] = useState(false);
+	const [shouldCheckHeightChange, setShouldCheckHeightChange] = useState(false);
 
 	const measureContainer = (measurement: LayoutChangeEvent) => {
-		if (containerHeight) {
+		if (containerHeight !== undefined && !(enableHeightChange && shouldCheckHeightChange)) {
 			return;
 		}
 		setContainerHeight(measurement.nativeEvent.layout.height);
@@ -21,17 +25,25 @@ export const HeightTransition = ({ children, open, ...viewProps }: HeightTransit
 	useEffect(() => {
 		if (open) {
 			setRenderChildren(true);
+			if (enableHeightChange) {
+				setTimeout(() => {
+					setShouldCheckHeightChange(true);
+				}, ANIMATION_DURATION);
+			}
 		} else {
+			if (enableHeightChange) {
+				setShouldCheckHeightChange(false);
+			}
 			setTimeout(() => {
-				setRenderChildren(false);
 				setContainerHeight(undefined);
-			}, 200);
+				setRenderChildren(false);
+			}, ANIMATION_DURATION);
 		}
 	}, [open]);
 
 	const heightTransitionStyle = useAnimatedStyle(() => ({
-		height: withTiming(containerHeight && open ? containerHeight : 0, { duration: 200 }),
-		opacity: withTiming(containerHeight && open ? 1 : 0, { duration: 200 }),
+		height: withTiming(containerHeight && open ? containerHeight : 0, { duration: ANIMATION_DURATION }),
+		opacity: withTiming(containerHeight && open ? 1 : 0, { duration: ANIMATION_DURATION }),
 		overflow: "hidden",
 	}));
 
