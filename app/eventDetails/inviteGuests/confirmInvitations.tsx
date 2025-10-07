@@ -1,5 +1,5 @@
-import { EventDetailsConfirmInvitations } from "@/screens/EventDetails/InviteFriends";
+import { EventDetailsConfirmInvitations } from "@/screens/EventDetails/InviteFriends/EventDetailsConfirmInvitations";
 
 export default function ConfirmInvitations() {
-	return <EventDetailsConfirmInvitations />;
+  return <EventDetailsConfirmInvitations />;
 }

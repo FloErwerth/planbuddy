@@ -9,8 +9,8 @@ import { router } from "expo-router";
 import { useAllUsersQuery } from "@/api/user/allUsers/useAllUsersQuery";
 import { SearchInput } from "@/components/SearchInput";
 import { useSearchParticipantsByStatus } from "@/api/participants/searchParticipantsByNameStatus";
-import { EventDetailsGuest, EventDetailsGuestProps } from "@/screens/EventDetails/InviteFriends/EventDetailsInviteGuests";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { EventDetailsGuest, EventDetailsGuestProps } from "@/screens/EventDetails/InviteFriends/EventDetailsInviteGuests";
 
 export const EventDetailsInviteGuests = () => {
   const [filter, setFilter] = useState<string>();

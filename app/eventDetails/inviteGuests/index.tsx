@@ -1,5 +1,5 @@
-import { EventDetailsInviteGuests } from "@/screens/EventDetails/InviteFriends";
+import { EventDetailsInviteGuests } from "@/screens/EventDetails/InviteFriends/EventDetailsInviteGuests/EventDetailsInviteGuests";
 
 export default function InviteGuests() {
-	return <EventDetailsInviteGuests />;
+  return <EventDetailsInviteGuests />;
 }
