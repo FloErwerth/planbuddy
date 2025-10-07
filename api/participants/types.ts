@@ -7,36 +7,36 @@ export const ParticipantStatusEnum = { ACCEPTED: "ACCEPTED", PENDING: "PENDING",
 export const participantStatusZodEnum = z.enum([ParticipantStatusEnum.ACCEPTED, ParticipantStatusEnum.PENDING, ParticipantStatusEnum.DECLINED]);
 
 export const participantSchema = z.object({
-	id: z.string(),
-	userId: z.string(),
-	eventId: z.string(),
-	role: z.enum([ParticipantRoleEnum.GUEST, ParticipantRoleEnum.CREATOR, ParticipantRoleEnum.ADMIN]),
-	status: z.enum([ParticipantStatusEnum.ACCEPTED, ParticipantStatusEnum.PENDING, ParticipantStatusEnum.DECLINED]),
-	createdAt: z.string(),
+  id: z.string(),
+  userId: z.string(),
+  eventId: z.string(),
+  role: z.enum([ParticipantRoleEnum.GUEST, ParticipantRoleEnum.CREATOR, ParticipantRoleEnum.ADMIN]),
+  status: z.enum([ParticipantStatusEnum.ACCEPTED, ParticipantStatusEnum.PENDING, ParticipantStatusEnum.DECLINED]),
+  createdAt: z.string(),
 });
 
 /**
  * Schema that represents an event got as foreign key by participants
  */
 export const eventFromParticipantsSchema = z
-	.object({
-		data: z.array(participantSchema.and(z.object({ users: userSchema.omit({ id: true }) }))),
-	})
-	.transform(({ data }) =>
-		data.map((participant) => ({
-			id: participant.id,
-			userId: participant.userId,
-			eventId: participant.eventId,
-			createdAt: participant.users.createdAt,
-			role: participant.role,
-			status: participant.status,
-			email: participant.users.email,
-			firstName: participant.users.firstName,
-			lastName: participant.users.lastName,
-			pushToken: participant.users.pushToken,
-			pushChannels: participant.users.pushChannels,
-		}))
-	);
+  .object({
+    data: z.array(participantSchema.and(z.object({ users: userSchema.omit({ id: true }) }))),
+  })
+  .transform(({ data }) =>
+    data.map((participant) => ({
+      id: participant.id,
+      userId: participant.userId,
+      eventId: participant.eventId,
+      createdAt: participant.users.createdAt,
+      role: participant.role,
+      status: participant.status,
+      email: participant.users.email,
+      firstName: participant.users.firstName,
+      lastName: participant.users.lastName,
+      pushToken: participant.users.pushToken,
+      pushChannels: participant.users.pushChannels,
+    }))
+  );
 
 export type ParticipantRole = (typeof ParticipantRoleEnum)[keyof typeof ParticipantRoleEnum];
 export type ParticipantStatus = (typeof ParticipantStatusEnum)[keyof typeof ParticipantStatusEnum];

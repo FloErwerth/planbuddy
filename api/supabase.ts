@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AppState } from "react-native";
+import { AppState, Platform } from "react-native";
 import { router } from "expo-router";
 import { useResetUser } from "@/store/authentication";
 import { useQueryClient } from "@tanstack/react-query";
@@ -10,12 +10,12 @@ const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_PROJECT_URL ?? "";
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_API_KEY ?? "";
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-	auth: {
-		storage: AsyncStorage,
-		autoRefreshToken: true,
-		persistSession: true,
-		detectSessionInUrl: false,
-	},
+  auth: {
+    storage: AsyncStorage,
+    autoRefreshToken: true,
+    persistSession: Platform.OS !== "web",
+    detectSessionInUrl: false,
+  },
 });
 
 // Tells Supabase Auth to continuously refresh the session automatically
@@ -24,29 +24,29 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 // `SIGNED_OUT` event if the user's session is terminated. This should
 // only be registered once.
 AppState.addEventListener("change", (state) => {
-	if (state === "active") {
-		void supabase.auth.startAutoRefresh();
-	} else {
-		void supabase.auth.stopAutoRefresh();
-	}
+  if (state === "active") {
+    void supabase.auth.startAutoRefresh();
+  } else {
+    void supabase.auth.stopAutoRefresh();
+  }
 });
 
 export const useLogout = () => {
-	const resetUser = useResetUser();
-	const queryClient = useQueryClient();
-	const { resetTokenPage, setEmail } = useLoginContext();
-	return async () => {
-		const result = await supabase.auth.signOut();
+  const resetUser = useResetUser();
+  const queryClient = useQueryClient();
+  const { resetTokenPage, setEmail } = useLoginContext();
+  return async () => {
+    const result = await supabase.auth.signOut();
 
-		if (result.error) {
-			// login failed
-			return;
-		}
+    if (result.error) {
+      // login failed
+      return;
+    }
 
-		resetTokenPage();
-		resetUser();
-		setEmail("");
-		router.dismiss(1000000);
-		await queryClient.invalidateQueries();
-	};
+    resetTokenPage();
+    resetUser();
+    setEmail("");
+    router.replace("/");
+    await queryClient.invalidateQueries();
+  };
 };

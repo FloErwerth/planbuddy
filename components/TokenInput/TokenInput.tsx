@@ -1,73 +1,62 @@
-import { Input } from "@/components/tamagui/Input";
-import { useRef } from "react";
-import { NativeSyntheticEvent, TextInputKeyPressEventData } from "react-native";
-import { XStack, Input as InputTamagui } from "tamagui";
+import { TextInputOTP, TextInputOTPSlot, TextInputOTPGroup, TextInputOTPSeparator, TextInputOTPSlotProps } from "react-native-input-code-otp";
+import { getTokenValue, Token, useTheme } from "tamagui";
 
 type OTPInputProps = {
-	value: string[];
-	onChange: (value: string[]) => void;
-	length?: number;
-	disabled?: boolean;
+  onFilled: (code: string) => void;
+  showErrorColors?: boolean;
 };
 
-export const TokenInput = ({ value, onChange, length = 6, disabled = false }: OTPInputProps) => {
-	const inputRefs = useRef<InputTamagui[]>([]);
-	const focusInput = (index: number) => {
-		if (inputRefs.current[index]) {
-			inputRefs.current[index].focus();
-		}
-	};
+const StyledTextInputOTPSlot = (props: TextInputOTPSlotProps & Pick<OTPInputProps, "showErrorColors">) => {
+  const { primary, color, accent } = useTheme({ name: props.showErrorColors ? "error" : "default" });
+  const focusStyle = {
+    borderColor: primary?.val,
+    borderWidth: getTokenValue("$1" as Token),
+    backgroundColor: getTokenValue("$backgroundFocus" as Token),
+    fontWeight: 700,
+    height: 50,
+  } as const;
 
-	const handleChange = (text: string, index: number) => {
-		const newValue = [...value];
-		newValue[index] = text;
-		onChange(newValue);
+  const slotStyles = {
+    borderColor: accent?.val,
+  } as const;
 
-		if (text && index < length - 1) {
-			focusInput(index + 1);
-		}
-	};
+  const slotTextStyles = {
+    fontSize: 18,
+    color: color?.val,
+  } as const;
 
-	const handleKeyPress = (event: NativeSyntheticEvent<TextInputKeyPressEventData>, index: number) => {
-		if (event.nativeEvent.key === "Backspace" && index > 0) {
-			handleChange("", index);
-			focusInput(index - 1);
-		}
-	};
+  const focusedSlotTextStyles = {
+    fontWeight: 700,
+    fontSize: 18,
+    color: color?.val,
+  } as const;
 
-	return (
-		<XStack justifyContent="center" gap="$2">
-			{Array(length)
-				.fill(0)
-				.map((_, index) => {
-					return (
-						<Input
-							key={index}
-							ref={(ref) => {
-								if (!ref) {
-									return;
-								}
-								inputRefs.current[index] = ref;
-							}}
-							autoFocus={index === 0}
-							onPress={() => inputRefs.current[index].setSelection(0, 1)}
-							onFocus={() => inputRefs.current[index].setSelection(0, 1)}
-							textAlign="center"
-							maxLength={1}
-							size="$5"
-							fontWeight="bold"
-							focusStyle={{
-								fontWeight: "bold",
-							}}
-							keyboardType="number-pad"
-							onChangeText={(text) => handleChange(text, index)}
-							onKeyPress={(event) => handleKeyPress(event, index)}
-							value={value[index]}
-							editable={!disabled}
-							selectTextOnFocus
-						/>
-					);
-				})}
-		</XStack>
-	);
+  return (
+    <TextInputOTPSlot
+      focusable
+      slotStyles={slotStyles}
+      slotTextStyles={slotTextStyles}
+      focusedSlotTextStyles={focusedSlotTextStyles}
+      focusedSlotStyles={focusStyle}
+      {...props}
+    />
+  );
+};
+
+export const TokenInput = ({ onFilled, showErrorColors }: OTPInputProps) => {
+  return (
+    <TextInputOTP maxLength={6} onFilled={onFilled}>
+      <TextInputOTPGroup>
+        <StyledTextInputOTPSlot index={0} showErrorColors={showErrorColors} />
+        <StyledTextInputOTPSlot index={1} showErrorColors={showErrorColors} />
+        <StyledTextInputOTPSlot index={2} showErrorColors={showErrorColors} />
+      </TextInputOTPGroup>
+      <TextInputOTPSeparator />
+      <TextInputOTPGroup>
+        <StyledTextInputOTPSlot index={3} showErrorColors={showErrorColors} />
+        <StyledTextInputOTPSlot index={4} showErrorColors={showErrorColors} />
+        <StyledTextInputOTPSlot index={5} showErrorColors={showErrorColors} />
+      </TextInputOTPGroup>
+    </TextInputOTP>
+  );
 };
