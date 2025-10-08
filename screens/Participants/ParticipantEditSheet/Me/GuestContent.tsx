@@ -1,4 +1,4 @@
-import { DialogProps, SizableText, View } from "tamagui";
+import { type DialogProps, SizableText, View } from "tamagui";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 import { Button } from "@/components/tamagui/Button";
 import { router } from "expo-router";

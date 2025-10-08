@@ -1,4 +1,4 @@
-import { ComponentProps, useEffect, useState } from "react";
+import { type ComponentProps, useEffect, useState } from "react";
 import { AnimatePresence, Circle, Square, View } from "tamagui";
 import { useSetInterval } from "@/hooks/useSetTimeout";
 

@@ -1,10 +1,10 @@
-import { SheetProps, SizableText, View } from "tamagui";
+import { type SheetProps, SizableText, View } from "tamagui";
 import { Sheet } from "@/components/tamagui/Sheet";
 import { Screen } from "@/components/Screen";
 import { Button } from "@/components/tamagui/Button";
 import { useState } from "react";
 import { Dialog } from "@/components/tamagui/Dialog";
-import { Friend } from "@/api/friends/types";
+import type { Friend } from "@/api/friends/types";
 import { useRemoveFriendMutation } from "@/api/friends/removeFriend";
 
 type ManageFriendSheetProps = SheetProps & { friend: Friend };

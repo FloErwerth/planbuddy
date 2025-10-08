@@ -10,12 +10,12 @@ const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_PROJECT_URL ?? "";
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_API_KEY ?? "";
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    storage: AsyncStorage,
-    autoRefreshToken: true,
-    persistSession: Platform.OS !== "web",
-    detectSessionInUrl: false,
-  },
+	auth: {
+		storage: AsyncStorage,
+		autoRefreshToken: true,
+		persistSession: Platform.OS !== "web",
+		detectSessionInUrl: false,
+	},
 });
 
 // Tells Supabase Auth to continuously refresh the session automatically
@@ -24,29 +24,29 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 // `SIGNED_OUT` event if the user's session is terminated. This should
 // only be registered once.
 AppState.addEventListener("change", (state) => {
-  if (state === "active") {
-    void supabase.auth.startAutoRefresh();
-  } else {
-    void supabase.auth.stopAutoRefresh();
-  }
+	if (state === "active") {
+		void supabase.auth.startAutoRefresh();
+	} else {
+		void supabase.auth.stopAutoRefresh();
+	}
 });
 
 export const useLogout = () => {
-  const resetUser = useResetUser();
-  const queryClient = useQueryClient();
-  const { resetTokenPage, setEmail } = useLoginContext();
-  return async () => {
-    const result = await supabase.auth.signOut();
+	const resetUser = useResetUser();
+	const queryClient = useQueryClient();
+	const { resetTokenPage, setEmail } = useLoginContext();
+	return async () => {
+		const result = await supabase.auth.signOut();
 
-    if (result.error) {
-      // login failed
-      return;
-    }
+		if (result.error) {
+			// login failed
+			return;
+		}
 
-    resetTokenPage();
-    resetUser();
-    setEmail("");
-    router.replace("/");
-    await queryClient.invalidateQueries();
-  };
+		resetTokenPage();
+		resetUser();
+		setEmail("");
+		router.replace("/");
+		await queryClient.invalidateQueries();
+	};
 };

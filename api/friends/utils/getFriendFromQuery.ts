@@ -1,4 +1,4 @@
-import { BaseFriend, Friend, FriendsQueryResponse } from "@/api/friends/types";
+import type { BaseFriend, Friend, FriendsQueryResponse } from "@/api/friends/types";
 
 export const getBaseFriendFromQuery = (response: FriendsQueryResponse): BaseFriend => {
 	return {

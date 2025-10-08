@@ -2,7 +2,7 @@ import { CreatorContent } from "@/screens/Participants/ParticipantEditSheet/Me/C
 import { GuestContent } from "@/screens/Participants/ParticipantEditSheet/Me/GuestContent";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 import { Dialog } from "@/components/tamagui/Dialog";
-import { DialogProps } from "tamagui";
+import type { DialogProps } from "tamagui";
 import { useMe } from "@/api/hooks";
 import { ParticipantRoleEnum } from "@/api/participants/types";
 

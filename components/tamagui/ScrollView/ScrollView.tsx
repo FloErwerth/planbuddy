@@ -1,4 +1,4 @@
-import { ScrollView as TamaguiScrollView, ScrollViewProps, View } from "tamagui";
+import { ScrollView as TamaguiScrollView, type ScrollViewProps, View } from "tamagui";
 import { LinearGradient } from "expo-linear-gradient";
 
 export const ScrollView = ({ children, withShadow = false, ...props }: ScrollViewProps & { withShadow?: boolean }) => {

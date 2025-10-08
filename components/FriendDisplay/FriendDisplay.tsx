@@ -1,7 +1,7 @@
 import { SizableText, XStack } from "tamagui";
 import { UserAvatar } from "@/components/UserAvatar";
-import { PropsWithChildren } from "react";
-import { User } from "@/api/user/types";
+import type { PropsWithChildren } from "react";
+import type { User } from "@/api/user/types";
 
 type FriendDisplayProps = User & PropsWithChildren;
 

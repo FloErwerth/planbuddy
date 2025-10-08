@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { LayoutChangeEvent, LayoutRectangle } from "react-native";
+import type { LayoutChangeEvent, LayoutRectangle } from "react-native";
 
 /*
  * Hook that stores the layout rectangle of a React Node.
@@ -22,6 +22,6 @@ export const useMeasureLayoutRectangle = (options?: { once: boolean }) => {
 				}
 			},
 		}),
-		[rectangle, options]
+		[rectangle, options],
 	);
 };

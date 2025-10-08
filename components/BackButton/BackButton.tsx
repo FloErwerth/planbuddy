@@ -1,7 +1,7 @@
 import { Link } from "expo-router";
 import { ChevronLeft } from "@tamagui/lucide-icons";
 import { View } from "tamagui";
-import { ComponentProps } from "react";
+import type { ComponentProps } from "react";
 
 type BackButtonProps = Omit<ComponentProps<typeof Link>, "href"> & Partial<Pick<ComponentProps<typeof Link>, "href">>;
 export const BackButton = ({ href = "..", ...props }: BackButtonProps) => {

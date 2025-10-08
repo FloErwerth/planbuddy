@@ -1,4 +1,4 @@
-import { DialogProps, SizableText, View } from "tamagui";
+import { type DialogProps, SizableText, View } from "tamagui";
 import { Dialog } from "@/components/tamagui/Dialog";
 import { useGetUser } from "@/store/authentication";
 import { Button } from "@/components/tamagui/Button";

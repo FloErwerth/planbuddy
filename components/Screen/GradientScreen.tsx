@@ -1,6 +1,6 @@
-import { ComponentProps } from "react";
+import type { ComponentProps } from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { Screen } from "@/components/Screen/Screen";
+import type { Screen } from "@/components/Screen/Screen";
 
 export const GradientScreen = ({ children, ...props }: ComponentProps<typeof Screen>) => {
 	return (

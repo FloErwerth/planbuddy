@@ -1,4 +1,4 @@
-import { Card as TamaCard, CardProps, styled } from "tamagui";
+import { Card as TamaCard, type CardProps, styled } from "tamagui";
 import * as Device from "expo-device";
 
 const isIos = Device.osName !== "Android";

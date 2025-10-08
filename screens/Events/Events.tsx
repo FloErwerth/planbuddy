@@ -1,5 +1,5 @@
 import { useAllEventsQuery } from "@/api/events/allEvents";
-import { AppEvent } from "@/api/events/types";
+import type { AppEvent } from "@/api/events/types";
 import { FriendRequestStatusEnum } from "@/api/friends/types";
 import { useAllParticipantsFromEventQuery } from "@/api/participants/allParticipants";
 import { useSingleParticipantQuery } from "@/api/participants/singleParticipant";
@@ -44,7 +44,7 @@ const AcceptEventInvite = ({ event }: AcceptEventInviteProps) => {
 			({ role, pushChannels, pushToken }) =>
 				(role === ParticipantRoleEnum.ADMIN || role === ParticipantRoleEnum.CREATOR) &&
 				pushChannels?.includes(NotificationChannelEnum.HOST_INVITATION_ANSWERED) &&
-				Boolean(pushToken)
+				Boolean(pushToken),
 		);
 
 		if (myParticipation && myParticipation.id) {
@@ -53,8 +53,8 @@ const AcceptEventInvite = ({ event }: AcceptEventInviteProps) => {
 			if (participantsToSendNotification && participantsToSendNotification.length > 0) {
 				await Promise.all(
 					participantsToSendNotification.map((participant) =>
-						sendGuestHasAnsweredInviteNotification(participant.pushToken!, FriendRequestStatusEnum.ACCEPTED, me?.firstName, eventName)
-					)
+						sendGuestHasAnsweredInviteNotification(participant.pushToken!, FriendRequestStatusEnum.ACCEPTED, me?.firstName, eventName),
+					),
 				);
 			}
 		}
@@ -96,7 +96,7 @@ const MappedEvents = ({ search, showPastEvents }: MappedEventsProps) => {
 	const now = new Date();
 	const filtered = events
 		?.filter((event) => {
-			let result: boolean = true;
+			let result = true;
 			const starting = new Date(event.startTime);
 
 			if (showPastEvents) {
@@ -144,7 +144,7 @@ export const Events = () => {
 				newSections.push({ date: date, data: [event] });
 				return newSections;
 			},
-			[] as { date: string; data: AppEvent[] }[]
+			[] as { date: string; data: AppEvent[] }[],
 		)
 		.sort((a, b) => {
 			const aDate = new Date(a.date).valueOf();
@@ -201,7 +201,7 @@ export const Events = () => {
 					</SizeableText>
 				)}
 				contentContainerStyle={{ gap: 16, paddingHorizontal: 16, paddingTop: 16 }}
-			></SectionList>
+			/>
 		</>
 	);
 };

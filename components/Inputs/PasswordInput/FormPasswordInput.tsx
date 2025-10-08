@@ -1,11 +1,11 @@
-import { Controller, FieldValues } from "react-hook-form";
-import { BaseFormFieldProps } from "@/components/FormFields/types";
+import { Controller, type FieldValues } from "react-hook-form";
+import type { BaseFormFieldProps } from "@/components/FormFields/types";
 import { FormField } from "@/components/FormFields/FormField";
 import { InputWithIcon } from "@/components/Inputs/InputWithIcon";
 import { useState } from "react";
 import { Eye, EyeClosed } from "@tamagui/lucide-icons";
 import { Pressable } from "react-native";
-import { InputProps } from "tamagui";
+import type { InputProps } from "tamagui";
 
 export const FormPasswordInput = <T extends FieldValues>({ name, label, ...inputProps }: BaseFormFieldProps<T> & InputProps) => {
 	const [showText, setShowText] = useState(false);

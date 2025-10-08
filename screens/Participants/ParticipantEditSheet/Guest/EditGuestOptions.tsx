@@ -5,8 +5,8 @@ import { Button } from "@/components/tamagui/Button";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 import { useSingleParticipantQuery } from "@/api/participants/singleParticipant";
 import { useGetUser } from "@/store/authentication";
-import { Participant, ParticipantRoleEnum } from "@/api/participants/types";
-import { User } from "@/api/user/types";
+import { type Participant, ParticipantRoleEnum } from "@/api/participants/types";
+import type { User } from "@/api/user/types";
 
 type ParticipantEditGuestOptionsProps = {
 	onRemoveGuest?: () => void;
@@ -40,7 +40,7 @@ export const EditGuestOptions = ({ onRemoveGuest }: ParticipantEditGuestOptionsP
 						<SizableText color="$background">{guest?.firstName} aus Event ausladen</SizableText>
 					</Button>
 				)}
-				<YStack gap="$2"></YStack>
+				<YStack gap="$2" />
 				<SizableText>Rolle</SizableText>
 				<PressableRow
 					onPress={toggleRole}

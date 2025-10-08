@@ -1,6 +1,6 @@
 import { useAllFriendsQuery } from "@/api/friends/allFriends";
 import { FriendRequestStatusEnum } from "@/api/friends/types";
-import { SizableText, View, ViewProps } from "tamagui";
+import { SizableText, View, type ViewProps } from "tamagui";
 
 export const PendingFriendRequestsDot = (props: ViewProps) => {
 	const { data: friends } = useAllFriendsQuery();

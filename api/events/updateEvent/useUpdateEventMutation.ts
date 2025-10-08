@@ -1,5 +1,5 @@
 import { EVENTS_QUERY_KEY, UPDATE_EVENT_MUTATION_KEY } from "@/api/events/constants";
-import { AppEvent } from "@/api/events/types";
+import type { AppEvent } from "@/api/events/types";
 import { updateEventSupabaseQuery } from "@/api/events/updateEvent/query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 

@@ -1,4 +1,4 @@
-import { BaseFriend } from "@/api/friends/types";
+import type { BaseFriend } from "@/api/friends/types";
 import { supabase } from "@/api/supabase";
 
 export const updateFriendSupabaseQuery = async (updatedFriend: Partial<BaseFriend>) => {

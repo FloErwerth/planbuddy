@@ -1,8 +1,8 @@
 import { Input } from "@/components/tamagui/Input";
 import { useRef, useState } from "react";
-import { AnimatePresence, debounce, getTokenValue, InputProps, Token, View } from "tamagui";
+import { AnimatePresence, debounce, getTokenValue, type InputProps, type Token, View } from "tamagui";
 import { Search, X } from "@tamagui/lucide-icons";
-import { TextInput, useWindowDimensions } from "react-native";
+import { type TextInput, useWindowDimensions } from "react-native";
 import { Button } from "@/components/tamagui/Button";
 import { useSetTimeout } from "@/hooks/useSetTimeout";
 
@@ -22,9 +22,8 @@ export const ScreenTopbarSearch = ({ onChangeText, top, ...props }: SearchInputP
 		setIsOpen((open) => {
 			if (open) {
 				return false;
-			} else {
-				return true;
 			}
+				return true;
 		});
 	};
 	return (

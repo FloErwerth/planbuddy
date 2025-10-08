@@ -20,14 +20,14 @@ export const friendSchema = baseFriendSchema.and(
 		const userId = user.id;
 
 		return { userId: user.id, ...user };
-	})
+	}),
 );
 
 export const friendsQuerySchema = baseFriendSchema.and(
 	object({
 		requesterId: userSchema.nullable(),
 		receiverId: userSchema.nullable(),
-	})
+	}),
 );
 
 export const allFriendsQueryResponseSchema = array(friendsQuerySchema);

@@ -1,7 +1,7 @@
-import { Avatar, AvatarProps } from "tamagui";
+import { Avatar, type AvatarProps } from "tamagui";
 import { User2 } from "@tamagui/lucide-icons";
 import { useProfileImageQuery } from "@/api/user/profilePicture";
-import { User } from "@/api/user/types";
+import type { User } from "@/api/user/types";
 
 type UserAvatarProps = Partial<Pick<User, "id">> & AvatarProps;
 export const UserAvatar = ({ id, ...props }: UserAvatarProps) => {

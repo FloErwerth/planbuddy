@@ -1,4 +1,4 @@
-import { ButtonProps, styled } from "tamagui";
+import { type ButtonProps, styled } from "tamagui";
 import { Button } from "@/components/tamagui/Button";
 import { Share } from "@tamagui/lucide-icons";
 

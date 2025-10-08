@@ -1,6 +1,6 @@
-import { BaseFormFieldProps } from "@/components/FormFields/types";
+import type { BaseFormFieldProps } from "@/components/FormFields/types";
 import { SizeableText } from "@/components/tamagui/SizeableText";
-import { FieldValues, useController } from "react-hook-form";
+import { type FieldValues, useController } from "react-hook-form";
 import { SizableText, View } from "tamagui";
 
 export const FormField = <T extends FieldValues>({ children, label, name, ...props }: BaseFormFieldProps<T>) => {

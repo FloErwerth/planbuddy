@@ -1,10 +1,10 @@
 import { SizableText, View } from "tamagui";
 import { Screen } from "@/components/Screen";
 import { FriendEntry } from "@/screens/AddFriendsScreen/FriendEntry";
-import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
+import { FlashList, type ListRenderItemInfo } from "@shopify/flash-list";
 import { UserSearchInput, useUserSearchContext } from "@/components/UserSearch";
 import { UserSearch } from "@tamagui/lucide-icons";
-import { Friend } from "@/api/friends/types";
+import type { Friend } from "@/api/friends/types";
 
 const containerStyle = { padding: 16, paddingBottom: 32 } as const;
 

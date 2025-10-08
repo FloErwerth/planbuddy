@@ -1,5 +1,5 @@
 import { FRIENDS_MUTATION_KEY, FRIENDS_QUERY_KEY } from "@/api/friends/constants";
-import { BaseFriend } from "@/api/friends/types";
+import type { BaseFriend } from "@/api/friends/types";
 import { updateFriendSupabaseQuery } from "@/api/friends/updateFriend/query";
 import { useGetUser } from "@/store/authentication";
 import { useQueryClient, useMutation } from "@tanstack/react-query";

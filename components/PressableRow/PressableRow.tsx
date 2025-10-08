@@ -1,6 +1,6 @@
-import { XStack, XStackProps } from "tamagui";
+import { XStack, type XStackProps } from "tamagui";
 import { Pressable } from "react-native";
-import { PropsWithChildren, ReactNode } from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 import { Card } from "@/components/tamagui/Card";
 
 type PressableRowProps = {

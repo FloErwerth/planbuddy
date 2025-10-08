@@ -12,13 +12,14 @@ type AvatarImagePickerProps = {
 	editable?: boolean;
 	onImageSelected?: (imageUri: string) => void;
 	onImageDeleted?: () => void;
+	image: string | null;
 };
 
-export const AvatarImagePicker = ({ editable = false, onImageSelected, onImageDeleted }: AvatarImagePickerProps) => {
+export const AvatarImagePicker = ({ image, editable = false, onImageSelected, onImageDeleted }: AvatarImagePickerProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [showSuccess, setShowSuccess] = useState(false);
 	const user = useGetUser();
-	const { data: image } = useProfileImageQuery(user?.id);
+	const { data: imageFromDatabase } = useProfileImageQuery(user?.id);
 
 	const pickImage = async () => {
 		try {
@@ -102,7 +103,7 @@ export const AvatarImagePicker = ({ editable = false, onImageSelected, onImageDe
 			)}
 			<View alignSelf="center" width="$10" height="$10" backgroundColor="white" borderRadius={100} elevationAndroid="$4">
 				<Avatar size="$10" circular>
-					<Avatar.Image source={{ uri: image }} />
+					<Avatar.Image source={{ uri: image || imageFromDatabase || "" }} />
 				</Avatar>
 			</View>
 		</View>

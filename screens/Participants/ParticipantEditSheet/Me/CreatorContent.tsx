@@ -1,4 +1,4 @@
-import { DialogProps, SizableText, View } from "tamagui";
+import { type DialogProps, SizableText, View } from "tamagui";
 import { Button } from "@/components/tamagui/Button";
 import { router } from "expo-router";
 import { Dialog } from "@/components/tamagui/Dialog";
@@ -60,10 +60,10 @@ export const CreatorContent = ({ onOpenChange }: CreatorContentProps) => {
 							Abbrechen
 						</Button>
 					</View>
-					<Dialog fullscreen open={chooseAdminSheetOpen} onOpenChange={setChooseAdminSheetOpen}></Dialog>
+					<Dialog fullscreen open={chooseAdminSheetOpen} onOpenChange={setChooseAdminSheetOpen} />
 				</>
 			) : (
-				<SizableText></SizableText>
+				<SizableText />
 			)}
 		</>
 	);

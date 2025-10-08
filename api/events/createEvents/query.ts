@@ -1,6 +1,6 @@
-import { AppEvent } from "@/api/events/types";
+import type { AppEvent } from "@/api/events/types";
 import { supabase } from "@/api/supabase";
-import { PostgrestSingleResponse } from "@supabase/supabase-js";
+import type { PostgrestSingleResponse } from "@supabase/supabase-js";
 
 /**
  * Creates an event in the database

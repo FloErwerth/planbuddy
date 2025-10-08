@@ -1,4 +1,4 @@
-import { Participant, ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
+import { type Participant, ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
 
 /**
  * Defaults:

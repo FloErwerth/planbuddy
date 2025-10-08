@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { onboardingSchema, OnboardingSchema } from "@/api/types";
+import { onboardingSchema, type OnboardingSchema } from "@/api/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Screen } from "@/components/Screen";
 import { AvatarImagePicker } from "@/components/AvatarImagePicker";

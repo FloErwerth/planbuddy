@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { View, ViewProps } from "tamagui";
+import { View, type ViewProps } from "tamagui";
 
 export const Shadow = (props: ViewProps) => {
 	return (

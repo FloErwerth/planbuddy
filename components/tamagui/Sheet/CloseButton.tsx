@@ -1,4 +1,4 @@
-import { ButtonProps } from "tamagui";
+import type { ButtonProps } from "tamagui";
 import { Button } from "@/components/tamagui/Button";
 
 export const CloseButton = (props: ButtonProps) => {

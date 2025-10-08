@@ -1,4 +1,4 @@
-import { User } from "@/api/user/types";
+import type { User } from "@/api/user/types";
 import { Button } from "@/components/tamagui/Button";
 import { Card } from "@/components/tamagui/Card";
 import { SizeableText } from "@/components/tamagui/SizeableText";

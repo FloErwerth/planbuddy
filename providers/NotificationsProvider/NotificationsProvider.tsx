@@ -1,5 +1,5 @@
 import { registerForPushNotificationsAsync } from "@/utils/notifications";
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
+import { createContext, type PropsWithChildren, useContext, useEffect, useState } from "react";
 import * as Notifications from "expo-notifications";
 import z from "zod";
 import { useUpdateUserMutation } from "@/api/user/updateUser";

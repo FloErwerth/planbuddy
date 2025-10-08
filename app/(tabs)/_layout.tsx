@@ -2,7 +2,7 @@ import { PendingFriendRequestsDot } from "@/components/PendingFriendRequestsDot/
 import { colors } from "@/providers/TamaguiProvider/tamaguiConfig";
 import { Home, Plus, User } from "@tamagui/lucide-icons";
 import { Tabs } from "expo-router";
-import { ComponentProps } from "react";
+import type { ComponentProps } from "react";
 import { View } from "tamagui";
 
 const screenOptions: ComponentProps<typeof Tabs>["screenOptions"] = {

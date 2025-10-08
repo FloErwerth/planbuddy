@@ -13,6 +13,8 @@ export const appEventSchema = z.object({
 	endTime: z.string(),
 });
 
+export const eventCreationSchema = appEventSchema.omit({ id: true, createdAt: true });
+
 export const eventsSchema = z.array(appEventSchema);
 
 export type AppEvent = z.infer<typeof appEventSchema>;

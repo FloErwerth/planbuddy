@@ -1,6 +1,6 @@
 import { useSearchParticipantsByStatus } from "@/api/participants/searchParticipantsByNameStatus";
-import { Participant, ParticipantStatus, ParticipantStatusEnum } from "@/api/participants/types";
-import { User } from "@/api/user/types";
+import { type Participant, type ParticipantStatus, ParticipantStatusEnum } from "@/api/participants/types";
+import type { User } from "@/api/user/types";
 import { BackButton } from "@/components/BackButton";
 import { PlusButton } from "@/components/PlusButton";
 import { Screen } from "@/components/Screen";
@@ -10,7 +10,7 @@ import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvi
 import { ParticipantRow } from "@/screens/Participants/Participant";
 import { ParticipantSkeleton } from "@/screens/Participants/ParticipantSkeleton";
 import { useGetUser } from "@/store/authentication";
-import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
+import { FlashList, type ListRenderItemInfo } from "@shopify/flash-list";
 import { Eye } from "@tamagui/lucide-icons";
 import { Redirect, router } from "expo-router";
 import { useState } from "react";

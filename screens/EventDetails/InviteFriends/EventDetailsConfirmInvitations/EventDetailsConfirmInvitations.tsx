@@ -1,7 +1,7 @@
 import { useEventQuery } from "@/api/events/event/useEventQuery";
 import { useCreateParticipationMutation } from "@/api/participants/createParticipant";
 import { useSingleParticipantQuery } from "@/api/participants/singleParticipant";
-import { ParticipantRoleEnum, ParticipantStatusEnum, Participant } from "@/api/participants/types";
+import { ParticipantRoleEnum, ParticipantStatusEnum, type Participant } from "@/api/participants/types";
 import { useAllUsersQuery } from "@/api/user/allUsers/useAllUsersQuery";
 import { BackButton } from "@/components/BackButton";
 import { Screen } from "@/components/Screen";
@@ -14,10 +14,10 @@ import { sendGuestInviteNotification } from "@/utils/notifications";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
 import React from "react";
-import { ListRenderItemInfo } from "@shopify/flash-list";
+import type { ListRenderItemInfo } from "@shopify/flash-list";
 import { View } from "tamagui";
 import { Button } from "@/components/tamagui/Button";
-import { User } from "@/api/user/types";
+import type { User } from "@/api/user/types";
 
 export const EventDetailsConfirmInvitations = () => {
 	const { usersToAdd, toggleGuest } = useEventDetailsContext();
@@ -33,8 +33,8 @@ export const EventDetailsConfirmInvitations = () => {
 		mutate(
 			usersAdded.map(
 				({ id }) =>
-					({ userId: id, eventId, role: ParticipantRoleEnum.GUEST, status: ParticipantStatusEnum.PENDING }) satisfies Omit<Participant, "id" | "createdAt">
-			)
+					({ userId: id, eventId, role: ParticipantRoleEnum.GUEST, status: ParticipantStatusEnum.PENDING }) satisfies Omit<Participant, "id" | "createdAt">,
+			),
 		);
 
 		router.replace("/eventDetails/participants");
@@ -43,7 +43,7 @@ export const EventDetailsConfirmInvitations = () => {
 				if (pushToken && me?.firstName && event?.name && pushChannels?.includes(NotificationChannelEnum.GUEST_INVITE)) {
 					return await sendGuestInviteNotification(pushToken, me.firstName, event.name);
 				}
-			})
+			}),
 		);
 	};
 

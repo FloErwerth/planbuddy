@@ -1,5 +1,5 @@
 import { SizableText, View } from "tamagui";
-import { ParticipantStatus, ParticipantStatusEnum } from "@/api/participants/types";
+import { type ParticipantStatus, ParticipantStatusEnum } from "@/api/participants/types";
 
 type AcceptanceStatusProps = {
 	status: ParticipantStatus;

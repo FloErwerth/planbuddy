@@ -1,5 +1,5 @@
-import { Dialog as TamaguiDialog, DialogProps as TamaguiDialogProps } from "tamagui";
-import { ComponentProps, ReactElement } from "react";
+import { Dialog as TamaguiDialog, type DialogProps as TamaguiDialogProps } from "tamagui";
+import type { ComponentProps, ReactElement } from "react";
 
 type DialogProps = TamaguiDialogProps & {
 	title?: ReactElement;

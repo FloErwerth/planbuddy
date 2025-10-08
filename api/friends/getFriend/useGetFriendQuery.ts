@@ -3,7 +3,7 @@ import { getFriendSupabaseQuery } from "@/api/friends/getFriend/query";
 import { friendsQuerySchema } from "@/api/friends/types";
 import { getFriendFromQuery } from "@/api/friends/utils/getFriendFromQuery";
 import { useGetUser } from "@/store/authentication";
-import { QueryOptions, useQuery } from "@tanstack/react-query";
+import { type QueryOptions, useQuery } from "@tanstack/react-query";
 
 export const useGetFriendQuery = (friendId: string, options: QueryOptions = {}) => {
 	const user = useGetUser();

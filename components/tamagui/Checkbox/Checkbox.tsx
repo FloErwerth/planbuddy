@@ -1,4 +1,4 @@
-import { AnimatePresence, Checkbox as TamaguiCheckbox, CheckboxProps as TamaguiCheckboxProps, XStack } from "tamagui";
+import { AnimatePresence, Checkbox as TamaguiCheckbox, type CheckboxProps as TamaguiCheckboxProps, XStack } from "tamagui";
 import { Check } from "@tamagui/lucide-icons";
 
 type CheckboxProps = TamaguiCheckboxProps & {
