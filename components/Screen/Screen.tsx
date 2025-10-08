@@ -1,6 +1,6 @@
-import { PropsWithChildren, ReactNode } from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { SizableText, View, ViewProps, XStack } from "tamagui";
+import { SizableText, View, type ViewProps, XStack } from "tamagui";
 
 type ScreenProps = PropsWithChildren &
 	ViewProps & {

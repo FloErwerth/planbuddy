@@ -16,7 +16,7 @@ export const EventCreationImage = ({ image, setImage }: EventCreationImageProps)
 			({
 				height: withTiming(image !== null ? 200 : 100),
 				justifyContent: "center",
-			}) as const
+			}) as const,
 	);
 
 	const pickImage = async () => {
@@ -39,7 +39,7 @@ export const EventCreationImage = ({ image, setImage }: EventCreationImageProps)
 				zIndex: 15,
 				right: 8,
 				top: 8,
-			}) as const
+			}) as const,
 	);
 
 	return (

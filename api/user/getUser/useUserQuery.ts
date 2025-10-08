@@ -1,11 +1,11 @@
+import { useQuery } from "@tanstack/react-query";
 import { USERS_QUERY_KEY } from "@/api/user/constants";
 import { getUserSupabaseQuery } from "@/api/user/getUser/query";
 import { userSchema } from "@/api/user/types";
-import { useGetUser } from "@/store/authentication";
-import { useQuery } from "@tanstack/react-query";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 export const useGetUserQuery = () => {
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 
 	return useQuery({
 		queryFn: async () => {

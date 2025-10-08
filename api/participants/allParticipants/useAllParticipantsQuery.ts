@@ -5,18 +5,18 @@ import { useQuery } from "@tanstack/react-query";
 import { array } from "zod";
 
 export const useAllParticipantsQuery = () => {
-  return useQuery({
-    queryFn: async () => {
-      const result = await allParticipantsSupabaseQuery();
+	return useQuery({
+		queryFn: async () => {
+			const result = await allParticipantsSupabaseQuery();
 
-      const parsedResult = array(participantSchema).safeParse(result.data);
+			const parsedResult = array(participantSchema).safeParse(result.data);
 
-      if (parsedResult.error) {
-        throw new Error(`Error in useAllParticipantsQuery: ${parsedResult.error.message}`);
-      }
+			if (parsedResult.error) {
+				throw new Error(`Error in useAllParticipantsQuery: ${parsedResult.error.message}`);
+			}
 
-      return parsedResult.data;
-    },
-    queryKey: [PARTICIPANT_QUERY_KEY],
-  });
+			return parsedResult.data;
+		},
+		queryKey: [PARTICIPANT_QUERY_KEY],
+	});
 };

@@ -1,4 +1,4 @@
-import { DialogProps, SizableText, Spinner, View } from "tamagui";
+import { type DialogProps, SizableText, Spinner, View } from "tamagui";
 import { Dialog } from "@/components/tamagui/Dialog";
 import { Button } from "@/components/tamagui/Button";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";

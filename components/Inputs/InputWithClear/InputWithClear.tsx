@@ -1,4 +1,4 @@
-import { InputWithIcon, InputWithIconProps } from "@/components/Inputs/InputWithIcon";
+import { InputWithIcon, type InputWithIconProps } from "@/components/Inputs/InputWithIcon";
 import { useState } from "react";
 import { X } from "@tamagui/lucide-icons";
 import { Pressable } from "react-native";

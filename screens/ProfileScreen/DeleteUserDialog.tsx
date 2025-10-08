@@ -1,15 +1,13 @@
-import { DialogProps, SizableText, View } from "tamagui";
-import { Dialog } from "@/components/tamagui/Dialog";
-import { useGetUser } from "@/store/authentication";
-import { Button } from "@/components/tamagui/Button";
-import { useLogout } from "@/api/supabase";
+import { type DialogProps, SizableText, View } from "tamagui";
 import { useAllEventsQuery } from "@/api/events/allEvents";
 import { useDeleteUserMutation } from "@/api/user/deleteUser";
+import { Button } from "@/components/tamagui/Button";
+import { Dialog } from "@/components/tamagui/Dialog";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 export const DeleteUserDialog = (props: DialogProps) => {
 	const { data: events } = useAllEventsQuery();
-	const user = useGetUser();
-	const logout = useLogout();
+	const { user, logout } = useAuthenticationContext();
 	const isCreator = events?.some((event) => event.creatorId === user?.id);
 	const { mutateAsync: deleteUserFromDB } = useDeleteUserMutation();
 

@@ -1,8 +1,8 @@
-import { Controller, FieldValues } from "react-hook-form";
-import { BaseFormFieldProps } from "@/components/FormFields/types";
+import { Controller, type FieldValues } from "react-hook-form";
+import type { BaseFormFieldProps } from "@/components/FormFields/types";
 import { FormField } from "@/components/FormFields/FormField";
 import { TextArea } from "@/components/tamagui/TextArea";
-import { ComponentProps } from "react";
+import type { ComponentProps } from "react";
 
 export const FormTextArea = <T extends FieldValues>({ name, label, ...textAreaProps }: BaseFormFieldProps<T> & ComponentProps<typeof TextArea>) => {
 	return (

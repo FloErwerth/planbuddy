@@ -5,8 +5,8 @@ import { ParticipantsAcceptanceStatus } from "@/screens/Participants/Participant
 import { Pressable } from "react-native";
 import { Ellipsis } from "@tamagui/lucide-icons";
 import { Card } from "@/components/tamagui/Card";
-import { Participant } from "@/api/participants/types";
-import { User } from "@/api/user/types";
+import type { Participant } from "@/api/participants/types";
+import type { User } from "@/api/user/types";
 
 type ParticipantProps = {
 	onOpenOptions?: () => void;

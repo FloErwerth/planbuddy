@@ -1,7 +1,6 @@
 import { Input as TamaguiInput, styled } from "tamagui";
 
 export const Input = styled(TamaguiInput, {
-	
 	color: "$color",
 	fontWeight: 400,
 	borderWidth: "$1",

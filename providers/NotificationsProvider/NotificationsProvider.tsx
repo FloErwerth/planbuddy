@@ -1,13 +1,9 @@
-import { registerForPushNotificationsAsync } from "@/utils/notifications";
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 import * as Notifications from "expo-notifications";
-import z from "zod";
+import { createContext, type PropsWithChildren, useContext, useEffect, useState } from "react";
+import type { NotificationChannel } from "@/api/user/types";
 import { useUpdateUserMutation } from "@/api/user/updateUser";
-import { useGetUser } from "@/store/authentication";
-
-export const NotificationChannelEnumDefinition = z.enum(["GUEST_INVITE", "GUEST_UPDATE", "GUEST_START", "HOST_INVITATION_ANSWERED"]);
-export const NotificationChannelEnum = NotificationChannelEnumDefinition.Enum;
-type NotificationChannel = z.infer<typeof NotificationChannelEnumDefinition>;
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
+import { registerForPushNotificationsAsync } from "@/utils/notifications";
 
 type NotificationContextType = {
 	token?: string;
@@ -32,7 +28,7 @@ export const useNotificationContext = () => {
 };
 
 export const NotificationsProvider = ({ children }: PropsWithChildren) => {
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 	const [notification, setNotification] = useState<Notifications.Notification | undefined>();
 	const { mutateAsync } = useUpdateUserMutation();
 
@@ -56,6 +52,7 @@ export const NotificationsProvider = ({ children }: PropsWithChildren) => {
 				success();
 			}
 		} catch (e) {
+			console.error(e);
 			error?.();
 		}
 	};

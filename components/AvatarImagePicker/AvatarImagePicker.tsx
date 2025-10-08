@@ -1,24 +1,21 @@
-import { useState } from "react";
-import * as ExpoImagePicker from "expo-image-picker";
-import { Avatar, Spinner, View } from "tamagui";
-import Animated, { BounceIn, FadeIn, ZoomOut } from "react-native-reanimated";
-import { Check, Edit3, Trash2 } from "@tamagui/lucide-icons";
+import { Check, Edit3, Trash2, User2 } from "@tamagui/lucide-icons";
 import { color } from "@tamagui/themes";
+import * as ExpoImagePicker from "expo-image-picker";
+import { useState } from "react";
+import Animated, { BounceIn, FadeIn, ZoomOut } from "react-native-reanimated";
+import { Avatar, Spinner, View } from "tamagui";
 import { Button } from "@/components/tamagui/Button";
-import { useGetUser } from "@/store/authentication";
-import { useProfileImageQuery } from "@/api/user/profilePicture";
 
 type AvatarImagePickerProps = {
 	editable?: boolean;
 	onImageSelected?: (imageUri: string) => void;
 	onImageDeleted?: () => void;
+	image?: string;
 };
 
-export const AvatarImagePicker = ({ editable = false, onImageSelected, onImageDeleted }: AvatarImagePickerProps) => {
+export const AvatarImagePicker = ({ image, editable = false, onImageSelected, onImageDeleted }: AvatarImagePickerProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [showSuccess, setShowSuccess] = useState(false);
-	const user = useGetUser();
-	const { data: image } = useProfileImageQuery(user?.id);
 
 	const pickImage = async () => {
 		try {
@@ -53,7 +50,7 @@ export const AvatarImagePicker = ({ editable = false, onImageSelected, onImageDe
 		return (
 			<View position="absolute">
 				<Animated.View entering={FadeIn.duration(200).delay(100)}>
-					{image !== null ? (
+					{image !== undefined ? (
 						<Trash2 zIndex={999} onPress={onImageDeleted} scale={0.75} color="$background" />
 					) : (
 						<Edit3 zIndex={999} onPress={pickImage} scale={0.75} color="$background" />
@@ -102,7 +99,10 @@ export const AvatarImagePicker = ({ editable = false, onImageSelected, onImageDe
 			)}
 			<View alignSelf="center" width="$10" height="$10" backgroundColor="white" borderRadius={100} elevationAndroid="$4">
 				<Avatar size="$10" circular>
-					<Avatar.Image source={{ uri: image }} />
+					{image && <Avatar.Image source={{ uri: image }} />}
+					<Avatar.Fallback backgroundColor="$background" alignItems="center" justifyContent="center">
+						<User2 />
+					</Avatar.Fallback>
 				</Avatar>
 			</View>
 		</View>

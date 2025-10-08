@@ -1,11 +1,11 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CREATE_PARTICIPANT_MUTATION_KEY, PARTICIPANT_QUERY_KEY } from "@/api/participants/constants";
 import { upsertParticipantSupabaseQuery } from "@/api/participants/createParticipant/query";
-import { Participant } from "@/api/participants/types";
-import { useGetUser } from "@/store/authentication";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { Participant } from "@/api/participants/types";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 export const useCreateParticipationMutation = () => {
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 	const queryClient = useQueryClient();
 
 	return useMutation({

@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { FRIENDS_MUTATION_KEY, FRIENDS_QUERY_KEY } from "@/api/friends/constants";
-import { useGetUser } from "@/store/authentication";
 import { addFriendSupabaseQuery } from "@/api/friends/addFriend/query";
 import { useAllFriendsQuery } from "@/api/friends/allFriends/useAllFriendsQuery";
+import { FRIENDS_MUTATION_KEY, FRIENDS_QUERY_KEY } from "@/api/friends/constants";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 export const useAddFriendMutation = () => {
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 	const queryClient = useQueryClient();
 	const { data } = useAllFriendsQuery();
 

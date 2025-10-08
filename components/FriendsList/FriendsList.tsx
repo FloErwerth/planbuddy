@@ -1,11 +1,11 @@
 import { useAllFriendsQuery } from "@/api/friends/allFriends";
-import { Friend, FriendRequestStatusEnum } from "@/api/friends/types";
+import { type Friend, FriendRequestStatusEnum } from "@/api/friends/types";
 import { SearchInput } from "@/components/SearchInput";
 import { Card } from "@/components/tamagui/Card";
 import { UserAvatar } from "@/components/UserAvatar";
 import { formatToDate } from "@/utils/date";
-import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
-import { FC, useState } from "react";
+import { FlashList, type ListRenderItemInfo } from "@shopify/flash-list";
+import { type FC, useState } from "react";
 import { Pressable, RefreshControl } from "react-native";
 import { SizableText, View, XStack } from "tamagui";
 

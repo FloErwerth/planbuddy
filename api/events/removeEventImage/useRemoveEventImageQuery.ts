@@ -12,7 +12,7 @@ export const useRemoveEventImageMutation = () => {
 	return useMutation({
 		mutationFn: async ({ eventId }: RemoveEventImageData) => {
 			if (!eventId) {
-				throw new Error(`Error in remove event image: event id was undefined or empty`);
+				throw new Error("Error in remove event image: event id was undefined or empty");
 			}
 			return await removeEventImageSupabaseQuery(eventId);
 		},

@@ -1,4 +1,4 @@
-import { ParticipantStatus } from "@/api/participants/types";
+import type { ParticipantStatus } from "@/api/participants/types";
 import { supabase } from "@/api/supabase";
 
 export const searchParticipantsByNameStatusSupabaseQuery = async (eventId: string, search: string, filters: ParticipantStatus[]) => {

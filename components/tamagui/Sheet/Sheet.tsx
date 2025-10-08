@@ -1,4 +1,4 @@
-import { Sheet as TamaSheet, SheetProps as TamaSheetProps, styled, View } from "tamagui";
+import { Sheet as TamaSheet, type SheetProps as TamaSheetProps, styled, View } from "tamagui";
 
 type SheetProps = {
 	hideHandle?: boolean;

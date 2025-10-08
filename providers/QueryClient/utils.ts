@@ -5,7 +5,7 @@ export const dateDeserializer = (_: string, value: unknown) => {
 		if (isoDateRegex.test(value)) {
 			const date = new Date(value);
 			// Check for invalid dates to avoid parsing non-date strings that match the regex
-			if (!isNaN(date.getTime())) {
+			if (!Number.isNaN(date.getTime())) {
 				return date;
 			}
 		}

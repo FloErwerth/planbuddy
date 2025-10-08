@@ -8,7 +8,7 @@ export const useDeleteParticipantMutation = () => {
 	return useMutation({
 		mutationFn: async (id: string) => {
 			if (!id) {
-				throw new Error(`Error in remove participant: participant id was undefined or empty`);
+				throw new Error("Error in remove participant: participant id was undefined or empty");
 			}
 			const result = await deleteParticipantSupabaseQuery(id);
 

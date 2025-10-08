@@ -15,7 +15,7 @@ export const useStartEndTimePickers = ({ startDate, endDate }: TimePickerProps =
 			const newEnd = new Date(now);
 			newEnd.setHours(now.getHours() + 3);
 			return endDate ?? newEnd;
-		})()
+		})(),
 	);
 
 	const handleOpenStartDate = () => {

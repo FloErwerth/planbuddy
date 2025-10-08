@@ -1,4 +1,4 @@
-import { Participant } from "@/api/participants/types";
+import type { Participant } from "@/api/participants/types";
 import { getDefaultParticipant, isParticipantWithIdAndUserId } from "@/api/participants/util";
 import { supabase } from "@/api/supabase";
 

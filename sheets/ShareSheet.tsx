@@ -1,5 +1,5 @@
 import { Sheet } from "@/components/tamagui/Sheet";
-import { SheetProps, SizableText, useWindowDimensions, View, XStack, YStack } from "tamagui";
+import { type SheetProps, SizableText, useWindowDimensions, View, XStack, YStack } from "tamagui";
 import { Card } from "@/components/tamagui/Card";
 import QRCode from "react-native-qrcode-svg";
 import { Pressable, Share } from "react-native";

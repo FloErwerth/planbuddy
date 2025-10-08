@@ -1,8 +1,8 @@
-import { DialogProps, SizableText, View } from "tamagui";
-import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
-import { Button } from "@/components/tamagui/Button";
 import { router } from "expo-router";
+import { type DialogProps, SizableText, View } from "tamagui";
 import { useDeleteParticipantMutation } from "@/api/participants/deleteParticipant";
+import { Button } from "@/components/tamagui/Button";
+import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 
 type GuestContentProps = Pick<DialogProps, "onOpenChange">;
 export const GuestContent = ({ onOpenChange }: GuestContentProps) => {
@@ -13,7 +13,7 @@ export const GuestContent = ({ onOpenChange }: GuestContentProps) => {
 		if (!editedGuest || !editedGuest.id) {
 			return;
 		}
-		await remove(editedGuest.id!);
+		await remove(editedGuest.id);
 		setEditedGuest(undefined);
 		router.replace("/(tabs)");
 	};

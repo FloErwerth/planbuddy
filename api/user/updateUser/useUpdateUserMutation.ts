@@ -1,11 +1,9 @@
-import { UPDATE_USERS_MUTATION_KEY, USERS_QUERY_KEY } from "@/api/user/constants";
-import { User } from "@/api/user/types";
-import { updateUserSupabaseQuery } from "@/api/user/updateUser/query";
-import { useGetUser } from "@/store/authentication";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UPDATE_USERS_MUTATION_KEY, USERS_QUERY_KEY } from "@/api/user/constants";
+import type { User } from "@/api/user/types";
+import { updateUserSupabaseQuery } from "@/api/user/updateUser/query";
 
 export const useUpdateUserMutation = () => {
-	const user = useGetUser();
 	const queryClient = useQueryClient();
 
 	return useMutation({

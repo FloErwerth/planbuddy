@@ -1,5 +1,5 @@
-import { Friend } from "@/api/friends/types";
-import { ParticipantStatus, ParticipantStatusEnum } from "@/api/participants/types";
+import type { Friend } from "@/api/friends/types";
+import { type ParticipantStatus, ParticipantStatusEnum } from "@/api/participants/types";
 
 export const sortFriendsToTop = (a: { status?: ParticipantStatus }, b: { status?: ParticipantStatus }) => {
 	if (a.status === ParticipantStatusEnum.ACCEPTED && b.status === ParticipantStatusEnum.ACCEPTED) {

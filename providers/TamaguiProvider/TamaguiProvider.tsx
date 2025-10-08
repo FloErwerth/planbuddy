@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 import { TamaguiProvider as TamaProvider } from "tamagui";
 import { tamaguiConfig } from "@/providers/TamaguiProvider/tamaguiConfig";
 

@@ -1,11 +1,11 @@
-import { createContext, ForwardedRef, forwardRef, useContext } from "react";
+import { createContext, type ForwardedRef, forwardRef, useContext } from "react";
 import {
 	// eslint-disable-next-line no-restricted-imports
 	KeyboardAwareScrollView as RNKeyboardAwareScrollView,
-	KeyboardAwareScrollViewProps as RNKeyboardAwareScrollViewProps,
+	type KeyboardAwareScrollViewProps as RNKeyboardAwareScrollViewProps,
 } from "react-native-keyboard-controller";
 // eslint-disable-next-line no-restricted-imports
-import { ScrollView } from "react-native";
+import type { ScrollView } from "react-native";
 import { styled } from "tamagui";
 
 const KeyboardAwareContext = createContext({});
@@ -26,7 +26,7 @@ export const useKeyboardAwareScrollView = () => {
 	if (!context) {
 		throw Error(
 			"The useKeyboardAwareScrollView hook must be used within the KeyboardAwareContext. " +
-				"This does mean that you used a component that should be within a KeyboardAwareScrollView but isn't."
+				"This does mean that you used a component that should be within a KeyboardAwareScrollView but isn't.",
 		);
 	}
 };

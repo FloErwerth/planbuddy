@@ -8,7 +8,7 @@ export type LoginSchema = z.infer<typeof loginSchema>;
 
 export const tokenSchema = array(string()).refine((val) => {
 	const combined = val.join("");
-	const parsedInt = parseInt(combined);
+	const parsedInt = Number.parseInt(combined);
 	return val.length === 6 && !Number.isNaN(parsedInt);
 });
 

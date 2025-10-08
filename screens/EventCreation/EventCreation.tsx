@@ -16,7 +16,7 @@ import { BackButton } from "@/components/BackButton";
 import { useCreateEventMutation } from "@/api/events/createEvents";
 import { useEventImageQuery } from "@/api/events/eventImage";
 import { useRemoveEventImageMutation } from "@/api/events/removeEventImage";
-import { AppEvent, appEventSchema } from "@/api/events/types";
+import { type AppEvent, eventCreationSchema } from "@/api/events/types";
 import { useUpdateEventMutation } from "@/api/events/updateEvent";
 import { useUploadEventImageMutation } from "@/api/events/uploadEventImage";
 
@@ -40,9 +40,8 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 	} = useStartEndTimePickers(event && { startDate: new Date(event.startTime), endDate: new Date(event.endTime) });
 
 	const form = useForm({
-		resolver: zodResolver(appEventSchema),
+		resolver: zodResolver(eventCreationSchema),
 		defaultValues: {
-			id: event?.id,
 			creatorId: event?.creatorId,
 			description: event?.description,
 			link: event?.link,
@@ -55,8 +54,6 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 
 	const endTimeError = form.formState.errors.endTime;
 
-	const [isLoading, setIsLoading] = useState(false);
-
 	const { mutateAsync: createEvent } = useCreateEventMutation();
 	const { mutateAsync: uploadEventImage } = useUploadEventImageMutation();
 	const { mutateAsync: updateEvent } = useUpdateEventMutation();
@@ -66,19 +63,23 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 
 	const handleCreateEvent = async (data: AppEvent) => {
 		try {
-			setIsLoading(true);
 			let createdEvent: Awaited<ReturnType<typeof createEvent>>;
+			// update the existing event
+			console.log(event);
 			if (event) {
 				await updateEvent({
 					...data,
+					id: event.id,
+					createdAt: event.createdAt,
 					startTime: startDate.toISOString(),
 					endTime: endDate.toISOString(),
 				});
 				const isSameImage = imageToUpload === eventImage;
 				if (!isSameImage) {
+					console.log(imageToUpload);
 					if (imageToUpload) {
 						await uploadEventImage({
-							eventId: data.id!,
+							eventId: event.id,
 							image: imageToUpload,
 						});
 					} else if (eventImage) {
@@ -86,8 +87,9 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 					}
 				}
 			} else {
+				// create a new event
 				createdEvent = await createEvent({
-					event: data,
+					event: { ...data, startTime: startDate.toISOString(), endTime: endDate.toISOString() },
 				});
 				if (!createdEvent) {
 					throw new Error("Event creation failed");
@@ -105,13 +107,11 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 			});
 		} catch (e) {
 			console.error(e);
-		} finally {
-			setIsLoading(false);
 		}
 	};
 
 	const hasErrors = Object.values(form.formState.errors).length > 0;
-
+	console.log(form.formState.errors);
 	return (
 		<>
 			<ScrollableScreen paddingBottom="$12" back={event && <BackButton />} title={event ? "Event bearbeiten" : "Event erstellen"}>
@@ -180,6 +180,7 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 				</View>
 			</ScrollableScreen>
 			<Button
+				debounceDisabled
 				disabled={hasErrors}
 				position="absolute"
 				bottom="$4"
@@ -192,7 +193,7 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 						...data,
 						startTime: startDate.valueOf().toString(),
 						endTime: endDate.valueOf().toString(),
-					})
+					}),
 				)}
 			>
 				{event ? "Event aktualisieren" : "Event erstellen"}

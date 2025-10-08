@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { LayoutChangeEvent } from "react-native";
+import type { LayoutChangeEvent } from "react-native";
 import Animated, { useAnimatedStyle, withTiming } from "react-native-reanimated";
-import { View, ViewProps } from "tamagui";
+import { View, type ViewProps } from "tamagui";
 
 type HeightTransitionProps = {
 	open: boolean;
@@ -22,6 +22,7 @@ export const HeightTransition = ({ children, open, enableHeightChange = true, ..
 		setContainerHeight(measurement.nativeEvent.layout.height);
 	};
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: this would lead to infinite re-renders
 	useEffect(() => {
 		if (open) {
 			setRenderChildren(true);

@@ -1,12 +1,10 @@
 import { INSERT_USERS_MUTATION_KEY, USERS_QUERY_KEY } from "@/api/user/constants";
 import { insertUserSupabaseQuery } from "@/api/user/insertUser/query";
-import { User } from "@/api/user/types";
-import { useGetUser } from "@/store/authentication";
+import type { User } from "@/api/user/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useInsertUserMutation = () => {
 	const queryClient = useQueryClient();
-	const user = useGetUser();
 	return useMutation({
 		mutationFn: async (insertedUser: Partial<User>) => {
 			const result = await insertUserSupabaseQuery(insertedUser);

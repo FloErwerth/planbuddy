@@ -1,8 +1,8 @@
 import { useSingleParticipantQuery } from "@/api/participants/singleParticipant/useSingleParticipant";
-import { useGetUser } from "@/store/authentication";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 export const useMe = (eventId: string) => {
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 	const { data: participant } = useSingleParticipantQuery(eventId, user.id);
 
 	return participant;

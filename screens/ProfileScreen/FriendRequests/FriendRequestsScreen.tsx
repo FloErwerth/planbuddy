@@ -1,19 +1,19 @@
-import { useState } from "react";
-import { router } from "expo-router";
-import { Card } from "@/components/tamagui/Card";
-import { SizableText, View, XStack } from "tamagui";
-import { UserAvatar } from "@/components/UserAvatar";
-import { formatToDate } from "@/utils/date";
-import { Button } from "@/components/tamagui/Button";
 import { Check, X } from "@tamagui/lucide-icons";
-import { Screen } from "@/components/Screen";
-import { BackButton } from "@/components/BackButton";
-import { ScrollView } from "@/components/tamagui/ScrollView";
-import { Dialog } from "@/components/tamagui/Dialog";
-import { usePendingFriends } from "@/hooks/friends/usePendingFriends";
+import { router } from "expo-router";
+import { useState } from "react";
+import { SizableText, View, XStack } from "tamagui";
 import { useRemoveFriendMutation } from "@/api/friends/removeFriend";
+import { type Friend, FriendRequestStatusEnum } from "@/api/friends/types";
 import { useUpdateFriendMutation } from "@/api/friends/updateFriend";
-import { Friend, FriendRequestStatusEnum } from "@/api/friends/types";
+import { BackButton } from "@/components/BackButton";
+import { Screen } from "@/components/Screen";
+import { Button } from "@/components/tamagui/Button";
+import { Card } from "@/components/tamagui/Card";
+import { Dialog } from "@/components/tamagui/Dialog";
+import { ScrollView } from "@/components/tamagui/ScrollView";
+import { UserAvatar } from "@/components/UserAvatar";
+import { usePendingFriends } from "@/hooks/friends/usePendingFriends";
+import { formatToDate } from "@/utils/date";
 
 export const FriendRequestsScreen = () => {
 	const pendingFriends = usePendingFriends();
@@ -48,7 +48,7 @@ export const FriendRequestsScreen = () => {
 						</View>
 					</XStack>
 					<XStack gap="$2">
-						<Button onPress={() => acceptFriendRequest(pending.id!)} size="$2" backgroundColor="$color.green8Light">
+						<Button onPress={() => acceptFriendRequest(pending.id)} size="$2" backgroundColor="$color.green8Light">
 							<Check size="$1" />
 						</Button>
 						<Button onPress={() => setUserToDecline(pending)} size="$2" backgroundColor="$color.red8Light">
@@ -67,7 +67,7 @@ export const FriendRequestsScreen = () => {
 
 	return (
 		<>
-			<Screen back={<BackButton href="/profile" />} title="Freundschaftsanfragen"></Screen>
+			<Screen back={<BackButton href="/profile" />} title="Freundschaftsanfragen" />
 			<ScrollView contentContainerStyle={{ padding: "$4" }}>{mapped}</ScrollView>
 			<Dialog
 				open={!!userToDecline}

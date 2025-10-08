@@ -1,13 +1,13 @@
-import { DialogProps, SizableText, View } from "tamagui";
-import { Button } from "@/components/tamagui/Button";
 import { router } from "expo-router";
-import { Dialog } from "@/components/tamagui/Dialog";
-import { useMe } from "@/api/hooks";
-import { ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
-import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 import { useState } from "react";
-import { useAllParticipantsFromEventQuery } from "@/api/participants/allParticipants";
+import { type DialogProps, SizableText, View } from "tamagui";
 import { useDeleteEventMutation } from "@/api/events/deleteEvent";
+import { useMe } from "@/api/hooks";
+import { useAllParticipantsFromEventQuery } from "@/api/participants/allParticipants/useAllParticipantsFromEventQuery";
+import { ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
+import { Button } from "@/components/tamagui/Button";
+import { Dialog } from "@/components/tamagui/Dialog";
+import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 
 type CreatorContentProps = Pick<DialogProps, "onOpenChange">;
 
@@ -60,10 +60,10 @@ export const CreatorContent = ({ onOpenChange }: CreatorContentProps) => {
 							Abbrechen
 						</Button>
 					</View>
-					<Dialog fullscreen open={chooseAdminSheetOpen} onOpenChange={setChooseAdminSheetOpen}></Dialog>
+					<Dialog fullscreen open={chooseAdminSheetOpen} onOpenChange={setChooseAdminSheetOpen} />
 				</>
 			) : (
-				<SizableText></SizableText>
+				<SizableText />
 			)}
 		</>
 	);

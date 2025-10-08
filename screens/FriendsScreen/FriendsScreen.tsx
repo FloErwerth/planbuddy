@@ -6,7 +6,7 @@ import { AddFriendsSheet } from "@/sheets/AddFriendsSheet";
 import { ManageFriendSheet } from "@/sheets/ManageFriendSheet";
 import { FriendsList } from "@/components/FriendsList";
 import { FriendAcceptanceStatus } from "@/screens/FriendsScreen/FriendAcceptanceStatus";
-import { Friend } from "@/api/friends/types";
+import type { Friend } from "@/api/friends/types";
 
 export const FriendsScreen = () => {
 	const [editedFriend, setEditedFriend] = useState<Friend | undefined>(undefined);
@@ -14,7 +14,7 @@ export const FriendsScreen = () => {
 
 	return (
 		<>
-			<Screen back={<BackButton />} title="Deine Freunde" action={<PlusButton onPress={() => setFriendsSheetOpen(true)} />}></Screen>
+			<Screen back={<BackButton />} title="Deine Freunde" action={<PlusButton onPress={() => setFriendsSheetOpen(true)} />} />
 			<FriendsList
 				onFriendPressed={setEditedFriend}
 				Action={({ friend }) => <FriendAcceptanceStatus status={friend.status} openOptions={() => setEditedFriend(friend)} />}

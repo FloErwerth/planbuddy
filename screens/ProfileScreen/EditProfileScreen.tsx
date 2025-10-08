@@ -1,24 +1,26 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Trash } from "@tamagui/lucide-icons";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { onboardingSchema, OnboardingSchema } from "@/api/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Screen } from "@/components/Screen";
-import { AvatarImagePicker } from "@/components/AvatarImagePicker";
 import { SizableText, View } from "tamagui";
-import { FormInput } from "@/components/FormFields";
-import { Button } from "@/components/tamagui/Button";
-import { BackButton } from "@/components/BackButton";
-import { Trash } from "@tamagui/lucide-icons";
-import { Dialog } from "@/components/tamagui/Dialog";
+import { type OnboardingSchema, onboardingSchema } from "@/api/types";
+import { useDeleteProfilePictureMutation } from "@/api/user/deleteUserProfile";
 import { useGetUserQuery } from "@/api/user/getUser";
+import { useProfileImageQuery } from "@/api/user/profilePicture";
 import { useUpdateUserMutation } from "@/api/user/updateUser";
 import { useUploadProfilePictureMutation } from "@/api/user/uploadProfilePicture";
-import { useDeleteProfilePictureMutation } from "@/api/user/deleteUserProfile";
+import { AvatarImagePicker } from "@/components/AvatarImagePicker";
+import { BackButton } from "@/components/BackButton";
+import { FormInput } from "@/components/FormFields";
+import { Screen } from "@/components/Screen";
+import { Button } from "@/components/tamagui/Button";
+import { Dialog } from "@/components/tamagui/Dialog";
 
 export const EditProfileScreen = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { data: user } = useGetUserQuery();
 	const { mutate: updateUser } = useUpdateUserMutation();
+	const { data: userImage } = useProfileImageQuery(user?.id);
 	const { mutate: updateImage } = useUploadProfilePictureMutation();
 	const { mutateAsync: deleteImage } = useDeleteProfilePictureMutation();
 	const [deleteUserModalOpen, setDeleteUserModalOpen] = useState(false);
@@ -59,7 +61,7 @@ export const EditProfileScreen = () => {
 				title="Profil bearbeiten"
 			>
 				<View flex={1} gap="$4">
-					<AvatarImagePicker editable onImageDeleted={handleImageDeletion} onImageSelected={updateImage} />
+					<AvatarImagePicker editable onImageDeleted={handleImageDeletion} image={userImage || undefined} onImageSelected={updateImage} />
 
 					<FormProvider {...form}>
 						<FormInput label="Email" name="email" editable={false} disabled value={user?.email} />

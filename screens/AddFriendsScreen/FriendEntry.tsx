@@ -1,17 +1,14 @@
-import { useAddFriendMutation } from "@/api/friends/addFriend/useAddFriendMutation";
+import { UserPlus } from "@tamagui/lucide-icons";
 import { memo, useState } from "react";
 import { SizableText, Spinner, View, XStack } from "tamagui";
+import { useAddFriendMutation } from "@/api/friends/addFriend/useAddFriendMutation";
+import { type Friend, FriendRequestStatusEnum } from "@/api/friends/types";
 import { Button } from "@/components/tamagui/Button";
-import { UserPlus } from "@tamagui/lucide-icons";
 import { Card } from "@/components/tamagui/Card";
 import { UserAvatar } from "@/components/UserAvatar";
-import { useGetUser } from "@/store/authentication";
-import { Friend, FriendRequestStatusEnum } from "@/api/friends/types";
 
 type SearchAcceptanceStatusProps = { friend: Friend };
 const SearchAcceptanceStatus = ({ friend: { status } }: SearchAcceptanceStatusProps) => {
-	const user = useGetUser();
-
 	if (status === FriendRequestStatusEnum.PENDING) {
 		return (
 			<View padding="$1.5" borderRadius="$12" backgroundColor="$color.green8Light">

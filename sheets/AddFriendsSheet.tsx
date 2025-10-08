@@ -1,4 +1,4 @@
-import { SheetProps } from "tamagui";
+import type { SheetProps } from "tamagui";
 import { AddFriendsScreen } from "@/screens/AddFriendsScreen";
 import { Sheet } from "@/components/tamagui/Sheet";
 

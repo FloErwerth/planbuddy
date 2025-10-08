@@ -1,7 +1,7 @@
-import { useGetUser } from "@/store/authentication";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 export const useIsMe = (participantUserId?: string) => {
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 
 	if (!user) {
 		return false;

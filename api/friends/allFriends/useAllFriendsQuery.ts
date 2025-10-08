@@ -1,11 +1,11 @@
+import { useQuery } from "@tanstack/react-query";
 import { allFriendsSupabaseQuery } from "@/api/friends/allFriends/query";
 import { FRIENDS_QUERY_KEY } from "@/api/friends/constants";
 import { allFriendsQueryResponseSchema } from "@/api/friends/types";
 import { getFriendFromQuery } from "@/api/friends/utils/getFriendFromQuery";
-import { useGetUser } from "@/store/authentication";
-import { useQuery } from "@tanstack/react-query";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 export const useAllFriendsQuery = () => {
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 
 	return useQuery({
 		queryFn: async () => {

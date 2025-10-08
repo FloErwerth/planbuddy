@@ -1,5 +1,5 @@
-import { PropsWithChildren, ReactNode } from "react";
-import { ButtonProps, GetThemeValueForKey } from "tamagui";
+import type { PropsWithChildren, ReactNode } from "react";
+import type { ButtonProps, GetThemeValueForKey } from "tamagui";
 import { Button } from "../tamagui/Button";
 
 type TogglePillButtonProps = {

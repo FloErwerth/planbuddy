@@ -1,7 +1,7 @@
 import { PARTICIPANT_QUERY_KEY } from "@/api/participants/constants";
 import { searchParticipantsByNameStatusSupabaseQuery } from "@/api/participants/searchParticipantsByNameStatus/query";
 import { searchParticipantsByStatusNameSchema } from "@/api/participants/searchParticipantsByNameStatus/types";
-import { ParticipantStatus } from "@/api/participants/types";
+import type { ParticipantStatus } from "@/api/participants/types";
 import { useQuery } from "@tanstack/react-query";
 
 export const useSearchParticipantsByStatus = (eventId?: string, filters: ParticipantStatus[] = [], search = "") => {

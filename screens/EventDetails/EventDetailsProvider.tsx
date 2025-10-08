@@ -1,8 +1,8 @@
-import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { router, useGlobalSearchParams } from "expo-router";
-import { Participant } from "@/api/participants/types";
+import { createContext, type PropsWithChildren, useContext, useState } from "react";
 import { useCreateParticipationMutation } from "@/api/participants/createParticipant";
-import { User } from "@/api/user/types";
+import type { Participant } from "@/api/participants/types";
+import type { User } from "@/api/user/types";
 
 type EventDetailsContextType =
 	| {
@@ -60,12 +60,12 @@ export const EventDetailsProvider = ({ children }: PropsWithChildren) => {
 		addFriendsToEvent(id);
 	};
 
-	const handleInviteUsers = async () => {
+	const _handleInviteUsers = async () => {
 		await mutateAsync(
 			Array.from(usersToAdd).map((user) => ({
 				eventId,
 				userId: user,
-			}))
+			})),
 		);
 		router.replace("/eventDetails/participants");
 	};

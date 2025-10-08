@@ -1,11 +1,11 @@
-import { EVENTS_QUERY_KEY } from "@/api/events/constants";
-import { allEventsSupabaseQuery } from "@/api/events/allEvents/query";
-import { useGetUser } from "@/store/authentication";
 import { useQuery } from "@tanstack/react-query";
+import { allEventsSupabaseQuery } from "@/api/events/allEvents/query";
 import { allEventsSchema } from "@/api/events/allEvents/types";
+import { EVENTS_QUERY_KEY } from "@/api/events/constants";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 export const useAllEventsQuery = () => {
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 
 	return useQuery({
 		queryFn: async () => {
