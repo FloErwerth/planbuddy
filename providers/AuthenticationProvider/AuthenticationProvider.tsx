@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { SplashScreen } from "expo-router";
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from "react";
 import { supabase } from "@/api/supabase";
@@ -7,6 +8,7 @@ import { type User, userSchema } from "@/api/user/types";
 type AuthenticationContextType = {
 	isAuthenticatedWithSupabase: boolean;
 	user: User;
+	logout: () => void;
 	setUser: (user: User | null) => void;
 	setIsAuthenticatedWithSupabase: (isAuthenticatedWithSupabase: boolean) => void;
 	recheckLoginState: () => void;
@@ -25,10 +27,23 @@ export const useAuthenticationContext = () => {
 export const AuthenticationProvider = ({ children }: PropsWithChildren) => {
 	const [isAuthenticatedWithSupabase, setIsAuthenticatedWithSupabase] = useState(false);
 	const [user, setUser] = useState<User | null>(null);
+	const queryClient = useQueryClient();
 
 	const resetAuthenticationFields = () => {
 		setIsAuthenticatedWithSupabase(false);
 		setUser(null);
+	};
+
+	const logout = async () => {
+		const result = await supabase.auth.signOut();
+
+		if (result.error) {
+			// login failed
+			return;
+		}
+
+		resetAuthenticationFields;
+		await queryClient.invalidateQueries();
 	};
 
 	const recheckLoginState = () => {
@@ -47,6 +62,9 @@ export const AuthenticationProvider = ({ children }: PropsWithChildren) => {
 				} else {
 					setUser(null);
 				}
+			})
+			.catch((e) => {
+				console.log(e);
 			})
 			.finally(() => {
 				setTimeout(() => {
@@ -68,7 +86,7 @@ export const AuthenticationProvider = ({ children }: PropsWithChildren) => {
 
 	return (
 		// @ts-expect-error user is not null, since we have proteced routes
-		<AuthenticationContext.Provider value={{ setUser, isAuthenticatedWithSupabase, user, setIsAuthenticatedWithSupabase, recheckLoginState }}>
+		<AuthenticationContext.Provider value={{ setUser, isAuthenticatedWithSupabase, logout, user, setIsAuthenticatedWithSupabase, recheckLoginState }}>
 			{children}
 		</AuthenticationContext.Provider>
 	);

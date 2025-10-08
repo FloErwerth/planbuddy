@@ -3,6 +3,7 @@ import { useAllParticipantsQuery } from "@/api/participants/allParticipants/useA
 import { ParticipantRoleEnum } from "@/api/participants/types";
 import { Card } from "@/components/tamagui/Card";
 import { SizeableText } from "@/components/tamagui/SizeableText";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 export const ProfileStatistics = () => {
 	const { data: participants } = useAllParticipantsQuery();

@@ -13,6 +13,7 @@ import { PressableRow } from "@/components/PressableRow";
 import { Screen, ScrollableScreen } from "@/components/Screen";
 import { Button } from "@/components/tamagui/Button";
 import { Separator } from "@/components/tamagui/Separator";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 import { ShareSheet } from "@/sheets/ShareSheet";
 import { formatToDate, formatToTime } from "@/utils/date";

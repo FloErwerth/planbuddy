@@ -1,3 +1,5 @@
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
+
 export const useIsMe = (participantUserId?: string) => {
 	const { user } = useAuthenticationContext();
 

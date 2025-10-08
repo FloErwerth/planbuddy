@@ -1,5 +1,5 @@
-import { Stack } from "expo-router";
 import type { NativeStackNavigationOptions } from "@react-navigation/native-stack";
+import { Stack } from "expo-router";
 import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 const defaultOptions: NativeStackNavigationOptions = {
@@ -8,6 +8,7 @@ const defaultOptions: NativeStackNavigationOptions = {
 
 export default function LoginLayout() {
 	const { isAuthenticatedWithSupabase, user } = useAuthenticationContext();
+	console.log(isAuthenticatedWithSupabase, user);
 	return (
 		<Stack>
 			<Stack.Protected guard={!isAuthenticatedWithSupabase && user === null}>

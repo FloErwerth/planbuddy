@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DELETE_USER_MUTATION } from "@/api/user/constants";
 import { deleteUserSupabaseQuery } from "@/api/user/deleteUser/query";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 export const useDeleteUserMutation = () => {
 	const queryClient = useQueryClient();

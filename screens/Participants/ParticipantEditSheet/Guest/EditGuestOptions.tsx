@@ -5,6 +5,7 @@ import type { User } from "@/api/user/types";
 import { PressableRow } from "@/components/PressableRow";
 import { Button } from "@/components/tamagui/Button";
 import { Checkbox } from "@/components/tamagui/Checkbox";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 
 type ParticipantEditGuestOptionsProps = {

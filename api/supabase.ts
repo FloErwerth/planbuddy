@@ -1,10 +1,6 @@
-import { createClient } from "@supabase/supabase-js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createClient } from "@supabase/supabase-js";
 import { AppState, Platform } from "react-native";
-import { router } from "expo-router";
-import { useResetUser } from "@/store/authentication";
-import { useQueryClient } from "@tanstack/react-query";
-import { useLoginContext } from "@/providers/LoginProvider";
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_PROJECT_URL ?? "";
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_API_KEY ?? "";
@@ -30,23 +26,3 @@ AppState.addEventListener("change", (state) => {
 		void supabase.auth.stopAutoRefresh();
 	}
 });
-
-export const useLogout = () => {
-	const resetUser = useResetUser();
-	const queryClient = useQueryClient();
-	const { resetTokenPage, setEmail } = useLoginContext();
-	return async () => {
-		const result = await supabase.auth.signOut();
-
-		if (result.error) {
-			// login failed
-			return;
-		}
-
-		resetTokenPage();
-		resetUser();
-		setEmail("");
-		router.replace("/");
-		await queryClient.invalidateQueries();
-	};
-};

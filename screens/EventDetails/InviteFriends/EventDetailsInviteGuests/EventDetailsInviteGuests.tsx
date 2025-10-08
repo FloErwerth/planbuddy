@@ -10,7 +10,7 @@ import { Screen } from "@/components/Screen";
 import { SearchInput } from "@/components/SearchInput";
 import { Button } from "@/components/tamagui/Button";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
-import { EventDetailsGuest, type EventDetailsGuestProps } from "@/screens/EventDetails/InviteFriends/EventDetailsInviteGuests";
+import { EventDetailsGuest, type EventDetailsGuestProps } from "@/screens/EventDetails/InviteFriends/EventDetailsInviteGuests/EventDetailsGuest";
 
 export const EventDetailsInviteGuests = () => {
 	const [filter, setFilter] = useState<string>();

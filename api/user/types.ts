@@ -1,6 +1,10 @@
-import { NotificationChannelEnumDefinition } from "@/providers/NotificationsProvider";
-import { zodNullToUndefined } from "@/utils/zodNullToUndefined";
 import z, { object } from "zod";
+
+export const NotificationChannelEnumDefinition = z.enum(["GUEST_INVITE", "GUEST_UPDATE", "GUEST_START", "HOST_INVITATION_ANSWERED"]);
+export const NotificationChannelEnum = NotificationChannelEnumDefinition.Enum;
+export type NotificationChannel = z.infer<typeof NotificationChannelEnumDefinition>;
+
+import { zodNullToUndefined } from "@/utils/zodNullToUndefined";
 
 export const userSchema = object({
 	id: z.string(),

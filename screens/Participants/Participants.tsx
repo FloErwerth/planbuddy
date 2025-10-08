@@ -12,6 +12,7 @@ import { PlusButton } from "@/components/PlusButton";
 import { Screen } from "@/components/Screen";
 import { SearchInput } from "@/components/SearchInput";
 import { ToggleButton } from "@/components/TogglePillButton";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 import { ParticipantRow } from "@/screens/Participants/Participant";
 import { ParticipantSkeleton } from "@/screens/Participants/ParticipantSkeleton";

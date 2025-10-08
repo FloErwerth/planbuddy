@@ -1,24 +1,24 @@
-import { Screen } from "@/components/Screen";
-import { SizableText, Spinner, View, XStack } from "tamagui";
-import { UserAvatar } from "@/components/UserAvatar";
-import { PressableRow } from "@/components/PressableRow";
-import { router } from "expo-router";
 import { Bell, ChevronRight, Pencil, Users } from "@tamagui/lucide-icons";
-import { FriendRequestRow } from "@/screens/ProfileScreen/FriendRequests";
-import { useLogout } from "@/api/supabase";
-import { Button } from "@/components/tamagui/Button";
-import packageJson from "@/package.json";
-import { Separator } from "@/components/tamagui/Separator";
-import { Pressable } from "react-native";
+import { router } from "expo-router";
 import { useState } from "react";
-import { DeleteUserDialog } from "./DeleteUserDialog";
+import { Pressable } from "react-native";
+import { SizableText, Spinner, View, XStack } from "tamagui";
 import { useGetUserQuery } from "@/api/user/getUser";
+import { PressableRow } from "@/components/PressableRow";
+import { Screen } from "@/components/Screen";
+import { Button } from "@/components/tamagui/Button";
+import { Separator } from "@/components/tamagui/Separator";
+import { UserAvatar } from "@/components/UserAvatar";
+import packageJson from "@/package.json";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
+import { FriendRequestRow } from "@/screens/ProfileScreen/FriendRequests";
 import { ProfileStatistics } from "@/screens/ProfileScreen/ProfileStatistics/ProfileStatistics";
+import { DeleteUserDialog } from "./DeleteUserDialog";
 
 export const ProfileScreen = () => {
 	const { data: user, isLoading: isLoadingProfile } = useGetUserQuery();
-	const logout = useLogout();
 	const [deleteUserDialogOpen, setDeleteUserDialogOpen] = useState(false);
+	const { logout } = useAuthenticationContext();
 
 	if (isLoadingProfile) {
 		return (

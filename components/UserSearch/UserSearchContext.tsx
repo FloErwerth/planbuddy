@@ -1,14 +1,14 @@
-import { createContext, type PropsWithChildren, useContext, useMemo, useState } from "react";
-import { supabase } from "@/api/supabase";
 import { useQuery } from "@tanstack/react-query";
-import { array } from "zod";
+import { createContext, type PropsWithChildren, useContext, useMemo, useState } from "react";
 import { debounce } from "tamagui";
+import { array } from "zod";
 import { FRIENDS_QUERY_KEY } from "@/api/friends/constants";
-import { useUser } from "@/store/authentication";
-import { USERS_QUERY_KEY } from "@/api/user/constants";
-import { userSchema } from "@/api/user/types";
 import { allFriendsQueryResponseSchema, type Friend } from "@/api/friends/types";
 import { getFriendFromQuery } from "@/api/friends/utils/getFriendFromQuery";
+import { supabase } from "@/api/supabase";
+import { USERS_QUERY_KEY } from "@/api/user/constants";
+import { userSchema } from "@/api/user/types";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 type SearchContextType = {
 	users: Friend[] | undefined;
@@ -34,7 +34,7 @@ export const useUserSearchContext = () => {
 };
 
 const useUsersWithStatusQuery = (search: string, { showUsersWhenEmpty = false }: UserSearchOptions) => {
-	const [user] = useUser();
+	const { user } = useAuthenticationContext();
 
 	return useQuery({
 		queryFn: async () => {

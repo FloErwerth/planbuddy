@@ -1,13 +1,9 @@
 import * as Notifications from "expo-notifications";
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from "react";
-import z from "zod";
+import type { NotificationChannel } from "@/api/user/types";
 import { useUpdateUserMutation } from "@/api/user/updateUser";
 import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 import { registerForPushNotificationsAsync } from "@/utils/notifications";
-
-export const NotificationChannelEnumDefinition = z.enum(["GUEST_INVITE", "GUEST_UPDATE", "GUEST_START", "HOST_INVITATION_ANSWERED"]);
-export const NotificationChannelEnum = NotificationChannelEnumDefinition.Enum;
-type NotificationChannel = z.infer<typeof NotificationChannelEnumDefinition>;
 
 type NotificationContextType = {
 	token?: string;

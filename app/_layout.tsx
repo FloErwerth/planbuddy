@@ -1,18 +1,18 @@
-import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useFonts } from "expo-font";
-import { Providers } from "@/providers";
-import type { NativeStackNavigationOptions } from "@react-navigation/native-stack";
 import {
-	NunitoSans_400Regular as Normal,
-	NunitoSans_400Regular_Italic as Italic,
-	NunitoSans_600SemiBold as SemiBold,
-	NunitoSans_600SemiBold_Italic as SemiBoldItalic,
 	NunitoSans_700Bold as Bold,
 	NunitoSans_700Bold_Italic as BoldItalic,
+	NunitoSans_400Regular_Italic as Italic,
+	NunitoSans_400Regular as Normal,
+	NunitoSans_600SemiBold as SemiBold,
+	NunitoSans_600SemiBold_Italic as SemiBoldItalic,
 } from "@expo-google-fonts/nunito-sans";
+import type { NativeStackNavigationOptions } from "@react-navigation/native-stack";
+import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 import { Platform } from "react-native";
+import { Providers } from "@/providers";
 import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 Notifications.setNotificationHandler({
@@ -37,6 +37,7 @@ const defaultOptions: NativeStackNavigationOptions = {
 
 const AppStack = () => {
 	const { isAuthenticatedWithSupabase, user } = useAuthenticationContext();
+
 	if (Platform.OS === "web") {
 		return null;
 	}
@@ -44,12 +45,14 @@ const AppStack = () => {
 	return (
 		<Stack>
 			<Stack.Protected guard={isAuthenticatedWithSupabase && user !== null}>
-				<Stack.Screen name="index" options={defaultOptions} />
 				<Stack.Screen name="(tabs)" options={defaultOptions} />
 				<Stack.Screen name="eventDetails" options={defaultOptions} />
 				<Stack.Screen name="joinEvent/[eventId]/index" options={defaultOptions} />
 			</Stack.Protected>
-			<Stack.Screen name="authentication" options={defaultOptions} />
+			<Stack.Protected guard={!isAuthenticatedWithSupabase || user === null}>
+				<Stack.Screen name="index" options={defaultOptions} />
+				<Stack.Screen name="authentication" options={defaultOptions} />
+			</Stack.Protected>
 		</Stack>
 	);
 };

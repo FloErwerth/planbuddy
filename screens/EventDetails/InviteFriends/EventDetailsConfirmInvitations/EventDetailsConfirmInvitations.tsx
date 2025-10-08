@@ -8,12 +8,12 @@ import { useSingleParticipantQuery } from "@/api/participants/singleParticipant"
 import { type Participant, ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
 import { useAllUsersQuery } from "@/api/user/allUsers/useAllUsersQuery";
 import type { User } from "@/api/user/types";
+import { NotificationChannelEnum } from "@/api/user/types";
 import { BackButton } from "@/components/BackButton";
 import { Screen } from "@/components/Screen";
 import { Button } from "@/components/tamagui/Button";
 import { SizeableText } from "@/components/tamagui/SizeableText";
 import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
-import { NotificationChannelEnum } from "@/providers/NotificationsProvider";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 import { EventDetailsConfirmInvitationsGuest } from "@/screens/EventDetails/InviteFriends/EventDetailsConfirmInvitations/EventDetailsConfirmInvitationsGuest";
 import { sendGuestInviteNotification } from "@/utils/notifications";

@@ -1,17 +1,17 @@
-import { FormProvider, useForm } from "react-hook-form";
-import { onboardingSchema, type OnboardingSchema } from "@/api/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { Screen } from "@/components/Screen";
+import { FormProvider, useForm } from "react-hook-form";
 import { SizableText, View } from "tamagui";
+import { supabase } from "@/api/supabase";
+import { type OnboardingSchema, onboardingSchema } from "@/api/types";
+import { useInsertUserMutation } from "@/api/user/insertUser";
+import { userSchema } from "@/api/user/types";
+import { useUploadProfilePictureMutation } from "@/api/user/uploadProfilePicture";
 import { AvatarImagePicker } from "@/components/AvatarImagePicker";
 import { FormInput } from "@/components/FormFields";
+import { Screen } from "@/components/Screen";
 import { Button } from "@/components/tamagui/Button";
-import { useInsertUserMutation } from "@/api/user/insertUser";
-import { useUploadProfilePictureMutation } from "@/api/user/uploadProfilePicture";
 import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
-import { supabase } from "@/api/supabase";
-import { userSchema } from "@/api/user/types";
 
 export const OnboardingScreen = () => {
 	const form = useForm<OnboardingSchema>({
@@ -27,6 +27,7 @@ export const OnboardingScreen = () => {
 		try {
 			const supabaseUser = await supabase.auth.getUser();
 			const inserUserResult = await insertUser({
+				id: supabaseUser.data.user?.id,
 				firstName,
 				lastName,
 				email: supabaseUser.data.user?.email,
