@@ -1,6 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/api/supabase";
 import { PROFILE_PICTURE_QUERY_KEY } from "@/api/user/constants";
-import { useQuery } from "@tanstack/react-query";
 
 export const useProfileImageQuery = (userId?: string) => {
 	return useQuery({

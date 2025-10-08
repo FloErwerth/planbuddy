@@ -1,5 +1,5 @@
 import type { ComponentProps } from "react";
-import { Button as TamaguiButton, debounce, styled } from "tamagui";
+import { debounce, styled, Button as TamaguiButton } from "tamagui";
 
 const StyledButton = styled(TamaguiButton, {
 	pressStyle: {
