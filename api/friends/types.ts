@@ -1,5 +1,5 @@
-import { userSchema } from "@/api/user/types";
 import z, { array, object, string } from "zod";
+import { userSchema } from "@/api/user/types";
 
 export type FriendsQueryResponse = z.infer<typeof friendsQuerySchema>;
 export type SingleFriendQueryResponse = z.infer<typeof friendSchema>;
@@ -17,8 +17,6 @@ const baseFriendSchema = object({
 
 export const friendSchema = baseFriendSchema.and(
 	userSchema.transform((user) => {
-		const userId = user.id;
-
 		return { userId: user.id, ...user };
 	}),
 );

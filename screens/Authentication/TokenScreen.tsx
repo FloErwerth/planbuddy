@@ -1,22 +1,18 @@
-import { supabase } from "@/api/supabase";
-import { getUserSupabaseQuery } from "@/api/user/getUser/query";
-import { userSchema } from "@/api/user/types";
-import { BackButton } from "@/components/BackButton";
-import { Screen } from "@/components/Screen";
-import { Button } from "@/components/tamagui/Button";
-import { TokenInput } from "@/components/TokenInput/TokenInput";
-import { useCheckLoginState } from "@/hooks/useCheckLoginState";
-import { useLoginContext } from "@/providers/LoginProvider";
-import { useSetUser } from "@/store/authentication";
 import { router } from "expo-router";
 import { useState } from "react";
 import { debounce, SizableText, View } from "tamagui";
+import { supabase } from "@/api/supabase";
+import { BackButton } from "@/components/BackButton";
+import { Screen } from "@/components/Screen";
+import { TokenInput } from "@/components/TokenInput/TokenInput";
+import { Button } from "@/components/tamagui/Button";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
+import { useLoginContext } from "@/providers/LoginProvider";
 
 export const TokenScreen = () => {
 	const { email, resetTokenPage } = useLoginContext();
-	const setUser = useSetUser();
 	const [tokenError, setTokenError] = useState<string>("");
-	const { handleCheckLoginstate } = useCheckLoginState();
+	const { recheckLoginState } = useAuthenticationContext();
 	const [token, setToken] = useState<string>("");
 
 	const onComplete = async () => {
@@ -37,13 +33,9 @@ export const TokenScreen = () => {
 				return;
 			}
 
-			await handleCheckLoginstate(data.user);
 			await supabase.auth.setSession(data.session);
-			const result = await getUserSupabaseQuery(data.user.id);
-			const user = userSchema.parse(result.data);
-
+			await recheckLoginState();
 			resetTokenPage();
-			setUser(user);
 		} catch (e) {
 			if (e instanceof Error) {
 				console.error(e.message);
@@ -56,40 +48,38 @@ export const TokenScreen = () => {
 	};
 
 	return (
-		<>
-			<Screen back={<BackButton href="/" />} flex={1} title="Verifizierung">
-				<View flex={1} justifyContent="center" gap="$6">
-					<SizableText size="$8" fontWeight="bold" textAlign="center">
-						Checke deine E-Mails
-					</SizableText>
-					<SizableText textAlign="center">Wir haben dir einen 6-stelligen Code an {email} gesendet. Bitte gib den dort angezeigten Code unten ein</SizableText>
-					<View gap="$2">
-						{tokenError && (
-							<SizableText
-								animation="bouncy"
-								enterStyle={{
-									height: 0,
-									opacity: 0,
-									scale: 0.9,
-								}}
-								pointerEvents="none"
-								theme="error"
-							>
-								{tokenError}
-							</SizableText>
-						)}
-						<TokenInput onFilled={setToken} showErrorColors={!!tokenError} />
-					</View>
+		<Screen back={<BackButton href="/" />} flex={1} title="Verifizierung">
+			<View flex={1} justifyContent="center" gap="$6">
+				<SizableText size="$8" fontWeight="bold" textAlign="center">
+					Checke deine E-Mails
+				</SizableText>
+				<SizableText textAlign="center">Wir haben dir einen 6-stelligen Code an {email} gesendet. Bitte gib den dort angezeigten Code unten ein</SizableText>
+				<View gap="$2">
+					{tokenError && (
+						<SizableText
+							animation="bouncy"
+							enterStyle={{
+								height: 0,
+								opacity: 0,
+								scale: 0.9,
+							}}
+							pointerEvents="none"
+							theme="error"
+						>
+							{tokenError}
+						</SizableText>
+					)}
+					<TokenInput onFilled={setToken} showErrorColors={!!tokenError} />
 				</View>
-				<View gap="$1">
-					<Button size="$5" elevationAndroid="$0" fontWeight="700" onPress={debounce(onComplete, 200, true)}>
-						Verifizieren
-					</Button>
-					<Button size="$5" variant="transparent" fontWeight="700" onPress={debounce(handleChangeMail, 200, true)}>
-						Neuen Code anfordern
-					</Button>
-				</View>
-			</Screen>
-		</>
+			</View>
+			<View gap="$1">
+				<Button size="$5" elevationAndroid="$0" fontWeight="700" onPress={debounce(onComplete, 200, true)}>
+					Verifizieren
+				</Button>
+				<Button size="$5" variant="transparent" fontWeight="700" onPress={debounce(handleChangeMail, 200, true)}>
+					Neuen Code anfordern
+				</Button>
+			</View>
+		</Screen>
 	);
 };

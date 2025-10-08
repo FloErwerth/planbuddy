@@ -1,12 +1,12 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { router } from "expo-router";
+import { FormProvider, useForm } from "react-hook-form";
+import { SizableText, View } from "tamagui";
 import { supabase } from "@/api/supabase";
 import { FormInput } from "@/components/FormFields";
 import { Button } from "@/components/tamagui/Button";
 import { useLoginContext } from "@/providers/LoginProvider";
 import { type LoginSchema, loginSchema } from "@/screens/Authentication/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { router } from "expo-router";
-import { FormProvider, useForm } from "react-hook-form";
-import { SizableText, View } from "tamagui";
 
 export const LoginForm = () => {
 	const { email: previousEmail, loginError, setLoginError, setEmail, startResendTokenTimer, resendTokenTime, resetTokenPage } = useLoginContext();
@@ -42,7 +42,6 @@ export const LoginForm = () => {
 					}
 					case "email_exists":
 						break;
-					case "over_request_rate_limit":
 					default:
 						setLoginError("Es ist ein Fehler aufgetreten, bitte versuche es erneut");
 				}
@@ -60,31 +59,29 @@ export const LoginForm = () => {
 	};
 
 	return (
-		<>
-			<View gap="$4" flex={1}>
-				<FormProvider {...form}>
-					<SizableText size="$5" textAlign="center">
-						Melde dich hier ganz bequem mit deiner E-Mail an
-					</SizableText>
-					<View gap="$2">
-						<FormInput
-							theme={loginError ? "error" : "default"}
-							autoComplete="email"
-							textContentType="emailAddress"
-							keyboardType="email-address"
-							autoCorrect={false}
-							placeholder="max@mustermann@email.de"
-							size="$5"
-							name="email"
-							autoCapitalize="none"
-						/>
-						<Button size="$5" fontWeight="700" disabled={resendTokenTime > 0} onPress={form.handleSubmit(signUpWithPhone)}>
-							{resendTokenTime > 0 ? `Code erneut senden (${resendTokenTime}s)` : "Anmelden"}
-						</Button>
-						{resendTokenTime > 0 && <SizableText theme="error">Aus Sicherheitsgründen kannst Du nicht direkt einen neuen Code anfordern.</SizableText>}
-					</View>
-				</FormProvider>
-			</View>
-		</>
+		<View gap="$4" flex={1}>
+			<FormProvider {...form}>
+				<SizableText size="$5" textAlign="center">
+					Melde dich hier ganz bequem mit deiner E-Mail an
+				</SizableText>
+				<View gap="$2">
+					<FormInput
+						theme={loginError ? "error" : "default"}
+						autoComplete="email"
+						textContentType="emailAddress"
+						keyboardType="email-address"
+						autoCorrect={false}
+						placeholder="max@mustermann@email.de"
+						size="$5"
+						name="email"
+						autoCapitalize="none"
+					/>
+					<Button size="$5" fontWeight="700" disabled={resendTokenTime > 0} onPress={form.handleSubmit(signUpWithPhone)}>
+						{resendTokenTime > 0 ? `Code erneut senden (${resendTokenTime}s)` : "Anmelden"}
+					</Button>
+					{resendTokenTime > 0 && <SizableText theme="error">Aus Sicherheitsgründen kannst Du nicht direkt einen neuen Code anfordern.</SizableText>}
+				</View>
+			</FormProvider>
+		</View>
 	);
 };

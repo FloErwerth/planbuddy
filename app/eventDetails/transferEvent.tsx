@@ -1,24 +1,24 @@
-import { Screen } from "@/components/Screen";
-import { BackButton } from "@/components/BackButton";
-import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
-import { ScrollView } from "@/components/tamagui/ScrollView";
+import { router } from "expo-router";
 import { useState } from "react";
 import { SizableText, View } from "tamagui";
-import { router } from "expo-router";
-import { Dialog } from "@/components/tamagui/Dialog";
-import { Button } from "@/components/tamagui/Button";
-import { useSearchParticipantsByStatus } from "@/api/participants/searchParticipantsByNameStatus/useSearchParticipantsByStatus";
-import { useUpdateParticipationMutation } from "@/api/participants/updateParticipant/useUpdateParticipantMutation";
 import { useUpdateEventMutation } from "@/api/events/updateEvent/useUpdateEventMutation";
 import { useDeleteParticipantMutation } from "@/api/participants/deleteParticipant/useDeleteParticipantMutation";
+import { useSearchParticipantsByStatus } from "@/api/participants/searchParticipantsByNameStatus/useSearchParticipantsByStatus";
 import { useSingleParticipantQuery } from "@/api/participants/singleParticipant/useSingleParticipant";
-import { useGetUser } from "@/store/authentication";
 import { type Participant, ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
-import { ParticipantRow } from "@/screens/Participants/Participant";
+import { useUpdateParticipationMutation } from "@/api/participants/updateParticipant/useUpdateParticipantMutation";
 import type { User } from "@/api/user/types";
+import { BackButton } from "@/components/BackButton";
+import { Screen } from "@/components/Screen";
+import { Button } from "@/components/tamagui/Button";
+import { Dialog } from "@/components/tamagui/Dialog";
+import { ScrollView } from "@/components/tamagui/ScrollView";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
+import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
+import { ParticipantRow } from "@/screens/Participants/Participant";
 
 export default function TransferEvent() {
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 	const { eventId } = useEventDetailsContext();
 	const { data: myEvent } = useSingleParticipantQuery(eventId, user.id);
 	const { data: participatingUsers } = useSearchParticipantsByStatus(eventId, [ParticipantStatusEnum.ACCEPTED]);

@@ -1,25 +1,24 @@
-import { Redirect, router } from "expo-router";
-import { Image } from "expo-image";
-import { useState } from "react";
-import { ShareSheet } from "@/sheets/ShareSheet";
-import { Screen, ScrollableScreen } from "@/components/Screen";
-import { SizableText, Spinner, View, XStack } from "tamagui";
-import { BackButton } from "@/components/BackButton";
-import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
-import { useGetUser } from "@/store/authentication";
-import { Button } from "@/components/tamagui/Button";
 import { CalendarDays, ChevronRight, ExternalLink, Link2, MapPin, Share, Users } from "@tamagui/lucide-icons";
-import { useSingleParticipantQuery } from "@/api/participants/singleParticipant";
-import { ParticipantRoleEnum } from "@/api/participants/types";
+import { Image } from "expo-image";
+import { Redirect, router } from "expo-router";
+import { useState } from "react";
+import { Linking } from "react-native";
+import { SizableText, Spinner, View, XStack } from "tamagui";
 import { useEventQuery } from "@/api/events/event/useEventQuery";
 import { useEventImageQuery } from "@/api/events/eventImage";
+import { useSingleParticipantQuery } from "@/api/participants/singleParticipant";
+import { ParticipantRoleEnum } from "@/api/participants/types";
+import { BackButton } from "@/components/BackButton";
 import { PressableRow } from "@/components/PressableRow";
-import { formatToDate, formatToTime } from "@/utils/date";
-import { Linking } from "react-native";
+import { Screen, ScrollableScreen } from "@/components/Screen";
+import { Button } from "@/components/tamagui/Button";
 import { Separator } from "@/components/tamagui/Separator";
+import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
+import { ShareSheet } from "@/sheets/ShareSheet";
+import { formatToDate, formatToTime } from "@/utils/date";
 
 const EventDetailsActions = () => {
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 	const { eventId } = useEventDetailsContext();
 	const { data: me } = useSingleParticipantQuery(eventId, user.id);
 
@@ -47,7 +46,7 @@ const EventDetailsActions = () => {
 
 export const EventDetails = () => {
 	const { eventId } = useEventDetailsContext();
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 	const { data: me } = useSingleParticipantQuery(eventId, user.id);
 	const [showShare, setShowShare] = useState(false);
 
@@ -87,63 +86,61 @@ export const EventDetails = () => {
 	};
 
 	return (
-		<>
-			<ScrollableScreen
-				back={<BackButton href="/(tabs)" />}
-				action={
-					me?.role === ParticipantRoleEnum.GUEST ? null : (
-						// todo: share event
-						<Button variant="round" onPress={() => router.push("/eventDetails/shareEvent")}>
-							<Share color="$color" size="$1" scale={0.75} />
-						</Button>
-					)
-				}
-			>
-				{image && (
-					<View backgroundColor="$background" overflow="hidden" elevationAndroid="$2" width="100%" borderRadius="$8">
-						<Image source={image} style={{ width: "auto", height: 200 }} />
+		<ScrollableScreen
+			back={<BackButton href="/(tabs)" />}
+			action={
+				me?.role === ParticipantRoleEnum.GUEST ? null : (
+					// todo: share event
+					<Button variant="round" onPress={() => router.push("/eventDetails/shareEvent")}>
+						<Share color="$color" size="$1" scale={0.75} />
+					</Button>
+				)
+			}
+		>
+			{image && (
+				<View backgroundColor="$background" overflow="hidden" elevationAndroid="$2" width="100%" borderRadius="$8">
+					<Image source={image} style={{ width: "auto", height: 200 }} />
+				</View>
+			)}
+			<SizableText size="$10" fontWeight="700">
+				{event?.name}
+			</SizableText>
+			<EventDetailsActions />
+			<PressableRow icon={<CalendarDays />}>
+				<XStack alignItems="center" gap="$5">
+					<View>
+						<SizableText size="$5">{formatToDate(event?.startTime)}</SizableText>
+						<SizableText size="$4">{formatToTime(event?.startTime)} Uhr</SizableText>
 					</View>
-				)}
-				<SizableText size="$10" fontWeight="700">
-					{event?.name}
-				</SizableText>
-				<EventDetailsActions />
-				<PressableRow icon={<CalendarDays />}>
-					<XStack alignItems="center" gap="$5">
-						<View>
-							<SizableText size="$5">{formatToDate(event?.startTime)}</SizableText>
-							<SizableText size="$4">{formatToTime(event?.startTime)} Uhr</SizableText>
-						</View>
-						<SizableText>bis</SizableText>
-						<View>
-							<SizableText size="$5">{formatToDate(event?.endTime)}</SizableText>
-							<SizableText size="$4">{formatToTime(event?.endTime)} Uhr</SizableText>
-						</View>
-					</XStack>
-				</PressableRow>
-				<PressableRow icon={<MapPin />} iconRight={null}>
-					<SizableText>{event?.location}</SizableText>
-				</PressableRow>
+					<SizableText>bis</SizableText>
+					<View>
+						<SizableText size="$5">{formatToDate(event?.endTime)}</SizableText>
+						<SizableText size="$4">{formatToTime(event?.endTime)} Uhr</SizableText>
+					</View>
+				</XStack>
+			</PressableRow>
+			<PressableRow icon={<MapPin />} iconRight={null}>
+				<SizableText>{event?.location}</SizableText>
+			</PressableRow>
 
-				<PressableRow icon={<Users />} onPress={() => router.push("/eventDetails/participants")} iconRight={<ChevronRight size="$1" />}>
-					<SizableText>Gäste</SizableText>
+			<PressableRow icon={<Users />} onPress={() => router.push("/eventDetails/participants")} iconRight={<ChevronRight size="$1" />}>
+				<SizableText>Gäste</SizableText>
+			</PressableRow>
+			{url && (
+				<PressableRow icon={<Link2 />} onPress={handleOpenLink} iconRight={<ExternalLink scale={0.75} size="$1" />}>
+					<SizableText>{url.host}</SizableText>
 				</PressableRow>
-				{url && (
-					<PressableRow icon={<Link2 />} onPress={handleOpenLink} iconRight={<ExternalLink scale={0.75} size="$1" />}>
-						<SizableText>{url.host}</SizableText>
-					</PressableRow>
-				)}
-				<ShareSheet onOpenChange={setShowShare} open={showShare} />
-				{event?.description && (
-					<>
-						<Separator />
-						<SizableText size="$6" fontWeight="700">
-							Details
-						</SizableText>
-						<SizableText>{event?.description}</SizableText>
-					</>
-				)}
-			</ScrollableScreen>
-		</>
+			)}
+			<ShareSheet onOpenChange={setShowShare} open={showShare} />
+			{event?.description && (
+				<>
+					<Separator />
+					<SizableText size="$6" fontWeight="700">
+						Details
+					</SizableText>
+					<SizableText>{event?.description}</SizableText>
+				</>
+			)}
+		</ScrollableScreen>
 	);
 };

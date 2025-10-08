@@ -10,7 +10,7 @@ export const useJoinEvents = () => {
 		name: string;
 		inviterName: string;
 	}>();
-	const user = useAuthenticationContext();
+	const { user } = useAuthenticationContext();
 	const { mutateAsync: joinEvent } = useCreateParticipationMutation();
 
 	useEffect(() => {

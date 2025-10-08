@@ -2,7 +2,6 @@ import { Calendar } from "@/components/Calendar";
 import { HeightTransition } from "@/components/HeightTransition";
 import { timePartialsWithoutTimeZone } from "@/utils/date";
 import { EventTimerPicker } from "./EventTimerPicker";
-import { useState } from "react";
 
 type EventSelectStartEndProps = {
 	showCalendar: boolean;
@@ -15,7 +14,6 @@ type EventSelectStartEndProps = {
 };
 
 export const EventSelectStartEnd = ({ date, minimumDate, setDate, showCalendar, showTimePicker, setTime }: EventSelectStartEndProps) => {
-	const [month, setMonth] = useState(0);
 	const getLimits = () => {
 		if (!minimumDate) {
 			return undefined;

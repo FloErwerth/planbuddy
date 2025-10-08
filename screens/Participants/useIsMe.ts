@@ -1,7 +1,5 @@
-import { useGetUser } from "@/store/authentication";
-
 export const useIsMe = (participantUserId?: string) => {
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 
 	if (!user) {
 		return false;

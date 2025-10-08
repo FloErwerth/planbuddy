@@ -1,15 +1,15 @@
-import { EVENTS_QUERY_KEY, CREATE_EVENT_MUTATION_KEY } from "@/api/events/constants";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CREATE_EVENT_MUTATION_KEY, EVENTS_QUERY_KEY } from "@/api/events/constants";
 import { createEventSupabaseQuery } from "@/api/events/createEvents/query";
 import type { AppEvent } from "@/api/events/types";
 import { type Participant, ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
 import { supabase } from "@/api/supabase";
-import { useGetUser } from "@/store/authentication";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 type CreateEventMutationArgs = { event: AppEvent };
 
 export const useCreateEventMutation = () => {
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 	const queryClient = useQueryClient();
 
 	return useMutation({

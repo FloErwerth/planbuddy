@@ -1,3 +1,9 @@
+import { FlashList, type ListRenderItemInfo } from "@shopify/flash-list";
+import { Eye } from "@tamagui/lucide-icons";
+import { Redirect, router } from "expo-router";
+import { useState } from "react";
+import { RefreshControl } from "react-native";
+import { View, XStack } from "tamagui";
 import { useSearchParticipantsByStatus } from "@/api/participants/searchParticipantsByNameStatus";
 import { type Participant, type ParticipantStatus, ParticipantStatusEnum } from "@/api/participants/types";
 import type { User } from "@/api/user/types";
@@ -9,13 +15,6 @@ import { ToggleButton } from "@/components/TogglePillButton";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 import { ParticipantRow } from "@/screens/Participants/Participant";
 import { ParticipantSkeleton } from "@/screens/Participants/ParticipantSkeleton";
-import { useGetUser } from "@/store/authentication";
-import { FlashList, type ListRenderItemInfo } from "@shopify/flash-list";
-import { Eye } from "@tamagui/lucide-icons";
-import { Redirect, router } from "expo-router";
-import { useState } from "react";
-import { RefreshControl } from "react-native";
-import { View, XStack } from "tamagui";
 
 export const Participants = () => {
 	const { eventId, setEditedGuest } = useEventDetailsContext();
@@ -23,7 +22,7 @@ export const Participants = () => {
 	const [search, setSearch] = useState("");
 	const [refreshing, setRefreshing] = useState(false);
 	const { data: participants, refetch, isLoading } = useSearchParticipantsByStatus(eventId, activeFilters, search);
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 
 	const sortedParticipants = participants?.sort((a) => (a.userId === user?.id ? 1 : 0));
 

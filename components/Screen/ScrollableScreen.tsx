@@ -1,8 +1,7 @@
-import { Screen } from "@/components/Screen/Screen";
 import type { PropsWithChildren, ReactNode } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SizableText, View, type ViewProps, XStack } from "tamagui";
+import { Screen } from "@/components/Screen/Screen";
 
 export type ScrollableScreenProps = PropsWithChildren & {
 	showBackButton?: boolean;
@@ -14,7 +13,6 @@ export type ScrollableScreenProps = PropsWithChildren & {
 
 export const ScrollableScreen = ({ children, showBackButton = false, back, title, action, ...viewProps }: ScrollableScreenProps) => {
 	const hasActionOrBack = !!back || !!action;
-	const { top } = useSafeAreaInsets();
 
 	return (
 		<KeyboardAwareScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: viewProps.flex ? 1 : 0 }}>

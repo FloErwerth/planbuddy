@@ -1,14 +1,14 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
-import { writeInviteId } from "@/utils/invite";
-import { useGetUser } from "@/store/authentication";
-import { useCreateParticipationMutation } from "@/api/participants/createParticipant";
 import { SizableText } from "tamagui";
+import { useCreateParticipationMutation } from "@/api/participants/createParticipant";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
+import { writeInviteId } from "@/utils/invite";
 
 export const JoinEventScreen = () => {
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 	const { mutateAsync: joinEvent } = useCreateParticipationMutation();
-	const { eventId, inviterName, name } = useLocalSearchParams<{
+	const { eventId } = useLocalSearchParams<{
 		eventId: string;
 		name: string;
 		inviterName: string;
@@ -17,7 +17,7 @@ export const JoinEventScreen = () => {
 	useEffect(() => {
 		if (eventId) {
 			if (user) {
-				joinEvent({ eventId, userId: user!.id }).then(() => router.replace("/(tabs)"));
+				joinEvent({ eventId, userId: user.id }).then(() => router.replace("/(tabs)"));
 			} else {
 				writeInviteId(eventId).then(() => router.replace("/authentication"));
 			}

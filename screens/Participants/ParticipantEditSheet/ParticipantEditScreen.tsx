@@ -1,15 +1,15 @@
+import { router } from "expo-router";
+import { useState } from "react";
+import { useMe } from "@/api/hooks";
+import { useUpdateParticipationMutation } from "@/api/participants/updateParticipant";
+import { BackButton } from "@/components/BackButton";
 import { Screen } from "@/components/Screen";
 import { Button } from "@/components/tamagui/Button";
-import { useState } from "react";
-import { EditGuestOptions } from "@/screens/Participants/ParticipantEditSheet/Guest/EditGuestOptions";
-import { ParticipantEditMeOptions } from "./Me/ParticipantEditMeOptions";
-import { ParticipantLeaveEventDialog } from "@/screens/Participants/ParticipantEditSheet/Guest/ParticipantLeaveEventModal";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
-import { BackButton } from "@/components/BackButton";
+import { EditGuestOptions } from "@/screens/Participants/ParticipantEditSheet/Guest/EditGuestOptions";
+import { ParticipantLeaveEventDialog } from "@/screens/Participants/ParticipantEditSheet/Guest/ParticipantLeaveEventModal";
 import { MeLeaveEventDialog } from "@/screens/Participants/ParticipantEditSheet/Me/MeLeaveEventDialog";
-import { router } from "expo-router";
-import { useUpdateParticipationMutation } from "@/api/participants/updateParticipant";
-import { useMe } from "@/api/hooks";
+import { ParticipantEditMeOptions } from "./Me/ParticipantEditMeOptions";
 
 export const ParticipantEditScreen = () => {
 	const { eventId, editedGuest, setEditedGuest } = useEventDetailsContext();
@@ -24,7 +24,7 @@ export const ParticipantEditScreen = () => {
 			return;
 		}
 		await mutateAsync({
-			id: editedGuest.id!,
+			id: editedGuest.id,
 			role: editedGuest.role,
 		});
 		router.back();

@@ -1,10 +1,10 @@
+import type { ComponentProps } from "react";
+import { LocaleConfig, Calendar as ReactNativeCalendar } from "react-native-calendars";
 import { colors } from "@/providers/TamaguiProvider/tamaguiConfig";
 import { timePartialsWithoutTimeZone } from "@/utils/date";
-import React, { type ComponentProps } from "react";
-import { LocaleConfig, Calendar as ReactNativeCalendar } from "react-native-calendars";
 import type { CalendarProps } from "./types";
 
-LocaleConfig.locales["de"] = {
+LocaleConfig.locales.de = {
 	monthNames: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
 	monthNamesShort: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
 	dayNames: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"],

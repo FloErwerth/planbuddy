@@ -1,11 +1,10 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DELETE_USER_MUTATION } from "@/api/user/constants";
 import { deleteUserSupabaseQuery } from "@/api/user/deleteUser/query";
-import { useGetUser } from "@/store/authentication";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
 
 export const useDeleteUserMutation = () => {
 	const queryClient = useQueryClient();
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 	return useMutation({
 		mutationFn: async () => {
 			const result = await deleteUserSupabaseQuery(user.id);

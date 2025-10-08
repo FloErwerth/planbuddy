@@ -48,7 +48,7 @@ export const FriendRequestsScreen = () => {
 						</View>
 					</XStack>
 					<XStack gap="$2">
-						<Button onPress={() => acceptFriendRequest(pending.id!)} size="$2" backgroundColor="$color.green8Light">
+						<Button onPress={() => acceptFriendRequest(pending.id)} size="$2" backgroundColor="$color.green8Light">
 							<Check size="$1" />
 						</Button>
 						<Button onPress={() => setUserToDecline(pending)} size="$2" backgroundColor="$color.red8Light">

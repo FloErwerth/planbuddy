@@ -1,12 +1,12 @@
-import { useGetUser } from "@/store/authentication";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { Image } from "react-native-compressor";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as FileSystem from "expo-file-system";
-import { uploadProfilePictureSupabaseQuery } from "@/api/user/uploadProfilePicture/query";
+import { Image } from "react-native-compressor";
 import { PROFILE_PICTURE_QUERY_KEY, UPLOAD_PROFILE_IMAGE_MUTATION_KEY } from "@/api/user/constants";
+import { uploadProfilePictureSupabaseQuery } from "@/api/user/uploadProfilePicture/query";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 export const useUploadProfilePictureMutation = () => {
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 	const queryClient = useQueryClient();
 
 	return useMutation({

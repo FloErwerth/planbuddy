@@ -1,10 +1,9 @@
-import { Input } from "@/components/tamagui/Input";
-import { useRef, useState } from "react";
-import { AnimatePresence, debounce, getTokenValue, type InputProps, type Token, View } from "tamagui";
 import { Search, X } from "@tamagui/lucide-icons";
+import { useRef, useState } from "react";
 import { type TextInput, useWindowDimensions } from "react-native";
+import { AnimatePresence, debounce, getTokenValue, type InputProps, type Token, View } from "tamagui";
 import { Button } from "@/components/tamagui/Button";
-import { useSetTimeout } from "@/hooks/useSetTimeout";
+import { Input } from "@/components/tamagui/Input";
 
 type SearchInputProps = Omit<InputProps, "onChangeText"> & {
 	onChangeText: (text: string) => void;
@@ -14,7 +13,6 @@ export const ScreenTopbarSearch = ({ onChangeText, top, ...props }: SearchInputP
 	const [isOpen, setIsOpen] = useState(false);
 	const { width } = useWindowDimensions();
 	const inputRef = useRef<TextInput>(null);
-	const { setTimeout } = useSetTimeout();
 
 	const paddingRightValue = getTokenValue("$4" as Token, "space");
 
@@ -23,7 +21,7 @@ export const ScreenTopbarSearch = ({ onChangeText, top, ...props }: SearchInputP
 			if (open) {
 				return false;
 			}
-				return true;
+			return true;
 		});
 	};
 	return (

@@ -1,61 +1,52 @@
 import { FormProvider, useForm } from "react-hook-form";
-import { onboardingSchema, OnboardingSchema } from "@/api/types";
+import { onboardingSchema, type OnboardingSchema } from "@/api/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { readInviteId } from "@/utils/invite";
-import { router } from "expo-router";
+import { useState } from "react";
 import { Screen } from "@/components/Screen";
 import { SizableText, View } from "tamagui";
 import { AvatarImagePicker } from "@/components/AvatarImagePicker";
 import { FormInput } from "@/components/FormFields";
 import { Button } from "@/components/tamagui/Button";
-import { useGetUser } from "@/store/authentication";
-import { useCreateParticipationMutation } from "@/api/participants/createParticipant";
 import { useInsertUserMutation } from "@/api/user/insertUser";
-import { useProfileImageQuery } from "@/api/user/profilePicture";
 import { useUploadProfilePictureMutation } from "@/api/user/uploadProfilePicture";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
+import { supabase } from "@/api/supabase";
+import { userSchema } from "@/api/user/types";
 
 export const OnboardingScreen = () => {
 	const form = useForm<OnboardingSchema>({
 		resolver: zodResolver(onboardingSchema),
 	});
-	const user = useGetUser();
-	const { data: imageFromDatabase = null } = useProfileImageQuery(user?.id);
+	const { setUser } = useAuthenticationContext();
 	const { mutateAsync: insertUser } = useInsertUserMutation();
-	const { mutateAsync: joinEvent } = useCreateParticipationMutation();
 
 	const [file, setFile] = useState<string | null>(null);
 	const { mutateAsync: uploadImage } = useUploadProfilePictureMutation();
 
-	useEffect(() => {
-		setFile(imageFromDatabase);
-	}, [imageFromDatabase]);
-
-	const navigateAwayFromOnboarding = async () => {
-		const invitationId = await readInviteId();
-		if (invitationId) {
-			await joinEvent({ eventId: invitationId, userId: user?.id });
-		}
-		router.replace("/(tabs)");
-	};
-
 	const completeOnboarding = async ({ firstName, lastName }: OnboardingSchema) => {
-		if (!user || !user.email) {
-			return;
-		}
-
 		try {
-			const res = await insertUser({
+			const supabaseUser = await supabase.auth.getUser();
+			const inserUserResult = await insertUser({
 				firstName,
 				lastName,
-				email: user.email,
+				email: supabaseUser.data.user?.email,
 			});
 
-			if (file !== imageFromDatabase) {
-				await uploadImage(file);
+			if (!inserUserResult) {
+				//todo: display error here
+				return;
 			}
-			if (res) {
-				await navigateAwayFromOnboarding();
+
+			const parsedUser = userSchema.safeParse(inserUserResult);
+			if (parsedUser.error) {
+				//todo: display error here
+				return;
+			}
+
+			setUser(parsedUser.data);
+
+			if (file !== null) {
+				await uploadImage(file);
 			}
 		} catch (e) {
 			console.log(e);
@@ -68,7 +59,7 @@ export const OnboardingScreen = () => {
 				Herzlich Willkommen bei PlanBuddy!
 			</SizableText>
 			<SizableText>Wenn Du willst such Dir ein schickes Profilbild aus und lade es hoch</SizableText>
-			<AvatarImagePicker editable onImageDeleted={() => setFile(null)} onImageSelected={setFile} />
+			<AvatarImagePicker image={file} editable onImageDeleted={() => setFile(null)} onImageSelected={setFile} />
 			<SizableText>Damit deine Freunde dich ohne Probleme finden können gib uns bitte folgende Informationen. Diese Angaben sind alle optional.</SizableText>
 			<FormProvider {...form}>
 				<FormInput autoComplete="given-name" textContentType="givenName" label="Vorname" name="firstName" />

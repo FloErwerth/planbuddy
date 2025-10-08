@@ -1,15 +1,15 @@
-import { useState } from "react";
 import { FlashList, type ListRenderItemInfo } from "@shopify/flash-list";
-import { Screen } from "@/components/Screen";
-import { BackButton } from "@/components/BackButton";
+import { router } from "expo-router";
+import { useState } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getTokenValue, type Token, View } from "tamagui";
+import { useSearchParticipantsByStatus } from "@/api/participants/searchParticipantsByNameStatus";
+import { useAllUsersQuery } from "@/api/user/allUsers/useAllUsersQuery";
+import { BackButton } from "@/components/BackButton";
+import { Screen } from "@/components/Screen";
+import { SearchInput } from "@/components/SearchInput";
 import { Button } from "@/components/tamagui/Button";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
-import { router } from "expo-router";
-import { useAllUsersQuery } from "@/api/user/allUsers/useAllUsersQuery";
-import { SearchInput } from "@/components/SearchInput";
-import { useSearchParticipantsByStatus } from "@/api/participants/searchParticipantsByNameStatus";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { EventDetailsGuest, type EventDetailsGuestProps } from "@/screens/EventDetails/InviteFriends/EventDetailsInviteGuests";
 
 export const EventDetailsInviteGuests = () => {
@@ -34,31 +34,29 @@ export const EventDetailsInviteGuests = () => {
 		}));
 
 	return (
-		<>
-			<Screen flex={1} back={<BackButton />} title="Gäste hinzufügen">
-				<SearchInput placeholder="Name oder E-Mail" onChangeText={setFilter} />
-				<FlashList
-					showsVerticalScrollIndicator={false}
-					estimatedItemSize={92}
-					ItemSeparatorComponent={() => <View height="$1" />}
-					data={allUsersCheckedOrInvited}
-					renderItem={render}
-				/>
-				{usersToAdd.size > 0 && (
-					<Button
-						position="absolute"
-						bottom={getTokenValue("$4" as Token, "space") + bottom}
-						right="$4"
-						left="$4"
-						animation="bouncy"
-						enterStyle={{ scale: 0.9, opacity: 0 }}
-						exitStyle={{ scale: 0.9, opacity: 0 }}
-						onPress={() => router.push("/eventDetails/inviteGuests/confirmInvitations")}
-					>
-						Gäste überprüfen und hinzufügen{`(${usersToAdd.size})`}
-					</Button>
-				)}
-			</Screen>
-		</>
+		<Screen flex={1} back={<BackButton />} title="Gäste hinzufügen">
+			<SearchInput placeholder="Name oder E-Mail" onChangeText={setFilter} />
+			<FlashList
+				showsVerticalScrollIndicator={false}
+				estimatedItemSize={92}
+				ItemSeparatorComponent={() => <View height="$1" />}
+				data={allUsersCheckedOrInvited}
+				renderItem={render}
+			/>
+			{usersToAdd.size > 0 && (
+				<Button
+					position="absolute"
+					bottom={getTokenValue("$4" as Token, "space") + bottom}
+					right="$4"
+					left="$4"
+					animation="bouncy"
+					enterStyle={{ scale: 0.9, opacity: 0 }}
+					exitStyle={{ scale: 0.9, opacity: 0 }}
+					onPress={() => router.push("/eventDetails/inviteGuests/confirmInvitations")}
+				>
+					Gäste überprüfen und hinzufügen{`(${usersToAdd.size})`}
+				</Button>
+			)}
+		</Screen>
 	);
 };

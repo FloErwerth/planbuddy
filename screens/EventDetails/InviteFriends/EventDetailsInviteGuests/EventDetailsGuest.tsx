@@ -1,3 +1,5 @@
+import { memo } from "react";
+import { View, XStack } from "tamagui";
 import type { Participant } from "@/api/participants/types";
 import type { User } from "@/api/user/types";
 import { Card } from "@/components/tamagui/Card";
@@ -5,14 +7,12 @@ import { Checkbox } from "@/components/tamagui/Checkbox";
 import { SizeableText } from "@/components/tamagui/SizeableText";
 import { UserAvatar } from "@/components/UserAvatar";
 import { formatToDate, formatToTime } from "@/utils/date";
-import { memo } from "react";
-import { View, XStack } from "tamagui";
 
 export type EventDetailsGuestProps = User & { checked: boolean; onPress: (id: string) => void } & Pick<Participant, "createdAt">;
 
 export const EventDetailsGuest = memo(({ id, onPress, checked, firstName, createdAt, lastName, email }: EventDetailsGuestProps) => {
 	return (
-		<Card onPress={() => onPress(id!)} key={id}>
+		<Card onPress={() => onPress(id)} key={id}>
 			<XStack alignItems="center" paddingRight="$2" justifyContent="space-between">
 				<XStack gap="$3" alignItems="center">
 					<UserAvatar id={id} />

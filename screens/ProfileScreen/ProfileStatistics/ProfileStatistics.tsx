@@ -1,14 +1,13 @@
+import { View, XStack } from "tamagui";
 import { useAllParticipantsQuery } from "@/api/participants/allParticipants/useAllParticipantsQuery";
 import { ParticipantRoleEnum } from "@/api/participants/types";
 import { Card } from "@/components/tamagui/Card";
 import { SizeableText } from "@/components/tamagui/SizeableText";
-import { useGetUser } from "@/store/authentication";
-import { View, XStack } from "tamagui";
 
 export const ProfileStatistics = () => {
 	const { data: participants } = useAllParticipantsQuery();
 
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 	const myParticipations = participants?.filter((participant) => participant.userId === user.id);
 
 	const numberOfEventsICreated = myParticipations?.filter((participant) => participant.role === ParticipantRoleEnum.CREATOR).length;

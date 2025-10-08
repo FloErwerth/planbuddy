@@ -1,12 +1,12 @@
-import { useState } from "react";
-import * as ExpoImagePicker from "expo-image-picker";
-import { Avatar, Spinner, View } from "tamagui";
-import Animated, { BounceIn, FadeIn, ZoomOut } from "react-native-reanimated";
 import { Check, Edit3, Trash2 } from "@tamagui/lucide-icons";
 import { color } from "@tamagui/themes";
-import { Button } from "@/components/tamagui/Button";
-import { useGetUser } from "@/store/authentication";
+import * as ExpoImagePicker from "expo-image-picker";
+import { useState } from "react";
+import Animated, { BounceIn, FadeIn, ZoomOut } from "react-native-reanimated";
+import { Avatar, Spinner, View } from "tamagui";
 import { useProfileImageQuery } from "@/api/user/profilePicture";
+import { Button } from "@/components/tamagui/Button";
+import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 type AvatarImagePickerProps = {
 	editable?: boolean;
@@ -18,7 +18,7 @@ type AvatarImagePickerProps = {
 export const AvatarImagePicker = ({ image, editable = false, onImageSelected, onImageDeleted }: AvatarImagePickerProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [showSuccess, setShowSuccess] = useState(false);
-	const user = useGetUser();
+	const { user } = useAuthenticationContext();
 	const { data: imageFromDatabase } = useProfileImageQuery(user?.id);
 
 	const pickImage = async () => {
