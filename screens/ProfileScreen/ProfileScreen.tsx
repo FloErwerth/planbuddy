@@ -41,7 +41,7 @@ export const ProfileScreen = () => {
 					</Button>
 				}
 			>
-				<AvatarImagePicker editable={false} image={profilePicture} />
+				<AvatarImagePicker editable={false} image={profilePicture || undefined} />
 				<View alignSelf="center" justifyContent="center">
 					<SizableText size="$7" textAlign="center">
 						{user?.firstName} {user?.lastName}
