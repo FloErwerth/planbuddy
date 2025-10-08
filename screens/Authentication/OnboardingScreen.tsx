@@ -20,7 +20,7 @@ export const OnboardingScreen = () => {
 	const { setUser } = useAuthenticationContext();
 	const { mutateAsync: insertUser } = useInsertUserMutation();
 
-	const [file, setFile] = useState<string | null>(null);
+	const [file, setFile] = useState<string | undefined>(undefined);
 	const { mutateAsync: uploadImage } = useUploadProfilePictureMutation();
 
 	const completeOnboarding = async ({ firstName, lastName }: OnboardingSchema) => {
@@ -46,7 +46,7 @@ export const OnboardingScreen = () => {
 
 			setUser(parsedUser.data);
 
-			if (file !== null) {
+			if (file !== undefined) {
 				await uploadImage(file);
 			}
 		} catch (e) {
@@ -60,7 +60,7 @@ export const OnboardingScreen = () => {
 				Herzlich Willkommen bei PlanBuddy!
 			</SizableText>
 			<SizableText>Wenn Du willst such Dir ein schickes Profilbild aus und lade es hoch</SizableText>
-			<AvatarImagePicker image={file} editable onImageDeleted={() => setFile(null)} onImageSelected={setFile} />
+			<AvatarImagePicker image={file} editable onImageDeleted={() => setFile(undefined)} onImageSelected={setFile} />
 			<SizableText>Damit deine Freunde dich ohne Probleme finden können gib uns bitte folgende Informationen. Diese Angaben sind alle optional.</SizableText>
 			<FormProvider {...form}>
 				<FormInput autoComplete="given-name" textContentType="givenName" label="Vorname" name="firstName" />

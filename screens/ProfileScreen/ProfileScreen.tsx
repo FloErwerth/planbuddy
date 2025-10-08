@@ -4,11 +4,12 @@ import { useState } from "react";
 import { Pressable } from "react-native";
 import { SizableText, Spinner, View, XStack } from "tamagui";
 import { useGetUserQuery } from "@/api/user/getUser";
+import { useProfileImageQuery } from "@/api/user/profilePicture";
+import { AvatarImagePicker } from "@/components/AvatarImagePicker";
 import { PressableRow } from "@/components/PressableRow";
 import { Screen } from "@/components/Screen";
 import { Button } from "@/components/tamagui/Button";
 import { Separator } from "@/components/tamagui/Separator";
-import { UserAvatar } from "@/components/UserAvatar";
 import packageJson from "@/package.json";
 import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 import { FriendRequestRow } from "@/screens/ProfileScreen/FriendRequests";
@@ -17,6 +18,7 @@ import { DeleteUserDialog } from "./DeleteUserDialog";
 
 export const ProfileScreen = () => {
 	const { data: user, isLoading: isLoadingProfile } = useGetUserQuery();
+	const { data: profilePicture } = useProfileImageQuery(user?.id);
 	const [deleteUserDialogOpen, setDeleteUserDialogOpen] = useState(false);
 	const { logout } = useAuthenticationContext();
 
@@ -39,7 +41,7 @@ export const ProfileScreen = () => {
 					</Button>
 				}
 			>
-				<UserAvatar size="$10" alignSelf="center" id={user?.id} />
+				<AvatarImagePicker editable={false} image={profilePicture} />
 				<View alignSelf="center" justifyContent="center">
 					<SizableText size="$7" textAlign="center">
 						{user?.firstName} {user?.lastName}
