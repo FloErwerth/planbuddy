@@ -1,0 +1,198 @@
+{
+	"common": {
+		"welcome": "Welcome to PlanBuddy",
+		"subtitle": "Create events effortlessly with your friends",
+		"actions": "Actions",
+		"manage": "Manage",
+		"cancel": "Cancel",
+		"save": "Save",
+		"no": "No",
+		"yes": "Yes",
+		"or": "Or",
+		"until": "until",
+		"oclock": "o'clock",
+		"error": "Error"
+	},
+	"auth": {
+		"login": {
+			"title": "Sign in conveniently with your email",
+			"button": "Sign In",
+			"resendCode": "Resend code ({{seconds}}s)",
+			"securityWarning": "For security reasons, you cannot immediately request a new code.",
+			"error": "An error occurred, please try again"
+		},
+		"token": {
+			"title": "Verification",
+			"heading": "Check your emails",
+			"description": "We have sent a 6-digit code to {{email}}. Please enter the code shown below",
+			"invalidCode": "The entered code is invalid",
+			"verify": "Verify",
+			"requestNewCode": "Request new code"
+		},
+		"sendingEmail": {
+			"sending": "Your email is being sent...",
+			"done": "Done!"
+		},
+		"onboarding": {
+			"description": "So that your friends can find you without problems, please provide the following information. All details are optional.",
+			"firstName": "First Name",
+			"lastName": "Last Name",
+			"complete": "Complete"
+		}
+	},
+	"events": {
+		"title": "Events",
+		"create": "Create Event",
+		"update": "Update Event",
+		"edit": "Edit Event",
+		"delete": "Delete Event",
+		"leave": "Leave Event",
+		"transfer": "Transfer Event",
+		"transferTo": "Transfer to {{name}}",
+		"transferTitle": "Transfer Event",
+		"transferDescription": "Choose someone who will now lead the event.",
+		"transferConfirm": "Do you want to transfer the event to {{name}}?",
+		"name": "Event Name",
+		"timeframe": "Timeframe",
+		"start": "Start",
+		"end": "End",
+		"location": "Location",
+		"details": "Details",
+		"link": "Link",
+		"upcoming": "Upcoming",
+		"past": "Past",
+		"host": "Your Host",
+		"statistics": "Event Statistics",
+		"hosted": "hosted",
+		"contributed": "contributed",
+		"attended": "attended"
+	},
+	"guests": {
+		"title": "Guests",
+		"invite": "Invite Guests",
+		"add": "Add Guests",
+		"reviewAndAdd": "Review and add guests({{count}})",
+		"reviewInvitations": "Review Invitations",
+		"reviewDescription": "Review the guest invitations once more. Then you can invite the guests.",
+		"editSelection": "Edit Selection",
+		"accepted": "Accepted",
+		"pending": "Pending",
+		"declined": "Declined",
+		"searchPlaceholder": "Email or Name",
+		"nameOrEmail": "Name or Email",
+		"removeFromEvent": "Remove {{name}} from event",
+		"manageParticipation": "Manage Participation",
+		"role": "Role",
+		"isAdmin": "Is Admin",
+		"leaveEventTitle": "Leave Event",
+		"leaveEventConfirm": "Are you sure you want to leave the event?",
+		"manageInvitation": "Manage Invitation"
+	},
+	"participants": {
+		"title": "Participants"
+	},
+	"friends": {
+		"title": "Your Friends",
+		"add": "Add Friends",
+		"startSearch": "Start a search to add new friends",
+		"requests": "Friend Requests",
+		"receivedOn": "Received on {{date}}",
+		"declineRequest": "Decline Request",
+		"declineConfirm": "Are you sure you want to decline the request from {{name}}?",
+		"unfriend": "End Friendship",
+		"unfriendConfirm": "Do you want to end your friendship with {{name}}?",
+		"friendshipWith": "Your friendship with \n{{name}}",
+		"alreadyFriends": "already friends",
+		"added": "added!",
+		"declined": "declined"
+	},
+	"profile": {
+		"title": "Profile",
+		"edit": "Edit Profile",
+		"settings": "Settings",
+		"email": "Email",
+		"firstName": "First Name",
+		"lastName": "Last Name",
+		"submitChanges": "Submit Changes",
+		"deleteAccount": "Delete Account",
+		"deleteAccountTitle": "Delete Account?",
+		"deleteAccountWarning": "We're sorry you want to delete your account.",
+		"deleteAccountEventsWarning": "Please note that deleting your account will also delete all events you created, unless you transfer them to someone else beforehand.",
+		"deleteAccountCreatorWarning": "You still have events where you are registered as creator.",
+		"deleteAccountCreatorWarning2": "If you delete your account, your created events will also be deleted.",
+		"deleteAccountConfirm": "Are you sure you want to delete your account?"
+	},
+	"notifications": {
+		"title": "Notifications",
+		"eventParticipation": "Event Participation",
+		"invitations": "Invitations",
+		"updates": "Updates",
+		"start": "Start",
+		"eventManagement": "Event Management",
+		"invitationAnswered": "Invitation Answered"
+	},
+	"share": {
+		"title": "Share {{eventName}}",
+		"scanQR": "Let your guests scan this QR code",
+		"or": "Or",
+		"shareLink": "Share your invitation link",
+		"copyLink": "Copy the invitation link"
+	},
+	"creator": {
+		"warningNoAdmin": "Warning! You are registered as the creator of the event and there is currently no other managing guest.",
+		"transferOrDelete": "Please choose a new manager for the event. Alternatively, you can delete the event.",
+		"noOtherGuests": "Unfortunately, there are no other participants for this event yet, so you cannot transfer the event to anyone.",
+		"notifyGuests": "If you still don't want to cancel the event, let participants know that participation must be confirmed in order to transfer the event.",
+		"canStillDelete": "You can of course still delete the event if you want.",
+		"chooseNewAdmin": "Choose New Manager"
+	},
+	"calendar": {
+		"monthNames": {
+			"january": "January",
+			"february": "February",
+			"march": "March",
+			"april": "April",
+			"may": "May",
+			"june": "June",
+			"july": "July",
+			"august": "August",
+			"september": "September",
+			"october": "October",
+			"november": "November",
+			"december": "December"
+		},
+		"monthNamesShort": {
+			"jan": "Jan",
+			"feb": "Feb",
+			"mar": "Mar",
+			"apr": "Apr",
+			"may": "May",
+			"jun": "Jun",
+			"jul": "Jul",
+			"aug": "Aug",
+			"sep": "Sep",
+			"oct": "Oct",
+			"nov": "Nov",
+			"dec": "Dec"
+		},
+		"dayNames": {
+			"monday": "Monday",
+			"tuesday": "Tuesday",
+			"wednesday": "Wednesday",
+			"thursday": "Thursday",
+			"friday": "Friday",
+			"saturday": "Saturday",
+			"sunday": "Sunday"
+		},
+		"dayNamesShort": {
+			"mon": "Mon",
+			"tue": "Tue",
+			"wed": "Wed",
+			"thu": "Thu",
+			"fri": "Fri",
+			"sat": "Sat",
+			"sun": "Sun"
+		},
+		"today": "today"
+	}
+}

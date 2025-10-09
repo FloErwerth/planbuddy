@@ -1,30 +1,32 @@
-import { FormTextArea } from "@/components/FormFields";
-import { FormInput } from "@/components/FormFields/FormInput";
-import { ScrollableScreen } from "@/components/Screen";
-import { Button } from "@/components/tamagui/Button";
-import { ToggleButton } from "@/components/TogglePillButton";
-import { EventCreationImage } from "@/screens/EventCreation/EventCreationImage";
-import { formatToDate, formatToTime } from "@/utils/date";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Separator, SizableText, View, XStack, YStack } from "tamagui";
-import { EventSelectStartEnd } from "../Events/EventSelectStartEnd";
-import { useStartEndTimePickers } from "../Events/hooks/useStartEndTime";
-import { BackButton } from "@/components/BackButton";
 import { useCreateEventMutation } from "@/api/events/createEvents";
 import { useEventImageQuery } from "@/api/events/eventImage";
 import { useRemoveEventImageMutation } from "@/api/events/removeEventImage";
 import { type AppEvent, eventCreationSchema } from "@/api/events/types";
 import { useUpdateEventMutation } from "@/api/events/updateEvent";
 import { useUploadEventImageMutation } from "@/api/events/uploadEventImage";
+import { BackButton } from "@/components/BackButton";
+import { FormTextArea } from "@/components/FormFields";
+import { FormInput } from "@/components/FormFields/FormInput";
+import { ScrollableScreen } from "@/components/Screen";
+import { ToggleButton } from "@/components/TogglePillButton";
+import { Button } from "@/components/tamagui/Button";
+import { useTranslation } from "@/hooks/useTranslation";
+import { EventCreationImage } from "@/screens/EventCreation/EventCreationImage";
+import { formatToDate, formatToTime } from "@/utils/date";
+import { EventSelectStartEnd } from "../Events/EventSelectStartEnd";
+import { useStartEndTimePickers } from "../Events/hooks/useStartEndTime";
 
 type EventCreationProps = {
 	event?: AppEvent;
 };
 
 export const EventCreation = ({ event }: EventCreationProps) => {
+	const { t } = useTranslation();
 	const now = new Date();
 	const {
 		startDate,
@@ -114,19 +116,19 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 	console.log(form.formState.errors);
 	return (
 		<>
-			<ScrollableScreen paddingBottom="$12" back={event && <BackButton />} title={event ? "Event bearbeiten" : "Event erstellen"}>
+			<ScrollableScreen paddingBottom="$12" back={event && <BackButton />} title={event ? t("events.edit") : t("events.create")}>
 				<YStack backgroundColor="$accent" overflow="hidden" borderRadius="$4" elevation="$2">
 					<EventCreationImage setImage={setImageToUpload} image={imageToUpload} />
 				</YStack>
 				<View gap="$4" height="100%">
 					<FormProvider {...form}>
-						<FormInput label="Eventname" name="name" />
+						<FormInput label={t("events.name")} name="name" />
 						<View gap="$1.5">
-							<SizableText>Zeitraum</SizableText>
+							<SizableText>{t("events.timeframe")}</SizableText>
 							<View gap="$2" borderRadius="$4" padding="$2" backgroundColor="$accent">
 								<View>
 									<XStack gap="$4" alignItems="center" justifyContent="space-between">
-										<SizableText>Start</SizableText>
+										<SizableText>{t("events.start")}</SizableText>
 										<XStack gap="$2">
 											<ToggleButton inactiveBackgroundColor="$white" active={isStartCalendarOpen} onPress={showStartCalendar} size="$2">
 												<SizableText color={isStartCalendarOpen ? "$background" : "$color"}>{formatToDate(startDate)}</SizableText>
@@ -147,7 +149,7 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 								<Separator borderColor="$background" />
 								<View>
 									<XStack gap="$4" width="100%" alignItems="center" justifyContent="space-between">
-										<SizableText>Ende</SizableText>
+										<SizableText>{t("events.end")}</SizableText>
 										<XStack gap="$2" alignSelf="center">
 											<ToggleButton elevationAndroid={0} inactiveBackgroundColor="$white" active={isEndCalendarOpen} onPress={showEndCalendar} size="$2">
 												<SizableText color={isEndCalendarOpen ? "$background" : "$color"}>{formatToDate(endDate)}</SizableText>
@@ -173,9 +175,9 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 							{endTimeError && <SizableText theme="error">{endTimeError.message}</SizableText>}
 						</View>
 
-						<FormInput label="Ort" name="location" />
-						<FormTextArea multiline verticalAlign="top" label="Details" name="description" />
-						<FormInput label="Link" name="link" />
+						<FormInput label={t("events.location")} name="location" />
+						<FormTextArea multiline verticalAlign="top" label={t("events.details")} name="description" />
+						<FormInput label={t("events.link")} name="link" />
 					</FormProvider>
 				</View>
 			</ScrollableScreen>
@@ -196,7 +198,7 @@ export const EventCreation = ({ event }: EventCreationProps) => {
 					}),
 				)}
 			>
-				{event ? "Event aktualisieren" : "Event erstellen"}
+				{event ? t("events.update") : t("events.create")}
 			</Button>
 		</>
 	);

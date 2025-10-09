@@ -1,23 +1,31 @@
-import { useAllFriendsQuery } from "@/api/friends/allFriends";
-import { type Friend, FriendRequestStatusEnum } from "@/api/friends/types";
-import { SearchInput } from "@/components/SearchInput";
-import { Card } from "@/components/tamagui/Card";
-import { UserAvatar } from "@/components/UserAvatar";
-import { formatToDate } from "@/utils/date";
 import { FlashList, type ListRenderItemInfo } from "@shopify/flash-list";
 import { type FC, useState } from "react";
 import { Pressable, RefreshControl } from "react-native";
 import { SizableText, View, XStack } from "tamagui";
+import { useAllFriendsQuery } from "@/api/friends/allFriends";
+import { type Friend, FriendRequestStatusEnum } from "@/api/friends/types";
+import { useProfileImageQuery } from "@/api/user/profilePicture";
+import { AvatarImagePicker } from "@/components/AvatarImagePicker";
+import { SearchInput } from "@/components/SearchInput";
+import { Card } from "@/components/tamagui/Card";
+import { useTranslation } from "@/hooks/useTranslation";
+import { formatToDate } from "@/utils/date";
 
 type FriendsListProps = {
 	onFriendPressed: (friend: Friend) => void;
 	Action: FC<{ friend: Friend }>;
 };
 
+const FriendAvatar = ({ id }: { id: string }) => {
+	const { data: image } = useProfileImageQuery(id);
+	return <AvatarImagePicker image={image || undefined} />;
+};
+
 export const FriendsList = ({ onFriendPressed, Action }: FriendsListProps) => {
 	const { data: friends, refetch } = useAllFriendsQuery();
 	const [refreshing, setRefreshing] = useState(false);
 	const [filter, setFilter] = useState<string | null>(null);
+	const { t } = useTranslation();
 
 	const render = ({ item: friend }: ListRenderItemInfo<Friend>) => {
 		const { id, firstName, lastName } = friend;
@@ -27,14 +35,14 @@ export const FriendsList = ({ onFriendPressed, Action }: FriendsListProps) => {
 				<Card>
 					<XStack justifyContent="space-between" paddingRight="$2" alignItems="center">
 						<XStack alignItems="center" gap="$4">
-							<UserAvatar id={id} />
+							<FriendAvatar id={id} />
 							<View>
 								<SizableText>{`${firstName} ${lastName}`}</SizableText>
 								{friend.status === FriendRequestStatusEnum.ACCEPTED && friend.acceptedAt && (
-									<SizableText size="$2">Befreundet seit {formatToDate(friend.acceptedAt)}</SizableText>
+									<SizableText size="$2">{t("friends.receivedOn", { date: formatToDate(friend.acceptedAt) })}</SizableText>
 								)}
 								{friend.status === FriendRequestStatusEnum.PENDING && friend.sendAt && (
-									<SizableText size="$2">Gesendet am {formatToDate(friend.sendAt)}</SizableText>
+									<SizableText size="$2">{t("friends.receivedOn", { date: formatToDate(friend.sendAt) })}</SizableText>
 								)}
 							</View>
 						</XStack>
@@ -72,7 +80,7 @@ export const FriendsList = ({ onFriendPressed, Action }: FriendsListProps) => {
 
 	return (
 		<>
-			<SearchInput margin="$4" placeholder="Name oder E-Mail" onChangeText={setFilter} />
+			<SearchInput margin="$4" placeholder={t("guests.nameOrEmail")} onChangeText={setFilter} />
 			<FlashList
 				key={searchedOthers?.length}
 				refreshControl={

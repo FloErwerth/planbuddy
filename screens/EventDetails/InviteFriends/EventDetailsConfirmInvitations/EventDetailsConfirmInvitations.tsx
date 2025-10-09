@@ -12,7 +12,8 @@ import { NotificationChannelEnum } from "@/api/user/types";
 import { BackButton } from "@/components/BackButton";
 import { Screen } from "@/components/Screen";
 import { Button } from "@/components/tamagui/Button";
-import { SizeableText } from "@/components/tamagui/SizeableText";
+import { SizeableText } from "@/components/tamagui/Text";
+import { useTranslation } from "@/hooks/useTranslation";
 import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 import { EventDetailsConfirmInvitationsGuest } from "@/screens/EventDetails/InviteFriends/EventDetailsConfirmInvitations/EventDetailsConfirmInvitationsGuest";
@@ -27,6 +28,7 @@ export const EventDetailsConfirmInvitations = () => {
 	const { data: me } = useSingleParticipantQuery(eventId, user.id);
 	const { mutate } = useCreateParticipationMutation();
 	const usersAdded = allUsers?.filter((user) => usersToAdd.has(user.id)) ?? [];
+	const { t } = useTranslation();
 
 	const handleAddParticipants = async () => {
 		mutate(
@@ -51,8 +53,8 @@ export const EventDetailsConfirmInvitations = () => {
 	};
 
 	return (
-		<Screen flex={1} back={<BackButton href="/eventDetails/inviteGuests" />} title="Einladungen überprüfen">
-			<SizeableText>Sieh dir die Einladungen zu den Gästen nochmals an. Anschließend kannst Du die Gäste einladen.</SizeableText>
+		<Screen flex={1} back={<BackButton href="/eventDetails/inviteGuests" />} title={t("guests.reviewInvitations")}>
+			<SizeableText>{t("guests.reviewDescription")}</SizeableText>
 			<FlashList
 				showsVerticalScrollIndicator={false}
 				estimatedItemSize={92}
@@ -62,10 +64,10 @@ export const EventDetailsConfirmInvitations = () => {
 			/>
 			<View flexDirection="row" gap="$2">
 				<Button onPress={() => router.replace("/eventDetails/inviteGuests")} variant="secondary" flex={1}>
-					Auswahl editieren
+					{t("guests.editSelection")}
 				</Button>
 				<Button flex={1} onPress={handleAddParticipants}>
-					Gäste einladen
+					{t("guests.invite")}
 				</Button>
 			</View>
 		</Screen>

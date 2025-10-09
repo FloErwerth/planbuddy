@@ -1,10 +1,10 @@
+import { X } from "@tamagui/lucide-icons";
+import { View, XStack } from "tamagui";
 import type { User } from "@/api/user/types";
 import { Button } from "@/components/tamagui/Button";
 import { Card } from "@/components/tamagui/Card";
-import { SizeableText } from "@/components/tamagui/SizeableText";
+import { SizeableText } from "@/components/tamagui/Text";
 import { UserAvatar } from "@/components/UserAvatar";
-import { X } from "@tamagui/lucide-icons";
-import { View, XStack } from "tamagui";
 
 export type EventDetailsConfirmInvitationsGuestProps = User & { onPress: () => void };
 export const EventDetailsConfirmInvitationsGuest = ({ id, onPress, firstName, lastName, email }: EventDetailsConfirmInvitationsGuestProps) => {

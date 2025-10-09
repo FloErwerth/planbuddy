@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
-import { useSetTimeout } from "@/hooks/useSetTimeout";
-import { SizableText, useWindowDimensions, View } from "tamagui";
 import { Check } from "@tamagui/lucide-icons";
-import LottieView from "lottie-react-native";
-import spinner from "@/assets/animations/spinner.json";
 import { router } from "expo-router";
+import LottieView from "lottie-react-native";
+import { useEffect, useState } from "react";
+import { SizableText, useWindowDimensions, View } from "tamagui";
+import spinner from "@/assets/animations/spinner.json";
+import { useSetTimeout } from "@/hooks/useSetTimeout";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const SendingEmailScreen = () => {
+	const { t } = useTranslation();
 	const [emailSent, setEmailSent] = useState(false);
 	const { setTimeout: setEmailSentTimeout, clear: clearEmailSentTimeout } = useSetTimeout();
 	const { setTimeout: setRedirectTimeout, clear: clearRedirectTimeout } = useSetTimeout();
@@ -56,7 +58,7 @@ export const SendingEmailScreen = () => {
 				)}
 			</View>
 			<View alignItems="center">
-				{emailSent ? <SizableText size="$6">Fertig!</SizableText> : <SizableText size="$6">Deine E-Mail wird versendet...</SizableText>}
+				{emailSent ? <SizableText size="$6">{t("auth.sendingEmail.done")}</SizableText> : <SizableText size="$6">{t("auth.sendingEmail.sending")}</SizableText>}
 			</View>
 		</View>
 	);

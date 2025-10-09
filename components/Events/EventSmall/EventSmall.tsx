@@ -1,12 +1,11 @@
-import { useEventImageQuery } from "@/api/events/eventImage";
-import type { AppEvent } from "@/api/events/types";
-import { SizeableText } from "@/components/tamagui/SizeableText";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { Pressable, StyleSheet } from "react-native";
 import { View, XStack } from "tamagui";
-
+import { useEventImageQuery } from "@/api/events/eventImage";
+import type { AppEvent } from "@/api/events/types";
 import placeholderImage from "@/assets/images/placeholderEventImageSmall.jpg";
+import { SizeableText } from "@/components/tamagui/Text";
 import { formatToDate, formatToTime } from "@/utils/date";
 
 type EventSmallProps = Pick<AppEvent, "name" | "location" | "startTime" | "id">;

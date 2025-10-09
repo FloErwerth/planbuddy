@@ -3,6 +3,7 @@ import { useAllEventsQuery } from "@/api/events/allEvents";
 import { useDeleteUserMutation } from "@/api/user/deleteUser";
 import { Button } from "@/components/tamagui/Button";
 import { Dialog } from "@/components/tamagui/Dialog";
+import { useTranslation } from "@/hooks/useTranslation";
 import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 export const DeleteUserDialog = (props: DialogProps) => {
@@ -10,6 +11,7 @@ export const DeleteUserDialog = (props: DialogProps) => {
 	const { user, logout } = useAuthenticationContext();
 	const isCreator = events?.some((event) => event.creatorId === user?.id);
 	const { mutateAsync: deleteUserFromDB } = useDeleteUserMutation();
+	const { t } = useTranslation();
 
 	const handleDeleteAccount = async () => {
 		await deleteUserFromDB();
@@ -19,18 +21,18 @@ export const DeleteUserDialog = (props: DialogProps) => {
 	return (
 		<Dialog {...props}>
 			<SizableText textAlign="center" size="$6">
-				Account löschen?
+				{t("profile.deleteAccountTitle")}
 			</SizableText>
 			{isCreator && (
 				<>
-					<SizableText>Du hast noch Events, in denen Du als Ersteller:in eingetragen bist.</SizableText>
-					<SizableText>Wenn Du deinen Account löschsts, dann werden auch deine erstellen Events gelöscht.</SizableText>
+					<SizableText>{t("profile.deleteAccountCreatorWarning")}</SizableText>
+					<SizableText>{t("profile.deleteAccountCreatorWarning2")}</SizableText>
 				</>
 			)}
-			<SizableText>Bist Du Dir sicher, dass Du deinen Account löschen möchtest?</SizableText>
+			<SizableText>{t("profile.deleteAccountConfirm")}</SizableText>
 			<View gap="$2">
-				<Button onPress={handleDeleteAccount}>Account löschen</Button>
-				<Button variant="secondary">Abbrechen</Button>
+				<Button onPress={handleDeleteAccount}>{t("profile.deleteAccount")}</Button>
+				<Button variant="secondary">{t("common.cancel")}</Button>
 			</View>
 		</Dialog>
 	);

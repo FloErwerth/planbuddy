@@ -11,9 +11,11 @@ import { AvatarImagePicker } from "@/components/AvatarImagePicker";
 import { FormInput } from "@/components/FormFields";
 import { Screen } from "@/components/Screen";
 import { Button } from "@/components/tamagui/Button";
+import { useTranslation } from "@/hooks/useTranslation";
 import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 
 export const OnboardingScreen = () => {
+	const { t } = useTranslation();
 	const form = useForm<OnboardingSchema>({
 		resolver: zodResolver(onboardingSchema),
 	});
@@ -57,17 +59,17 @@ export const OnboardingScreen = () => {
 	return (
 		<Screen flex={1}>
 			<SizableText size="$8" textAlign="center">
-				Herzlich Willkommen bei PlanBuddy!
+				{t("welcome.title")}
 			</SizableText>
-			<SizableText>Wenn Du willst such Dir ein schickes Profilbild aus und lade es hoch</SizableText>
+			<SizableText>{t("auth.onboarding.description")}</SizableText>
 			<AvatarImagePicker image={file} editable onImageDeleted={() => setFile(undefined)} onImageSelected={setFile} />
-			<SizableText>Damit deine Freunde dich ohne Probleme finden können gib uns bitte folgende Informationen. Diese Angaben sind alle optional.</SizableText>
+			<SizableText>{t("auth.onboarding.description")}</SizableText>
 			<FormProvider {...form}>
-				<FormInput autoComplete="given-name" textContentType="givenName" label="Vorname" name="firstName" />
-				<FormInput autoComplete="family-name" textContentType="familyName" label="Nachname" name="lastName" />
+				<FormInput autoComplete="given-name" textContentType="givenName" label={t("auth.onboarding.firstName")} name="firstName" />
+				<FormInput autoComplete="family-name" textContentType="familyName" label={t("auth.onboarding.lastName")} name="lastName" />
 			</FormProvider>
 			<View flex={1} />
-			<Button onPress={form.handleSubmit(completeOnboarding)}>Abschließen</Button>
+			<Button onPress={form.handleSubmit(completeOnboarding)}>{t("auth.onboarding.complete")}</Button>
 		</Screen>
 	);
 };

@@ -1,0 +1,198 @@
+{
+	"common": {
+		"welcome": "Willkommen bei PlanBuddy",
+		"subtitle": "Erstelle mühelos Events mit deinen Freunden",
+		"actions": "Aktionen",
+		"manage": "Verwalten",
+		"cancel": "Abbrechen",
+		"save": "Speichern",
+		"no": "Nein",
+		"yes": "Ja",
+		"or": "oder",
+		"until": "bis",
+		"oclock": "Uhr",
+		"error": "Fehler"
+	},
+	"auth": {
+		"login": {
+			"title": "Melde dich hier ganz bequem mit deiner E-Mail an",
+			"button": "Anmelden",
+			"resendCode": "Code erneut senden ({{seconds}}s)",
+			"securityWarning": "Aus Sicherheitsgründen kannst Du nicht direkt einen neuen Code anfordern.",
+			"error": "Es ist ein Fehler aufgetreten, bitte versuche es erneut"
+		},
+		"token": {
+			"title": "Verifizierung",
+			"heading": "Checke deine E-Mails",
+			"description": "Wir haben dir einen 6-stelligen Code an {{email}} gesendet. Bitte gib den dort angezeigten Code unten ein",
+			"invalidCode": "Der eingegebene Code ist ungültig",
+			"verify": "Verifizieren",
+			"requestNewCode": "Neuen Code anfordern"
+		},
+		"sendingEmail": {
+			"sending": "Deine E-Mail wird versendet...",
+			"done": "Fertig!"
+		},
+		"onboarding": {
+			"description": "Damit deine Freunde dich ohne Probleme finden können gib uns bitte folgende Informationen. Diese Angaben sind alle optional.",
+			"firstName": "Vorname",
+			"lastName": "Nachname",
+			"complete": "Abschließen"
+		}
+	},
+	"events": {
+		"title": "Events",
+		"create": "Event erstellen",
+		"update": "Event aktualisieren",
+		"edit": "Event bearbeiten",
+		"delete": "Event löschen",
+		"leave": "Event verlassen",
+		"transfer": "Event übertragen",
+		"transferTo": "An {{name}} übertragen",
+		"transferTitle": "Event übertragen",
+		"transferDescription": "Suche dir nun jemanden aus, der das Event von nun an Leiten wird.",
+		"transferConfirm": "Möchtest Du {{name}} das Event übertragen?",
+		"name": "Eventname",
+		"timeframe": "Zeitraum",
+		"start": "Start",
+		"end": "Ende",
+		"location": "Ort",
+		"details": "Details",
+		"link": "Link",
+		"upcoming": "Ausstehend",
+		"past": "Vergangen",
+		"host": "Dein Host",
+		"statistics": "Event Statistiken",
+		"hosted": "veranstaltet",
+		"contributed": "mitgewirkt",
+		"attended": "teilgenommen"
+	},
+	"guests": {
+		"title": "Gäste",
+		"invite": "Gäste einladen",
+		"add": "Gäste hinzufügen",
+		"reviewAndAdd": "Gäste überprüfen und hinzufügen({{count}})",
+		"reviewInvitations": "Einladungen überprüfen",
+		"reviewDescription": "Sieh dir die Einladungen zu den Gästen nochmals an. Anschließend kannst Du die Gäste einladen.",
+		"editSelection": "Auswahl editieren",
+		"accepted": "Zugesagt",
+		"pending": "Ausstehend",
+		"declined": "Abgesagt",
+		"searchPlaceholder": "E-Mail oder Name",
+		"nameOrEmail": "Name oder E-Mail",
+		"removeFromEvent": "{{name}} aus Event ausladen",
+		"manageParticipation": "Teilnehmerschaft verwalten",
+		"role": "Rolle",
+		"isAdmin": "Ist Admin",
+		"leaveEventTitle": "Event verlassen",
+		"leaveEventConfirm": "Bist Du dir sicher, dass Du das Event verlassen möchtest?",
+		"manageInvitation": "Einladung verwalten"
+	},
+	"participants": {
+		"title": "Teilnehmer"
+	},
+	"friends": {
+		"title": "Deine Freunde",
+		"add": "Freunde hinzufügen",
+		"startSearch": "Starte eine Suche, um neue Freunde hinzuzufügen",
+		"requests": "Freundschaftsanfragen",
+		"receivedOn": "Erhalten am {{date}}",
+		"declineRequest": "Anfrage ablehnen",
+		"declineConfirm": "Bist Du Dir sicher, dass Du die Anfrage von {{name}} ablehnen willst?",
+		"unfriend": "Freundschaft kündigen",
+		"unfriendConfirm": "Möchtest Du {{name}} die Freundschaft kündigen?",
+		"friendshipWith": "Deine Freundschaft mit \n{{name}}",
+		"alreadyFriends": "bereits Freunde",
+		"added": "hinzugefügt!",
+		"declined": "abgelehnt"
+	},
+	"profile": {
+		"title": "Profil",
+		"edit": "Profil bearbeiten",
+		"settings": "Einstellungen",
+		"email": "Email",
+		"firstName": "Vorname",
+		"lastName": "Nachname",
+		"submitChanges": "Änderungen abschicken",
+		"deleteAccount": "Account löschen",
+		"deleteAccountTitle": "Account löschen?",
+		"deleteAccountWarning": "Schade, dass Du deinen Account löschen möchtest.",
+		"deleteAccountEventsWarning": "Bitte beachte, dass mit der Löschung deines Accounts auch alle von Dir erstellten Events gelöscht, außer Du überträgst diese vorher an jemand anderen.",
+		"deleteAccountCreatorWarning": "Du hast noch Events, in denen Du als Ersteller:in eingetragen bist.",
+		"deleteAccountCreatorWarning2": "Wenn Du deinen Account löschsts, dann werden auch deine erstellen Events gelöscht.",
+		"deleteAccountConfirm": "Bist Du Dir sicher, dass Du deinen Account löschen möchtest?"
+	},
+	"notifications": {
+		"title": "Benachrichtigungen",
+		"eventParticipation": "Event Teilnahme",
+		"invitations": "Einladungen",
+		"updates": "Aktualisierungen",
+		"start": "Start",
+		"eventManagement": "Event Verwaltung",
+		"invitationAnswered": "Auf Einladung geantwortet"
+	},
+	"share": {
+		"title": "{{eventName}} teilen",
+		"scanQR": "Lasse deine Gäste diesen QR Code scannen",
+		"or": "Oder",
+		"shareLink": "Teile deinen Einladungslink",
+		"copyLink": "Kopiere den Einladungslink"
+	},
+	"creator": {
+		"warningNoAdmin": "Achtung! Du bist als Creator des Events eingetragen und es gibt aktuell keinen weiteren verwaltenden Gast.",
+		"transferOrDelete": "Bitte suche nun einen neuen Verwaltenden für das Event aus. Alternativ kannst Du das Event auch löschen.",
+		"noOtherGuests": "Leider gibt es für dieses Event noch keine weiteren Teilnehmenden, daher kannst Du das Event auch niemandem übertragen.",
+		"notifyGuests": "Wenn Du das Event dennoch nicht absagen möchtest, dann sage Teilnehmenden bescheid, dass die Teilnahme bestätigt werden muss, um das Event übertragen zu können.",
+		"canStillDelete": "Du kannst natürlich dennoch das Event löschen, wenn Du das möchtest.",
+		"chooseNewAdmin": "Neuen Verwaltenden aussuchen"
+	},
+	"calendar": {
+		"monthNames": {
+			"january": "Januar",
+			"february": "Februar",
+			"march": "März",
+			"april": "April",
+			"may": "Mai",
+			"june": "Juni",
+			"july": "Juli",
+			"august": "August",
+			"september": "September",
+			"october": "Oktober",
+			"november": "November",
+			"december": "Dezember"
+		},
+		"monthNamesShort": {
+			"jan": "Jan",
+			"feb": "Feb",
+			"mar": "Mär",
+			"apr": "Apr",
+			"may": "Mai",
+			"jun": "Jun",
+			"jul": "Jul",
+			"aug": "Aug",
+			"sep": "Sep",
+			"oct": "Okt",
+			"nov": "Nov",
+			"dec": "Dez"
+		},
+		"dayNames": {
+			"monday": "Montag",
+			"tuesday": "Dienstag",
+			"wednesday": "Mittwoch",
+			"thursday": "Donnerstag",
+			"friday": "Freitag",
+			"saturday": "Samstag",
+			"sunday": "Sonntag"
+		},
+		"dayNamesShort": {
+			"mon": "Mo",
+			"tue": "Di",
+			"wed": "Mi",
+			"thu": "Do",
+			"fri": "Fr",
+			"sat": "Sa",
+			"sun": "So"
+		},
+		"today": "heute"
+	}
+}

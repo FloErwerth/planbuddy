@@ -6,20 +6,23 @@ import { type Friend, FriendRequestStatusEnum } from "@/api/friends/types";
 import { Button } from "@/components/tamagui/Button";
 import { Card } from "@/components/tamagui/Card";
 import { UserAvatar } from "@/components/UserAvatar";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type SearchAcceptanceStatusProps = { friend: Friend };
 const SearchAcceptanceStatus = ({ friend: { status } }: SearchAcceptanceStatusProps) => {
+	const { t } = useTranslation();
+
 	if (status === FriendRequestStatusEnum.PENDING) {
 		return (
 			<View padding="$1.5" borderRadius="$12" backgroundColor="$color.green8Light">
-				<SizableText size="$1">hinzugefügt!</SizableText>
+				<SizableText size="$1">{t("friends.added")}</SizableText>
 			</View>
 		);
 	}
 	if (status === FriendRequestStatusEnum.DECLINED) {
 		return (
 			<View padding="$1.5" borderRadius="$12" backgroundColor="$color.red8Light">
-				<SizableText size="$1">abgelehnt</SizableText>
+				<SizableText size="$1">{t("friends.declined")}</SizableText>
 			</View>
 		);
 	}
@@ -27,7 +30,7 @@ const SearchAcceptanceStatus = ({ friend: { status } }: SearchAcceptanceStatusPr
 	if (status === FriendRequestStatusEnum.ACCEPTED) {
 		return (
 			<View padding="$1.5" borderRadius="$12" backgroundColor="$color.green8Light">
-				<SizableText size="$1">bereits Freunde</SizableText>
+				<SizableText size="$1">{t("friends.alreadyFriends")}</SizableText>
 			</View>
 		);
 	}

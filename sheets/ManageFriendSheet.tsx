@@ -1,16 +1,18 @@
+import { useState } from "react";
 import { type SheetProps, SizableText, View } from "tamagui";
-import { Sheet } from "@/components/tamagui/Sheet";
+import { useRemoveFriendMutation } from "@/api/friends/removeFriend";
+import type { Friend } from "@/api/friends/types";
 import { Screen } from "@/components/Screen";
 import { Button } from "@/components/tamagui/Button";
-import { useState } from "react";
 import { Dialog } from "@/components/tamagui/Dialog";
-import type { Friend } from "@/api/friends/types";
-import { useRemoveFriendMutation } from "@/api/friends/removeFriend";
+import { Sheet } from "@/components/tamagui/Sheet";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type ManageFriendSheetProps = SheetProps & { friend: Friend };
 export const ManageFriendSheet = ({ friend, onOpenChange, ...props }: ManageFriendSheetProps) => {
 	const { mutateAsync } = useRemoveFriendMutation();
 	const [warningModal, setWarningModal] = useState(false);
+	const { t } = useTranslation();
 
 	const handleRemoveFriendPressed = () => {
 		setWarningModal(true);
@@ -25,18 +27,18 @@ export const ManageFriendSheet = ({ friend, onOpenChange, ...props }: ManageFrie
 	return (
 		<>
 			<Sheet {...props} onOpenChange={onOpenChange} snapPointsMode="fit" snapPoints={undefined}>
-				<Screen title={`Deine Freundschaft mit \n${friend?.firstName} ${friend?.lastName}`}>
-					<Button onPress={handleRemoveFriendPressed}>Freundschaft kündigen</Button>
+				<Screen title={t("friends.friendshipWith", { name: `${friend?.firstName} ${friend?.lastName}` })}>
+					<Button onPress={handleRemoveFriendPressed}>{t("friends.unfriend")}</Button>
 				</Screen>
 			</Sheet>
 			<Dialog onOpenChange={setWarningModal} zIndex={100_000_000} open={warningModal}>
-				<SizableText size="$5">Möchtest Du {friend?.firstName} die Freundschaft kündigen?</SizableText>
+				<SizableText size="$5">{t("friends.unfriendConfirm", { name: friend?.firstName })}</SizableText>
 				<View gap="$2">
 					<Button onPress={handleRemoveFriend}>
-						<SizableText color="$background">Freundschaft kündigen</SizableText>
+						<SizableText color="$background">{t("friends.unfriend")}</SizableText>
 					</Button>
 					<Button variant="secondary" onPress={() => setWarningModal(false)}>
-						Nein
+						{t("common.no")}
 					</Button>
 				</View>
 			</Dialog>

@@ -1,5 +1,5 @@
-import { SizeableText } from "@/components/tamagui/SizeableText";
 import { TimerPicker, type TimerPickerProps } from "react-native-timer-picker";
+import { SizeableText } from "@/components/tamagui/Text";
 
 export const EventTimerPicker = (props: TimerPickerProps) => {
 	return (

@@ -12,6 +12,7 @@ import { PlusButton } from "@/components/PlusButton";
 import { Screen } from "@/components/Screen";
 import { SearchInput } from "@/components/SearchInput";
 import { ToggleButton } from "@/components/TogglePillButton";
+import { useTranslation } from "@/hooks/useTranslation";
 import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 import { ParticipantRow } from "@/screens/Participants/Participant";
@@ -24,6 +25,7 @@ export const Participants = () => {
 	const [refreshing, setRefreshing] = useState(false);
 	const { data: participants, refetch, isLoading } = useSearchParticipantsByStatus(eventId, activeFilters, search);
 	const { user } = useAuthenticationContext();
+	const { t } = useTranslation();
 
 	const sortedParticipants = participants?.sort((a) => (a.userId === user?.id ? 1 : 0));
 
@@ -58,7 +60,7 @@ export const Participants = () => {
 
 	return (
 		<>
-			<Screen back={<BackButton href="/eventDetails" />} title="Teilnehmer" action={<PlusButton onPress={() => router.push("./inviteGuests")} />}>
+			<Screen back={<BackButton href="/eventDetails" />} title={t("participants.title")} action={<PlusButton onPress={() => router.push("./inviteGuests")} />}>
 				<XStack gap="$3">
 					<ToggleButton
 						borderRadius="$12"
@@ -66,7 +68,7 @@ export const Participants = () => {
 						active={acceptedFilterActive}
 						icon={<Eye color="$background" size="$1" />}
 					>
-						Zugesagt
+						{t("guests.accepted")}
 					</ToggleButton>
 					<ToggleButton
 						borderRadius="$12"
@@ -74,7 +76,7 @@ export const Participants = () => {
 						onPress={() => toggleFilter(ParticipantStatusEnum.PENDING)}
 						icon={<Eye color="$background" size="$1" />}
 					>
-						Ausstehend
+						{t("guests.pending")}
 					</ToggleButton>
 					<ToggleButton
 						borderRadius="$12"
@@ -82,10 +84,10 @@ export const Participants = () => {
 						active={declinedFilterActive}
 						icon={<Eye color="$background" size="$1" />}
 					>
-						Abgesagt
+						{t("guests.declined")}
 					</ToggleButton>
 				</XStack>
-				<SearchInput placeholder="E-Mail oder Name" onChangeText={setSearch} />
+				<SearchInput placeholder={t("guests.searchPlaceholder")} onChangeText={setSearch} />
 			</Screen>
 			<FlashList
 				key={sortedParticipants?.length}

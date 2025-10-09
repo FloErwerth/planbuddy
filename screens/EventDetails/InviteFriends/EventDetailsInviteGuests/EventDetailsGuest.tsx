@@ -4,7 +4,7 @@ import type { Participant } from "@/api/participants/types";
 import type { User } from "@/api/user/types";
 import { Card } from "@/components/tamagui/Card";
 import { Checkbox } from "@/components/tamagui/Checkbox";
-import { SizeableText } from "@/components/tamagui/SizeableText";
+import { SizeableText } from "@/components/tamagui/Text";
 import { UserAvatar } from "@/components/UserAvatar";
 import { formatToDate, formatToTime } from "@/utils/date";
 

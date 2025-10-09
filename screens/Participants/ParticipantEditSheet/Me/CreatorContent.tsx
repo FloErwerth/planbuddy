@@ -7,6 +7,7 @@ import { useAllParticipantsFromEventQuery } from "@/api/participants/allParticip
 import { ParticipantRoleEnum, ParticipantStatusEnum } from "@/api/participants/types";
 import { Button } from "@/components/tamagui/Button";
 import { Dialog } from "@/components/tamagui/Dialog";
+import { useTranslation } from "@/hooks/useTranslation";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 
 type CreatorContentProps = Pick<DialogProps, "onOpenChange">;
@@ -20,6 +21,7 @@ export const CreatorContent = ({ onOpenChange }: CreatorContentProps) => {
 		return participant.userId !== me?.userId && participant.status === ParticipantStatusEnum.ACCEPTED;
 	});
 	const [chooseAdminSheetOpen, setChooseAdminSheetOpen] = useState(false);
+	const { t } = useTranslation();
 
 	const { mutateAsync: deleteEvent } = useDeleteEventMutation();
 
@@ -30,34 +32,31 @@ export const CreatorContent = ({ onOpenChange }: CreatorContentProps) => {
 	return (
 		<>
 			<SizableText textAlign="center" size="$6">
-				Event verlassen
+				{t("events.leave")}
 			</SizableText>
 			{!hasAdmin ? (
 				<>
-					<SizableText size="$4">Achtung! Du bist als Creator des Events eingetragen und es gibt aktuell keinen weiteren verwaltenden Gast.</SizableText>
+					<SizableText size="$4">{t("creator.warningNoAdmin")}</SizableText>
 
 					{hasOtherGuests ? (
 						<SizableText textAlign="center" size="$4">
-							Bitte suche nun einen neuen Verwaltenden für das Event aus. Alternativ kannst Du das Event auch löschen.
+							{t("creator.transferOrDelete")}
 						</SizableText>
 					) : (
 						<>
-							<SizableText>Leider gibt es für dieses Event noch keine weiteren Teilnehmenden, daher kannst Du das Event auch niemandem übertragen.</SizableText>
-							<SizableText>
-								Wenn Du das Event dennoch nicht absagen möchtest, dann sage Teilnehmenden bescheid, dass die Teilnahme bestätigt werden muss, um das Event
-								übertragen zu können.
-							</SizableText>
-							<SizableText>Du kannst natürlich dennoch das Event löschen, wenn Du das möchtest.</SizableText>
+							<SizableText>{t("creator.noOtherGuests")}</SizableText>
+							<SizableText>{t("creator.notifyGuests")}</SizableText>
+							<SizableText>{t("creator.canStillDelete")}</SizableText>
 						</>
 					)}
 					<View gap="$2">
-						{hasOtherGuests && <Button onPress={() => router.push("/eventDetails/transferEvent")}>Neuen Verwaltenden aussuchen</Button>}
+						{hasOtherGuests && <Button onPress={() => router.push("/eventDetails/transferEvent")}>{t("creator.chooseNewAdmin")}</Button>}
 						<Button onPress={handleDeleteEvent} variant={hasOtherGuests ? "secondary" : "primary"}>
-							Event löschen
+							{t("events.delete")}
 						</Button>
-						{hasOtherGuests && <SizableText textAlign="center">oder</SizableText>}
+						{hasOtherGuests && <SizableText textAlign="center">{t("common.or")}</SizableText>}
 						<Button variant="secondary" onPress={() => onOpenChange?.(false)}>
-							Abbrechen
+							{t("common.cancel")}
 						</Button>
 					</View>
 					<Dialog fullscreen open={chooseAdminSheetOpen} onOpenChange={setChooseAdminSheetOpen} />
