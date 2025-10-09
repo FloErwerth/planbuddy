@@ -1,7 +1,7 @@
 import { Spinner } from "tamagui";
 import { useEventQuery } from "@/api/events/event/useEventQuery";
-import { EventCreation } from "@/screens/EventCreation";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
+import { EventCreation } from "@/screens/Events/EventCreation";
 
 export default function EditEvent() {
 	const { eventId } = useEventDetailsContext();
