@@ -3,6 +3,12 @@ import { initReactI18next } from "react-i18next";
 import de from "../locales/de.json";
 import en from "../locales/en.json";
 
+export const defaultNS = "translation";
+export const resources = {
+	de: { translation: de },
+	en: { translation: en },
+};
+
 // Get device language (you can use expo-localization for this)
 const getDeviceLanguage = (): string => {
 	// Default to German for now
@@ -10,11 +16,12 @@ const getDeviceLanguage = (): string => {
 	return "de";
 };
 
+export const defaultLocale = "de";
+export const resourceDe = de;
+
 i18n.use(initReactI18next).init({
-	resources: {
-		de: { translation: de },
-		en: { translation: en },
-	},
+	resources,
+	defaultNS,
 	lng: getDeviceLanguage(),
 	fallbackLng: "de",
 	interpolation: {
