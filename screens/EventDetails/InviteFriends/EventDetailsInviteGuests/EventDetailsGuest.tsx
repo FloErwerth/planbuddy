@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { View, XStack } from "tamagui";
 import type { Participant } from "@/api/participants/types";
 import type { User } from "@/api/user/types";
@@ -11,6 +12,7 @@ import { formatToDate, formatToTime } from "@/utils/date";
 export type EventDetailsGuestProps = User & { checked: boolean; onPress: (id: string) => void } & Pick<Participant, "createdAt">;
 
 export const EventDetailsGuest = memo(({ id, onPress, checked, firstName, createdAt, lastName, email }: EventDetailsGuestProps) => {
+	const { t } = useTranslation();
 	return (
 		<Card onPress={() => onPress(id)} key={id}>
 			<XStack alignItems="center" paddingRight="$2" justifyContent="space-between">
@@ -21,9 +23,7 @@ export const EventDetailsGuest = memo(({ id, onPress, checked, firstName, create
 							{firstName} {lastName}
 						</SizeableText>
 						{createdAt ? (
-							<SizeableText size="$3">
-								Eingeladen am {formatToDate(createdAt)}, {formatToTime(createdAt)} Uhr
-							</SizeableText>
+							<SizeableText size="$3">{t("events.invitedAt", { date: formatToDate(createdAt), time: formatToTime(createdAt) })}</SizeableText>
 						) : (
 							<SizeableText size="$3">{email}</SizeableText>
 						)}

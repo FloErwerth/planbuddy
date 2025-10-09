@@ -54,7 +54,6 @@ export const AuthenticationProvider = ({ children }: PropsWithChildren) => {
 					resetAuthenticationFields();
 					return;
 				}
-				setIsAuthenticatedWithSupabase(true);
 				const userFromDb = await getUserSupabaseQuery(user.data.user.id);
 				const parsedUserFromDb = userSchema.safeParse(userFromDb.data);
 				if (parsedUserFromDb.success) {
@@ -62,6 +61,7 @@ export const AuthenticationProvider = ({ children }: PropsWithChildren) => {
 				} else {
 					setUser(null);
 				}
+				setIsAuthenticatedWithSupabase(true);
 			})
 			.catch((e) => {
 				console.log(e);

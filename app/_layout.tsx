@@ -14,7 +14,6 @@ import * as SplashScreen from "expo-splash-screen";
 import { Platform } from "react-native";
 import { Providers } from "@/providers";
 import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
-import "@/i18n";
 
 Notifications.setNotificationHandler({
 	handleNotification: async () => ({

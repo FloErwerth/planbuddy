@@ -60,15 +60,15 @@ export const EditProfileScreen = () => {
 						<Trash size="$1" scale={0.75} />
 					</Button>
 				}
-				titleKey="profile.edit"
+				title={t("profile.edit")}
 			>
 				<View flex={1} gap="$4">
 					<AvatarImagePicker editable onImageDeleted={handleImageDeletion} image={userImage || undefined} onImageSelected={updateImage} />
 
 					<FormProvider {...form}>
-						<FormInput labelKey="profile.email" name="email" editable={false} disabled value={user?.email} />
-						<FormInput labelKey="profile.firstName" name="firstName" />
-						<FormInput labelKey="profile.lastName" name="lastName" />
+						<FormInput label={t("profile.email")} name="email" editable={false} disabled value={user?.email} />
+						<FormInput label={t("profile.firstName")} name="firstName" />
+						<FormInput label={t("profile.lastName")} name="lastName" />
 					</FormProvider>
 				</View>
 

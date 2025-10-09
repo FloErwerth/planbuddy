@@ -65,7 +65,8 @@
 		"statistics": "Event Statistiken",
 		"hosted": "veranstaltet",
 		"contributed": "mitgewirkt",
-		"attended": "teilgenommen"
+		"attended": "teilgenommen",
+		"invitedAt": "Eingeladen am {{date}}, {{time}} Uhr"
 	},
 	"guests": {
 		"title": "Gäste",
@@ -120,7 +121,9 @@
 		"deleteAccountEventsWarning": "Bitte beachte, dass mit der Löschung deines Accounts auch alle von Dir erstellten Events gelöscht, außer Du überträgst diese vorher an jemand anderen.",
 		"deleteAccountCreatorWarning": "Du hast noch Events, in denen Du als Ersteller:in eingetragen bist.",
 		"deleteAccountCreatorWarning2": "Wenn Du deinen Account löschsts, dann werden auch deine erstellen Events gelöscht.",
-		"deleteAccountConfirm": "Bist Du Dir sicher, dass Du deinen Account löschen möchtest?"
+		"deleteAccountConfirm": "Bist Du Dir sicher, dass Du deinen Account löschen möchtest?",
+		"logout": "Abmelden",
+		"version": "Version {{version}}"
 	},
 	"notifications": {
 		"title": "Benachrichtigungen",

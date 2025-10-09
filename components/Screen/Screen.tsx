@@ -1,5 +1,4 @@
 import type { PropsWithChildren, ReactNode } from "react";
-import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SizableText, View, type ViewProps, XStack } from "tamagui";
 
@@ -11,8 +10,6 @@ type ScreenProps = PropsWithChildren &
 	};
 
 export const Screen = ({ children, back = false, title, action, ...props }: ScreenProps) => {
-	const { t } = useTranslation();
-
 	const hasActionOrBack = !!back || !!action;
 	const { top } = useSafeAreaInsets();
 

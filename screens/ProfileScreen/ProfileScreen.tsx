@@ -66,7 +66,7 @@ export const ProfileScreen = () => {
 				</SizableText>
 				<View flex={1} gap="$4" justifyContent="flex-end">
 					<Button alignSelf="flex-start" variant="secondary" size="$3" onPress={logout}>
-						Logout
+						{t("profile.logout")}
 					</Button>
 					<Separator />
 					<XStack justifyContent="space-between" alignItems="center">
@@ -76,7 +76,7 @@ export const ProfileScreen = () => {
 							</SizableText>
 						</Pressable>
 						<SizableText size="$2" alignSelf="flex-end">
-							Version {packageJson.version}
+							{t("profile.version", { version: packageJson.version })}
 						</SizableText>
 					</XStack>
 				</View>

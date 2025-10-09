@@ -94,7 +94,6 @@ export const EventDetails = () => {
 			back={<BackButton href="/(tabs)" />}
 			action={
 				me?.role === ParticipantRoleEnum.GUEST ? null : (
-					// todo: share event
 					<Button variant="round" onPress={() => router.push("/eventDetails/shareEvent")}>
 						<Share color="$color" size="$1" scale={0.75} />
 					</Button>

@@ -1,7 +1,7 @@
 import type { ComponentProps } from "react";
 import { LocaleConfig, Calendar as ReactNativeCalendar } from "react-native-calendars";
-import i18n from "@/i18n";
 import { colors } from "@/providers/TamaguiProvider/tamaguiConfig";
+import i18n from "@/translation/i18n/config";
 import { timePartialsWithoutTimeZone } from "@/utils/date";
 import type { CalendarProps } from "./types";
 
@@ -9,7 +9,7 @@ import type { CalendarProps } from "./types";
 const setupCalendarLocales = () => {
 	const t = i18n.t.bind(i18n);
 
-	LocaleConfig.locales.de = {
+	const calendarLocales = {
 		monthNames: [
 			t("calendar.monthNames.january"),
 			t("calendar.monthNames.february"),
@@ -59,15 +59,11 @@ const setupCalendarLocales = () => {
 		today: t("calendar.today"),
 	};
 
-	LocaleConfig.locales.en = {
-		monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-		monthNamesShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-		dayNames: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-		dayNamesShort: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-		today: "today",
-	};
+	LocaleConfig.locales.de = calendarLocales;
+	LocaleConfig.locales.en = calendarLocales;
 
-	LocaleConfig.defaultLocale = i18n.language;
+	LocaleConfig.defaultLocale = "de";
+	// LocaleConfig.defaultLocale = getLocale().split("-")[0];
 };
 
 setupCalendarLocales();

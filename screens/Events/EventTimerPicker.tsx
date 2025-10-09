@@ -1,7 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { TimerPicker, type TimerPickerProps } from "react-native-timer-picker";
 import { SizeableText } from "@/components/tamagui/Text";
+import { getIs24HourFormat } from "@/utils/translation";
 
 export const EventTimerPicker = (props: TimerPickerProps) => {
+	const { t } = useTranslation();
 	return (
 		<TimerPicker
 			{...props}
@@ -12,10 +15,10 @@ export const EventTimerPicker = (props: TimerPickerProps) => {
 			}
 			minuteLabel={
 				<SizeableText marginTop={1} left={38} fontSize={24}>
-					Uhr
+					{t("common.oclock")}
 				</SizeableText>
 			}
-			use12HourPicker={false}
+			use12HourPicker={!getIs24HourFormat()}
 			hideSeconds
 			styles={{
 				backgroundColor: "transparent",

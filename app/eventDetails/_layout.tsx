@@ -1,5 +1,5 @@
-import { Stack } from "expo-router";
 import type { NativeStackNavigationOptions } from "@react-navigation/native-stack";
+import { Stack } from "expo-router";
 import { EventDetailsProvider } from "@/screens/EventDetails/EventDetailsProvider";
 
 const defaultOptions: NativeStackNavigationOptions = {
@@ -10,7 +10,6 @@ export default function EventDetailsLayout() {
 		<EventDetailsProvider>
 			<Stack>
 				<Stack.Screen name="index" options={defaultOptions} />
-				<Stack.Screen name="hosts" options={defaultOptions} />
 				<Stack.Screen name="participants" options={defaultOptions} />
 				<Stack.Screen name="editGuest" options={defaultOptions} />
 				<Stack.Screen name="transferEvent" options={defaultOptions} />

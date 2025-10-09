@@ -65,7 +65,8 @@
 		"statistics": "Event Statistics",
 		"hosted": "hosted",
 		"contributed": "contributed",
-		"attended": "attended"
+		"attended": "attended",
+		"invitedAt": "Invited on {{date}}, {{time}}"
 	},
 	"guests": {
 		"title": "Guests",
@@ -120,7 +121,9 @@
 		"deleteAccountEventsWarning": "Please note that deleting your account will also delete all events you created, unless you transfer them to someone else beforehand.",
 		"deleteAccountCreatorWarning": "You still have events where you are registered as creator.",
 		"deleteAccountCreatorWarning2": "If you delete your account, your created events will also be deleted.",
-		"deleteAccountConfirm": "Are you sure you want to delete your account?"
+		"deleteAccountConfirm": "Are you sure you want to delete your account?",
+		"logout": "Logout",
+		"version": "Version {{version}}"
 	},
 	"notifications": {
 		"title": "Notifications",
