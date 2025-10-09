@@ -1,7 +1,7 @@
-import type { BaseFormFieldProps } from "@/components/FormFields/types";
-import { SizeableText } from "@/components/tamagui/SizeableText";
 import { type FieldValues, useController } from "react-hook-form";
-import { SizableText, View } from "tamagui";
+import { View } from "tamagui";
+import type { BaseFormFieldProps } from "@/components/FormFields/types";
+import { SizeableText } from "@/components/tamagui/Text";
 
 export const FormField = <T extends FieldValues>({ children, label, name, ...props }: BaseFormFieldProps<T>) => {
 	const {
@@ -10,7 +10,7 @@ export const FormField = <T extends FieldValues>({ children, label, name, ...pro
 
 	return (
 		<View gap="$1.5" {...props}>
-			{label && <SizableText>{label}</SizableText>}
+			{label && <SizeableText>{label}</SizeableText>}
 			{children}
 			{!!error && <SizeableText theme="error">{error.message}</SizeableText>}
 		</View>

@@ -9,6 +9,7 @@ import { BackButton } from "@/components/BackButton";
 import { Screen } from "@/components/Screen";
 import { SearchInput } from "@/components/SearchInput";
 import { Button } from "@/components/tamagui/Button";
+import { useTranslation } from "@/hooks/useTranslation";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 import { EventDetailsGuest, type EventDetailsGuestProps } from "@/screens/EventDetails/InviteFriends/EventDetailsInviteGuests/EventDetailsGuest";
 
@@ -16,6 +17,7 @@ export const EventDetailsInviteGuests = () => {
 	const [filter, setFilter] = useState<string>();
 	const { bottom } = useSafeAreaInsets();
 	const { eventId, toggleGuest, usersToAdd } = useEventDetailsContext();
+	const { t } = useTranslation();
 
 	const { data: allUsers } = useAllUsersQuery();
 	const { data: participants } = useSearchParticipantsByStatus(eventId);
@@ -34,8 +36,8 @@ export const EventDetailsInviteGuests = () => {
 		}));
 
 	return (
-		<Screen flex={1} back={<BackButton />} title="Gäste hinzufügen">
-			<SearchInput placeholder="Name oder E-Mail" onChangeText={setFilter} />
+		<Screen flex={1} back={<BackButton />} title={t("guests.add")}>
+			<SearchInput placeholder={t("guests.nameOrEmail")} onChangeText={setFilter} />
 			<FlashList
 				showsVerticalScrollIndicator={false}
 				estimatedItemSize={92}
@@ -54,7 +56,7 @@ export const EventDetailsInviteGuests = () => {
 					exitStyle={{ scale: 0.9, opacity: 0 }}
 					onPress={() => router.push("/eventDetails/inviteGuests/confirmInvitations")}
 				>
-					Gäste überprüfen und hinzufügen{`(${usersToAdd.size})`}
+					{t("guests.reviewAndAdd", { count: usersToAdd.size })}
 				</Button>
 			)}
 		</Screen>

@@ -1,17 +1,72 @@
 import type { ComponentProps } from "react";
 import { LocaleConfig, Calendar as ReactNativeCalendar } from "react-native-calendars";
 import { colors } from "@/providers/TamaguiProvider/tamaguiConfig";
+import i18n from "@/translation/i18n/config";
 import { timePartialsWithoutTimeZone } from "@/utils/date";
 import type { CalendarProps } from "./types";
 
-LocaleConfig.locales.de = {
-	monthNames: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
-	monthNamesShort: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
-	dayNames: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"],
-	dayNamesShort: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
-	today: "heute",
+// Setup calendar locales
+const setupCalendarLocales = () => {
+	const t = i18n.t.bind(i18n);
+
+	const calendarLocales = {
+		monthNames: [
+			t("calendar.monthNames.january"),
+			t("calendar.monthNames.february"),
+			t("calendar.monthNames.march"),
+			t("calendar.monthNames.april"),
+			t("calendar.monthNames.may"),
+			t("calendar.monthNames.june"),
+			t("calendar.monthNames.july"),
+			t("calendar.monthNames.august"),
+			t("calendar.monthNames.september"),
+			t("calendar.monthNames.october"),
+			t("calendar.monthNames.november"),
+			t("calendar.monthNames.december"),
+		],
+		monthNamesShort: [
+			t("calendar.monthNamesShort.jan"),
+			t("calendar.monthNamesShort.feb"),
+			t("calendar.monthNamesShort.mar"),
+			t("calendar.monthNamesShort.apr"),
+			t("calendar.monthNamesShort.may"),
+			t("calendar.monthNamesShort.jun"),
+			t("calendar.monthNamesShort.jul"),
+			t("calendar.monthNamesShort.aug"),
+			t("calendar.monthNamesShort.sep"),
+			t("calendar.monthNamesShort.oct"),
+			t("calendar.monthNamesShort.nov"),
+			t("calendar.monthNamesShort.dec"),
+		],
+		dayNames: [
+			t("calendar.dayNames.monday"),
+			t("calendar.dayNames.tuesday"),
+			t("calendar.dayNames.wednesday"),
+			t("calendar.dayNames.thursday"),
+			t("calendar.dayNames.friday"),
+			t("calendar.dayNames.saturday"),
+			t("calendar.dayNames.sunday"),
+		],
+		dayNamesShort: [
+			t("calendar.dayNamesShort.mon"),
+			t("calendar.dayNamesShort.tue"),
+			t("calendar.dayNamesShort.wed"),
+			t("calendar.dayNamesShort.thu"),
+			t("calendar.dayNamesShort.fri"),
+			t("calendar.dayNamesShort.sat"),
+			t("calendar.dayNamesShort.sun"),
+		],
+		today: t("calendar.today"),
+	};
+
+	LocaleConfig.locales.de = calendarLocales;
+	LocaleConfig.locales.en = calendarLocales;
+
+	LocaleConfig.defaultLocale = "de";
+	// LocaleConfig.defaultLocale = getLocale().split("-")[0];
 };
-LocaleConfig.defaultLocale = "de";
+
+setupCalendarLocales();
 
 export const Calendar = ({ date, onDateSelected, minimumDate, maximumDate }: CalendarProps) => {
 	const isoDate = date.toISOString();

@@ -13,6 +13,7 @@ import { PressableRow } from "@/components/PressableRow";
 import { Screen, ScrollableScreen } from "@/components/Screen";
 import { Button } from "@/components/tamagui/Button";
 import { Separator } from "@/components/tamagui/Separator";
+import { useTranslation } from "@/hooks/useTranslation";
 import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 import { useEventDetailsContext } from "@/screens/EventDetails/EventDetailsProvider";
 import { ShareSheet } from "@/sheets/ShareSheet";
@@ -22,6 +23,7 @@ const EventDetailsActions = () => {
 	const { user } = useAuthenticationContext();
 	const { eventId } = useEventDetailsContext();
 	const { data: me } = useSingleParticipantQuery(eventId, user.id);
+	const { t } = useTranslation();
 
 	// todo change role to contributor if available
 	const isContributor = me?.role === ParticipantRoleEnum.ADMIN || me?.role === ParticipantRoleEnum.CREATOR;
@@ -33,13 +35,13 @@ const EventDetailsActions = () => {
 	return (
 		<View flexDirection="row" gap="$3" flex={1}>
 			<Button flex={1} size="$3" borderRadius="$4" onPress={() => router.push("/eventDetails/inviteGuests")}>
-				Gäste einladen
+				{t("guests.invite")}
 			</Button>
 			<Button flex={1} variant="secondary" size="$3" borderRadius="$4" onPress={() => undefined}>
-				Aktionen
+				{t("common.actions")}
 			</Button>
 			<Button flex={1} variant="secondary" size="$3" borderRadius="$4" onPress={() => router.push("/eventDetails/editEvent")}>
-				Verwalten
+				{t("common.manage")}
 			</Button>
 		</View>
 	);
@@ -50,6 +52,7 @@ export const EventDetails = () => {
 	const { user } = useAuthenticationContext();
 	const { data: me } = useSingleParticipantQuery(eventId, user.id);
 	const [showShare, setShowShare] = useState(false);
+	const { t } = useTranslation();
 
 	const { data: event, isLoading } = useEventQuery(eventId);
 	const { data: image } = useEventImageQuery(eventId);
@@ -91,7 +94,6 @@ export const EventDetails = () => {
 			back={<BackButton href="/(tabs)" />}
 			action={
 				me?.role === ParticipantRoleEnum.GUEST ? null : (
-					// todo: share event
 					<Button variant="round" onPress={() => router.push("/eventDetails/shareEvent")}>
 						<Share color="$color" size="$1" scale={0.75} />
 					</Button>
@@ -111,12 +113,16 @@ export const EventDetails = () => {
 				<XStack alignItems="center" gap="$5">
 					<View>
 						<SizableText size="$5">{formatToDate(event?.startTime)}</SizableText>
-						<SizableText size="$4">{formatToTime(event?.startTime)} Uhr</SizableText>
+						<SizableText size="$4">
+							{formatToTime(event?.startTime)} {t("common.oclock")}
+						</SizableText>
 					</View>
-					<SizableText>bis</SizableText>
+					<SizableText>{t("common.until")}</SizableText>
 					<View>
 						<SizableText size="$5">{formatToDate(event?.endTime)}</SizableText>
-						<SizableText size="$4">{formatToTime(event?.endTime)} Uhr</SizableText>
+						<SizableText size="$4">
+							{formatToTime(event?.endTime)} {t("common.oclock")}
+						</SizableText>
 					</View>
 				</XStack>
 			</PressableRow>
@@ -125,7 +131,7 @@ export const EventDetails = () => {
 			</PressableRow>
 
 			<PressableRow icon={<Users />} onPress={() => router.push("/eventDetails/participants")} iconRight={<ChevronRight size="$1" />}>
-				<SizableText>Gäste</SizableText>
+				<SizableText>{t("guests.title")}</SizableText>
 			</PressableRow>
 			{url && (
 				<PressableRow icon={<Link2 />} onPress={handleOpenLink} iconRight={<ExternalLink scale={0.75} size="$1" />}>
@@ -137,7 +143,7 @@ export const EventDetails = () => {
 				<>
 					<Separator />
 					<SizableText size="$6" fontWeight="700">
-						Details
+						{t("events.details")}
 					</SizableText>
 					<SizableText>{event?.description}</SizableText>
 				</>

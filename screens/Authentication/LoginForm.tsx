@@ -5,10 +5,12 @@ import { SizableText, View } from "tamagui";
 import { supabase } from "@/api/supabase";
 import { FormInput } from "@/components/FormFields";
 import { Button } from "@/components/tamagui/Button";
+import { useTranslation } from "@/hooks/useTranslation";
 import { useLoginContext } from "@/providers/LoginProvider";
 import { type LoginSchema, loginSchema } from "@/screens/Authentication/types";
 
 export const LoginForm = () => {
+	const { t } = useTranslation();
 	const { email: previousEmail, loginError, setLoginError, setEmail, startResendTokenTimer, resendTokenTime, resetTokenPage } = useLoginContext();
 
 	const form = useForm({
@@ -43,7 +45,7 @@ export const LoginForm = () => {
 					case "email_exists":
 						break;
 					default:
-						setLoginError("Es ist ein Fehler aufgetreten, bitte versuche es erneut");
+						setLoginError(t("auth.login.error"));
 				}
 			}
 		} catch (e) {
@@ -62,7 +64,7 @@ export const LoginForm = () => {
 		<View gap="$4" flex={1}>
 			<FormProvider {...form}>
 				<SizableText size="$5" textAlign="center">
-					Melde dich hier ganz bequem mit deiner E-Mail an
+					{t("auth.login.title")}
 				</SizableText>
 				<View gap="$2">
 					<FormInput
@@ -77,9 +79,9 @@ export const LoginForm = () => {
 						autoCapitalize="none"
 					/>
 					<Button size="$5" fontWeight="700" disabled={resendTokenTime > 0} onPress={form.handleSubmit(signUpWithPhone)}>
-						{resendTokenTime > 0 ? `Code erneut senden (${resendTokenTime}s)` : "Anmelden"}
+						{resendTokenTime > 0 ? t("auth.login.resendCode", { seconds: resendTokenTime }) : t("auth.login.button")}
 					</Button>
-					{resendTokenTime > 0 && <SizableText theme="error">Aus Sicherheitsgründen kannst Du nicht direkt einen neuen Code anfordern.</SizableText>}
+					{resendTokenTime > 0 && <SizableText theme="error">{t("auth.login.securityWarning")}</SizableText>}
 				</View>
 			</FormProvider>
 		</View>

@@ -99,6 +99,7 @@ export default {
 					imageWidth: 200,
 				},
 			],
+			"expo-localization",
 		],
 		experiments: {
 			reactCompiler: true,

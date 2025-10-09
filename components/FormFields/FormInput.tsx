@@ -1,8 +1,8 @@
 import { Controller, type FieldValues } from "react-hook-form";
-import type { BaseFormFieldProps } from "@/components/FormFields/types";
-import { FormField } from "@/components/FormFields/FormField";
-import { Input } from "@/components/tamagui/Input";
 import type { InputProps } from "tamagui";
+import { FormField } from "@/components/FormFields/FormField";
+import type { BaseFormFieldProps } from "@/components/FormFields/types";
+import { Input } from "@/components/tamagui/Input";
 
 export const FormInput = <T extends FieldValues>({ name, label, ...inputProps }: BaseFormFieldProps<T> & InputProps) => {
 	return (

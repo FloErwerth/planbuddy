@@ -10,6 +10,7 @@ import { PressableRow } from "@/components/PressableRow";
 import { Screen } from "@/components/Screen";
 import { Button } from "@/components/tamagui/Button";
 import { Separator } from "@/components/tamagui/Separator";
+import { useTranslation } from "@/hooks/useTranslation";
 import packageJson from "@/package.json";
 import { useAuthenticationContext } from "@/providers/AuthenticationProvider";
 import { FriendRequestRow } from "@/screens/ProfileScreen/FriendRequests";
@@ -21,6 +22,7 @@ export const ProfileScreen = () => {
 	const { data: profilePicture } = useProfileImageQuery(user?.id);
 	const [deleteUserDialogOpen, setDeleteUserDialogOpen] = useState(false);
 	const { logout } = useAuthenticationContext();
+	const { t } = useTranslation();
 
 	if (isLoadingProfile) {
 		return (
@@ -34,7 +36,7 @@ export const ProfileScreen = () => {
 		<>
 			<Screen
 				flex={1}
-				title="Profil"
+				title={t("profile.title")}
 				action={
 					<Button variant="round" onPress={() => router.push("/(tabs)/profile/editProfile")}>
 						<Pencil scale={0.75} size="$1" />
@@ -50,13 +52,13 @@ export const ProfileScreen = () => {
 				</View>
 				<Separator />
 				<ProfileStatistics />
-				<SizableText size="$5">Einstellungen</SizableText>
+				<SizableText size="$5">{t("profile.settings")}</SizableText>
 				<FriendRequestRow />
 				<PressableRow onPress={() => router.navigate("/(tabs)/profile/friends")} icon={<Users size="$1" />} iconRight={<ChevronRight size="$1" />}>
-					<SizableText>Freunde</SizableText>
+					<SizableText>{t("friends.title")}</SizableText>
 				</PressableRow>
 				<PressableRow onPress={() => router.navigate("/(tabs)/profile/notifications")} icon={<Bell size="$1" />} iconRight={<ChevronRight size="$1" />}>
-					<SizableText>Benachrichtigungen</SizableText>
+					<SizableText>{t("notifications.title")}</SizableText>
 				</PressableRow>
 				<SizableText>
 					Account löschen: Checken ob user ein creator ist, wenn ja Hinweisen, dass dann Events gelöscht werden. Möglichkeit Event an Pariticpant zu übertragen,
@@ -64,17 +66,17 @@ export const ProfileScreen = () => {
 				</SizableText>
 				<View flex={1} gap="$4" justifyContent="flex-end">
 					<Button alignSelf="flex-start" variant="secondary" size="$3" onPress={logout}>
-						Logout
+						{t("profile.logout")}
 					</Button>
 					<Separator />
 					<XStack justifyContent="space-between" alignItems="center">
 						<Pressable onPress={() => setDeleteUserDialogOpen(true)}>
 							<SizableText size="$2" theme="error">
-								Account löschen
+								{t("profile.deleteAccount")}
 							</SizableText>
 						</Pressable>
 						<SizableText size="$2" alignSelf="flex-end">
-							Version {packageJson.version}
+							{t("profile.version", { version: packageJson.version })}
 						</SizableText>
 					</XStack>
 				</View>

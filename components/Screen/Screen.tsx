@@ -19,9 +19,11 @@ export const Screen = ({ children, back = false, title, action, ...props }: Scre
 				<XStack alignItems="center">
 					<View flex={hasActionOrBack ? 0.2 : 0}>{back}</View>
 					<View flex={1}>
-						<SizableText size="$6" textAlign="center">
-							{title}
-						</SizableText>
+						{title && (
+							<SizableText size="$6" textAlign="center">
+								{title}
+							</SizableText>
+						)}
 					</View>
 					<View flex={hasActionOrBack ? 0.2 : 0} alignItems="flex-end">
 						{action}

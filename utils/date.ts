@@ -19,9 +19,11 @@ export function getRelativeDate(date: Date): string {
 	// Handle "today" and "tomorrow"
 	if (diffDays === 0) {
 		return "heute";
-	}if (diffDays === 1) {
+	}
+	if (diffDays === 1) {
 		return "morgen";
-	}if (diffDays < 0) {
+	}
+	if (diffDays < 0) {
 		// Handle past dates
 		if (diffDays === -1) {
 			return "gestern";
@@ -55,11 +57,14 @@ export function getRelativeDate(date: Date): string {
 	// Handle "this week", "next week", "in 2 weeks", "in 3 weeks"
 	if (weeksDifference === 0) {
 		return "diese Woche";
-	}if (weeksDifference === 1) {
+	}
+	if (weeksDifference === 1) {
 		return "nächste Woche";
-	}if (weeksDifference === 2) {
+	}
+	if (weeksDifference === 2) {
 		return "in 2 Wochen";
-	}if (weeksDifference === 3) {
+	}
+	if (weeksDifference === 3) {
 		return "in 3 Wochen";
 	}
 
@@ -78,7 +83,8 @@ export function getRelativeDate(date: Date): string {
 	// Handle "in one month" and "in X months"
 	if (monthDiff === 1) {
 		return "in einem Monat";
-	}if (monthDiff > 1 && monthDiff <= 12) {
+	}
+	if (monthDiff > 1 && monthDiff <= 12) {
 		return `in ${monthDiff} Monaten`;
 	}
 
@@ -90,7 +96,8 @@ export function getRelativeDate(date: Date): string {
 	// Handle "in one year" and "in X years"
 	if (yearDiff === 1) {
 		return "in einem Jahr";
-	}if (yearDiff > 1) {
+	}
+	if (yearDiff > 1) {
 		return `in ${yearDiff} Jahren`;
 	}
 
@@ -110,6 +117,7 @@ export const formatToDate = (date?: Date | number | string) => {
 		return undefined;
 	}
 
+	// enable with support of english
 	return parsedDate.toLocaleDateString("de-DE", {
 		day: "2-digit",
 		month: "long",

@@ -8,10 +8,12 @@ import { Screen } from "@/components/Screen";
 import { ScreenTopbarSearch } from "@/components/Screen/ScreenTopbarSearch";
 import { ToggleButton } from "@/components/TogglePillButton";
 import { Separator } from "@/components/tamagui/Separator";
-import { SizeableText } from "@/components/tamagui/SizeableText";
+import { SizeableText } from "@/components/tamagui/Text";
+import { useTranslation } from "@/hooks/useTranslation";
 import { formatToDate, timePartialsWithoutTimeZone } from "@/utils/date";
 
 export const Events = () => {
+	const { t } = useTranslation();
 	const { refetch } = useAllEventsQuery();
 	const [refreshing, setRefreshing] = useState(false);
 	const [_, setSearch] = useState<string>();
@@ -54,16 +56,16 @@ export const Events = () => {
 
 	return (
 		<>
-			<Screen title="Events" action={<ScreenTopbarSearch onChangeText={setSearch} />}>
+			<Screen title={t("events.title")} action={<ScreenTopbarSearch onChangeText={setSearch} />}>
 				<XStack gap="$2">
 					<View>
 						<ToggleButton size="$3" backgroundColor={!showPastEvents ? "$primary" : "$accent"} onPress={toggleShowEvents} active={!showPastEvents}>
-							<SizeableText color={!showPastEvents ? "$background" : "$color"}>Ausstehend</SizeableText>
+							<SizeableText color={!showPastEvents ? "$background" : "$color"}>{t("events.upcoming")}</SizeableText>
 						</ToggleButton>
 					</View>
 					<View>
 						<ToggleButton size="$3" backgroundColor={showPastEvents ? "$primary" : "$accent"} onPress={toggleShowEvents} active={showPastEvents}>
-							<SizeableText color={showPastEvents ? "$background" : "$color"}>Vergangen</SizeableText>
+							<SizeableText color={showPastEvents ? "$background" : "$color"}>{t("events.past")}</SizeableText>
 						</ToggleButton>
 					</View>
 				</XStack>

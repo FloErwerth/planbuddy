@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Trash } from "@tamagui/lucide-icons";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { SizableText, View } from "tamagui";
 import { type OnboardingSchema, onboardingSchema } from "@/api/types";
 import { useDeleteProfilePictureMutation } from "@/api/user/deleteUserProfile";
@@ -24,6 +25,7 @@ export const EditProfileScreen = () => {
 	const { mutate: updateImage } = useUploadProfilePictureMutation();
 	const { mutateAsync: deleteImage } = useDeleteProfilePictureMutation();
 	const [deleteUserModalOpen, setDeleteUserModalOpen] = useState(false);
+	const { t } = useTranslation();
 
 	const form = useForm<OnboardingSchema>({
 		resolver: zodResolver(onboardingSchema),
@@ -58,33 +60,31 @@ export const EditProfileScreen = () => {
 						<Trash size="$1" scale={0.75} />
 					</Button>
 				}
-				title="Profil bearbeiten"
+				title={t("profile.edit")}
 			>
 				<View flex={1} gap="$4">
 					<AvatarImagePicker editable onImageDeleted={handleImageDeletion} image={userImage || undefined} onImageSelected={updateImage} />
 
 					<FormProvider {...form}>
-						<FormInput label="Email" name="email" editable={false} disabled value={user?.email} />
-						<FormInput label="Vorname" name="firstName" />
-						<FormInput label="Nachname" name="lastName" />
+						<FormInput label={t("profile.email")} name="email" editable={false} disabled value={user?.email} />
+						<FormInput label={t("profile.firstName")} name="firstName" />
+						<FormInput label={t("profile.lastName")} name="lastName" />
 					</FormProvider>
 				</View>
 
 				<Button onPress={handleSubmit} disabled={disabled} animation="bouncy">
-					Änderungen abschicken
+					{t("profile.submitChanges")}
 				</Button>
 			</Screen>
 			<Dialog open={deleteUserModalOpen} onOpenChange={setDeleteUserModalOpen}>
-				<SizableText size="$6">Account löschen?</SizableText>
-				<SizableText>Schade, dass Du deinen Account löschen möchtest.</SizableText>
+				<SizableText size="$6">{t("profile.deleteAccountTitle")}</SizableText>
+				<SizableText>{t("profile.deleteAccountWarning")}</SizableText>
 
-				<SizableText>
-					Bitte beachte, dass mit der Löschung deines Accounts auch alle von Dir erstellten Events gelöscht, außer Du überträgst diese vorher an jemand anderen.
-				</SizableText>
+				<SizableText>{t("profile.deleteAccountEventsWarning")}</SizableText>
 				<View gap="$2">
-					<Button>Account löschen</Button>
+					<Button>{t("profile.deleteAccount")}</Button>
 					<Button onPress={() => setDeleteUserModalOpen(false)} variant="secondary">
-						Abbrechen
+						{t("common.cancel")}
 					</Button>
 				</View>
 			</Dialog>

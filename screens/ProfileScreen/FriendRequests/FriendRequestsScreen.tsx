@@ -13,6 +13,7 @@ import { Dialog } from "@/components/tamagui/Dialog";
 import { ScrollView } from "@/components/tamagui/ScrollView";
 import { UserAvatar } from "@/components/UserAvatar";
 import { usePendingFriends } from "@/hooks/friends/usePendingFriends";
+import { useTranslation } from "@/hooks/useTranslation";
 import { formatToDate } from "@/utils/date";
 
 export const FriendRequestsScreen = () => {
@@ -20,6 +21,7 @@ export const FriendRequestsScreen = () => {
 	const [userToDecline, setUserToDecline] = useState<Friend | undefined>(undefined);
 	const { mutateAsync: removeFriend } = useRemoveFriendMutation();
 	const { mutateAsync: updateFriend } = useUpdateFriendMutation();
+	const { t } = useTranslation();
 
 	if (pendingFriends.length === 0) {
 		return null;
@@ -44,7 +46,7 @@ export const FriendRequestsScreen = () => {
 							<SizableText>
 								{pending.firstName} {pending.lastName}
 							</SizableText>
-							<SizableText size="$2">Erhalten am {formatToDate(pending.sendAt)}</SizableText>
+							<SizableText size="$2">{t("friends.receivedOn", { date: formatToDate(pending.sendAt) })}</SizableText>
 						</View>
 					</XStack>
 					<XStack gap="$2">
@@ -67,7 +69,7 @@ export const FriendRequestsScreen = () => {
 
 	return (
 		<>
-			<Screen back={<BackButton href="/profile" />} title="Freundschaftsanfragen" />
+			<Screen back={<BackButton href="/profile" />} title={t("friends.requests")} />
 			<ScrollView contentContainerStyle={{ padding: "$4" }}>{mapped}</ScrollView>
 			<Dialog
 				open={!!userToDecline}
@@ -78,13 +80,13 @@ export const FriendRequestsScreen = () => {
 				}}
 			>
 				<SizableText textAlign="center" size="$6">
-					Anfrage ablehnen
+					{t("friends.declineRequest")}
 				</SizableText>
-				<SizableText>Bist Du Dir sicher, dass Du die Anfrage von {userToDecline?.firstName} ablehnen willst?</SizableText>
+				<SizableText>{t("friends.declineConfirm", { name: userToDecline?.firstName })}</SizableText>
 				<View gap="$2">
-					<Button onPress={declineFriendRequest}>Anfrage ablehnen</Button>
+					<Button onPress={declineFriendRequest}>{t("friends.declineRequest")}</Button>
 					<Button onPress={() => setUserToDecline(undefined)} variant="secondary">
-						Abbrechen
+						{t("common.cancel")}
 					</Button>
 				</View>
 			</Dialog>
